@@ -2,9 +2,17 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  >
 
   <title>AppCore — Оплата</title>
+
+  <meta
+    name="description"
+    content="Оформление заказа AppCore"
+  >
 
   <style>
     * {
@@ -12,14 +20,23 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      padding: 0;
-      background: #090a0c;
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-        "SF Pro Text", Arial, sans-serif;
       min-height: 100vh;
+      background: #08090b;
+      color: #f5f5f7;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        Inter,
+        Arial,
+        sans-serif;
     }
 
     button,
@@ -29,382 +46,510 @@
 
     button {
       border: 0;
-      outline: none;
       cursor: pointer;
     }
 
     .page {
       width: 100%;
-      max-width: 620px;
+      max-width: 760px;
       margin: 0 auto;
-      padding: 18px 16px 40px;
+      padding: 0 16px 40px;
     }
 
-    /* HEADER */
+    /* =========================
+       HEADER
+    ========================= */
 
     .header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 25px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      margin: 0 -16px;
+      padding: 14px 16px;
+      background: rgba(8, 9, 11, .88);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
     }
 
-    .back {
-      width: 40px;
-      height: 40px;
-      border-radius: 13px;
-      background: #121417;
-      border: 1px solid #202328;
-      color: #fff;
-      font-size: 21px;
+    .header-inner {
+      max-width: 760px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
     }
 
     .brand {
-      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      color: #08090b;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .brand-name {
+      font-size: 18px;
       font-weight: 800;
-      letter-spacing: -.5px;
+      letter-spacing: -.4px;
     }
 
-    /* TITLE */
-
-    .title {
-      margin-bottom: 20px;
-    }
-
-    .title-small {
-      color: #7c8188;
+    .brand-sub {
+      margin-top: 1px;
+      color: #777b83;
       font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      margin-bottom: 8px;
     }
 
-    .title h1 {
-      margin: 0;
-      font-size: 29px;
-      line-height: 1.08;
-      letter-spacing: -.8px;
+    /* =========================
+       TOP
+    ========================= */
+
+    .top {
+      padding: 32px 0 22px;
     }
 
-    .title p {
-      color: #777c83;
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 18px;
+      padding: 0;
+      background: transparent;
+      color: #858a93;
       font-size: 13px;
-      line-height: 1.5;
-      margin: 10px 0 0;
+      font-weight: 600;
     }
 
-    /* CARDS */
+    .back:active {
+      opacity: .65;
+    }
+
+    .top h1 {
+      margin: 0;
+      font-size: clamp(30px, 8vw, 42px);
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+      font-weight: 850;
+    }
+
+    .top p {
+      max-width: 570px;
+      margin: 12px 0 0;
+      color: #858a93;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* =========================
+       CARDS
+    ========================= */
 
     .card {
-      background: #101215;
-      border: 1px solid #1e2125;
-      border-radius: 20px;
-      padding: 17px;
       margin-bottom: 12px;
+      padding: 17px;
+      border-radius: 18px;
+      background: #111317;
+      border: 1px solid rgba(255,255,255,.055);
     }
 
     .card-title {
-      font-size: 13px;
+      margin-bottom: 13px;
+      color: #f2f2f4;
+      font-size: 14px;
       font-weight: 800;
-      margin-bottom: 14px;
     }
 
-    /* APPS */
-
-    .apps-list {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
+    /* =========================
+       ORDER APPS
+    ========================= */
 
     .app-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      min-height: 42px;
-      padding: 10px 12px;
-      border-radius: 13px;
-      background: #15171a;
-      border: 1px solid #202328;
+      gap: 11px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,.045);
     }
 
-    .app-name {
-      font-size: 13px;
-      color: #e9eaec;
-      font-weight: 600;
+    .app-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
     }
 
-    .app-price {
-      font-size: 12px;
-      color: #898e95;
-      white-space: nowrap;
+    .app-row:first-child {
+      padding-top: 0;
     }
 
-    /* TOTAL */
-
-    .total-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 3px;
-    }
-
-    .total-label {
-      color: #858a91;
-      font-size: 13px;
-    }
-
-    .total-value {
-      font-size: 24px;
-      font-weight: 850;
-      letter-spacing: -.6px;
-    }
-
-    .discount-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 9px;
-      color: #63d478;
-      font-size: 11px;
-    }
-
-    /* PAYMENT */
-
-    .payment-card {
-      background:
-        radial-gradient(
-          circle at 100% 0%,
-          rgba(255,255,255,.055),
-          transparent 38%
-        ),
-        #101215;
-    }
-
-    .payment-head {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .bank-logo {
-      width: 47px;
-      height: 47px;
-      border-radius: 14px;
-      background: #ffd400;
-      color: #111;
+    .app-logo {
+      width: 43px;
+      height: 43px;
+      flex: 0 0 43px;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
-      font-weight: 900;
+      border-radius: 12px;
+      background: #1b1e23;
+      border: 1px solid rgba(255,255,255,.06);
     }
 
-    .bank-name {
-      font-size: 16px;
+    .app-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .logo-fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #202329;
+      color: #fff;
+      font-size: 13px;
       font-weight: 800;
     }
 
-    .bank-subtitle {
-      color: #777c83;
-      font-size: 11px;
-      margin-top: 3px;
+    .app-name {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      color: #eeeef0;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
-    .details {
+    .app-row-price {
+      color: #9b9fa7;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .free-label {
+      color: #67d987;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* =========================
+       TOTAL
+    ========================= */
+
+    .total-box {
       display: flex;
       flex-direction: column;
       gap: 9px;
     }
 
-    .detail {
-      padding: 12px 13px;
-      border-radius: 14px;
-      background: #15171a;
-      border: 1px solid #202328;
+    .total-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #92969e;
+      font-size: 13px;
     }
 
-    .detail-label {
-      color: #70757c;
-      font-size: 10px;
-      margin-bottom: 5px;
+    .total-line.discount {
+      color: #67d987;
     }
 
-    .detail-value {
-      color: #f1f2f3;
-      font-size: 14px;
-      font-weight: 700;
+    .total-divider {
+      height: 1px;
+      margin: 3px 0;
+      background: rgba(255,255,255,.06);
     }
 
-    .phone-line {
+    .total-final {
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 2px;
     }
 
-    .phone {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .copy-btn {
-      height: 34px;
-      padding: 0 11px;
-      border-radius: 10px;
-      background: #25282d;
+    .total-final-label {
       color: #fff;
-      font-size: 10px;
-      font-weight: 700;
-    }
-
-    /* WARNING */
-
-    .notice {
-      display: flex;
-      gap: 10px;
-      padding: 13px;
-      margin-top: 12px;
-      border-radius: 14px;
-      background: #141619;
-      border: 1px solid #24272b;
-      color: #858a91;
-      font-size: 11px;
-      line-height: 1.45;
-    }
-
-    .notice-icon {
-      flex: 0 0 auto;
-      width: 20px;
-      height: 20px;
-      border-radius: 7px;
-      background: #25282d;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 11px;
+      font-size: 15px;
       font-weight: 800;
     }
 
-    /* PHONE */
-
-    .input-label {
-      color: #777c83;
-      font-size: 11px;
-      margin-bottom: 7px;
-    }
-
-    .phone-input {
-      width: 100%;
-      height: 50px;
-      border-radius: 14px;
-      background: #15171a;
-      border: 1px solid #24272c;
+    .total-final-price {
       color: #fff;
-      outline: none;
-      padding: 0 14px;
-      font-size: 14px;
-    }
-
-    .phone-input::placeholder {
-      color: #60656c;
-    }
-
-    .phone-input:focus {
-      border-color: #50555c;
-    }
-
-    /* BUTTON */
-
-    .pay-btn {
-      width: 100%;
-      height: 54px;
-      border-radius: 16px;
-      background: #f3f3f4;
-      color: #090a0c;
-      font-size: 14px;
+      font-size: 25px;
       font-weight: 850;
-      margin-top: 14px;
-      transition: .2s;
+      letter-spacing: -.7px;
     }
 
-    .pay-btn:active {
-      transform: scale(.985);
+    /* =========================
+       PAYMENT
+    ========================= */
+
+    .payment-method {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-bottom: 15px;
+      padding: 13px;
+      border-radius: 14px;
+      background: #17191e;
+      border: 1px solid rgba(255,255,255,.05);
     }
 
-    .pay-btn:disabled {
-      background: #25282d;
-      color: #656a71;
-    }
-
-    /* SUCCESS */
-
-    .success {
-      display: none;
-      text-align: center;
-      padding: 28px 15px;
-    }
-
-    .success-icon {
-      width: 66px;
-      height: 66px;
-      margin: 0 auto 16px;
-      border-radius: 22px;
-      background: #18321f;
-      color: #62d477;
+    .bank-icon {
+      width: 42px;
+      height: 42px;
+      flex: 0 0 42px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 29px;
+      border-radius: 12px;
+      background: #202329;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .payment-method-title {
+      color: #f0f0f2;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .payment-method-sub {
+      margin-top: 3px;
+      color: #777c84;
+      font-size: 11px;
+    }
+
+    .details {
+      overflow: hidden;
+      border-radius: 15px;
+      background: #0c0e11;
+      border: 1px solid rgba(255,255,255,.055);
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      min-height: 57px;
+      padding: 10px 13px;
+      border-bottom: 1px solid rgba(255,255,255,.045);
+    }
+
+    .detail-row:last-child {
+      border-bottom: 0;
+    }
+
+    .detail-label {
+      color: #70757d;
+      font-size: 11px;
+    }
+
+    .detail-value {
+      color: #f0f0f2;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .phone-value {
+      letter-spacing: .2px;
+    }
+
+    .copy-button {
+      margin-left: 8px;
+      padding: 7px 9px;
+      border-radius: 9px;
+      background: #1b1e23;
+      color: #b8bdc5;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .copy-button:active {
+      transform: scale(.96);
+    }
+
+    /* =========================
+       INPUT
+    ========================= */
+
+    .field-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #9a9ea6;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .input {
+      width: 100%;
+      height: 50px;
+      padding: 0 14px;
+      outline: none;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.07);
+      background: #0c0e11;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .input::placeholder {
+      color: #5f646c;
+    }
+
+    .input:focus {
+      border-color: rgba(255,255,255,.18);
+    }
+
+    .help {
+      margin-top: 8px;
+      color: #666b73;
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    /* =========================
+       WARNING
+    ========================= */
+
+    .notice {
+      padding: 13px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.05);
+      color: #858a92;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .notice strong {
+      color: #c8cbd0;
+    }
+
+    /* =========================
+       BUTTON
+    ========================= */
+
+    .submit {
+      width: 100%;
+      min-height: 54px;
+      margin-top: 3px;
+      border-radius: 15px;
+      background: #fff;
+      color: #08090b;
+      font-size: 14px;
+      font-weight: 850;
+      transition: .16s;
+    }
+
+    .submit:active {
+      transform: scale(.985);
+    }
+
+    .submit.disabled {
+      background: #202328;
+      color: #666b73;
+      cursor: default;
+    }
+
+    /* =========================
+       SUCCESS
+    ========================= */
+
+    .success {
+      display: none;
+      padding: 28px 20px;
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 62px;
+      height: 62px;
+      margin: 0 auto 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #171b19;
+      border: 1px solid rgba(103,217,135,.18);
+      color: #67d987;
+      font-size: 25px;
       font-weight: 900;
     }
 
     .success h2 {
       margin: 0;
+      color: #fff;
       font-size: 22px;
+      font-weight: 850;
     }
 
     .success p {
-      color: #777c83;
-      font-size: 13px;
-      line-height: 1.5;
       margin: 10px auto 0;
-      max-width: 430px;
+      max-width: 440px;
+      color: #858a92;
+      font-size: 13px;
+      line-height: 1.55;
     }
 
-    .success-back {
-      height: 48px;
-      padding: 0 20px;
+    .success-order {
+      margin-top: 16px;
+      color: #666b73;
+      font-size: 11px;
+    }
+
+    .success-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
       margin-top: 18px;
+      padding: 0 20px;
       border-radius: 14px;
-      background: #1a1d21;
-      border: 1px solid #292c31;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
+      background: #fff;
+      color: #08090b;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
     }
 
-    /* TOAST */
+    /* =========================
+       TOAST
+    ========================= */
 
     .toast {
       position: fixed;
+      z-index: 200;
       left: 50%;
-      bottom: 25px;
-      transform: translate(-50%, 20px);
+      bottom: 24px;
+      transform: translate(-50%, 15px);
       opacity: 0;
       pointer-events: none;
-      background: #f2f3f4;
-      color: #08090a;
-      padding: 11px 16px;
-      border-radius: 13px;
+      padding: 11px 15px;
+      border-radius: 12px;
+      background: #f4f4f5;
+      color: #090a0c;
       font-size: 12px;
       font-weight: 700;
-      z-index: 100;
-      transition: .25s;
       white-space: nowrap;
+      transition: .22s;
     }
 
     .toast.show {
@@ -412,9 +557,10 @@
       transform: translate(-50%, 0);
     }
 
-    @media (min-width: 600px) {
+    @media (min-width: 620px) {
       .page {
-        padding-top: 30px;
+        padding-left: 20px;
+        padding-right: 20px;
       }
     }
   </style>
@@ -422,620 +568,1175 @@
 
 <body>
 
-<div class="page">
+  <div class="page">
 
-  <!-- HEADER -->
+    <!-- HEADER -->
 
-  <header class="header">
+    <header class="header">
+      <div class="header-inner">
 
-    <button
-      class="back"
-      id="backBtn"
-      type="button"
-      aria-label="Назад"
-    >
-      ‹
-    </button>
+        <div class="brand">
 
-    <div class="brand">
-      AppCore
-    </div>
-
-  </header>
-
-
-  <!-- TITLE -->
-
-  <div class="title">
-
-    <div class="title-small">
-      Оформление заказа
-    </div>
-
-    <h1>
-      Оплата
-    </h1>
-
-    <p>
-      Переведите указанную сумму по реквизитам ниже.
-      После оплаты нажмите «Я оплатил».
-    </p>
-
-  </div>
-
-
-  <!-- ORDER -->
-
-  <div class="card">
-
-    <div class="card-title">
-      Ваш заказ
-    </div>
-
-    <div
-      class="apps-list"
-      id="appsList"
-    ></div>
-
-  </div>
-
-
-  <!-- TOTAL -->
-
-  <div class="card">
-
-    <div class="total-row">
-
-      <div class="total-label">
-        К оплате
-      </div>
-
-      <div
-        class="total-value"
-        id="total"
-      >
-        0 ₽
-      </div>
-
-    </div>
-
-    <div
-      class="discount-row"
-      id="discountRow"
-      style="display:none"
-    >
-      <span>Скидка</span>
-      <span id="discountText"></span>
-    </div>
-
-  </div>
-
-
-  <!-- PAYMENT -->
-
-  <div class="card payment-card">
-
-    <div class="card-title">
-      Реквизиты для оплаты
-    </div>
-
-    <div class="payment-head">
-
-      <div class="bank-logo">
-        Т
-      </div>
-
-      <div>
-
-        <div class="bank-name">
-          Т-Банк
-        </div>
-
-        <div class="bank-subtitle">
-          Перевод по номеру телефона
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="details">
-
-      <div class="detail">
-
-        <div class="detail-label">
-          Получатель
-        </div>
-
-        <div class="detail-value">
-          Мурат Межидов М
-        </div>
-
-      </div>
-
-
-      <div class="detail">
-
-        <div class="detail-label">
-          Номер для перевода
-        </div>
-
-        <div class="phone-line">
-
-          <div
-            class="detail-value phone"
-            id="paymentPhone"
-          >
-            +7 928 948-07-06
+          <div class="brand-logo">
+            A
           </div>
 
-          <button
-            class="copy-btn"
-            id="copyBtn"
-            type="button"
+          <div>
+            <div class="brand-name">
+              AppCore
+            </div>
+
+            <div class="brand-sub">
+              Приложения для iPhone
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </header>
+
+
+    <!-- TOP -->
+
+    <section class="top">
+
+      <button
+        class="back"
+        id="backButton"
+        type="button"
+      >
+        ← Вернуться к приложениям
+      </button>
+
+      <h1>
+        Оформление<br>
+        заказа
+      </h1>
+
+      <p>
+        Проверьте выбранные приложения и
+        выполните перевод по указанным реквизитам.
+      </p>
+
+    </section>
+
+
+    <!-- ORDER -->
+
+    <section class="card">
+
+      <div class="card-title">
+        Ваш заказ
+      </div>
+
+      <div id="appsList"></div>
+
+    </section>
+
+
+    <!-- TOTAL -->
+
+    <section class="card">
+
+      <div class="card-title">
+        Стоимость
+      </div>
+
+      <div class="total-box">
+
+        <div class="total-line">
+
+          <span>
+            Приложения
+          </span>
+
+          <span id="originalPrice">
+            0 ₽
+          </span>
+
+        </div>
+
+
+        <div
+          class="total-line discount"
+          id="discountRow"
+        >
+
+          <span id="discountLabel">
+            Бесплатные приложения
+          </span>
+
+          <span id="discountPrice">
+            −0 ₽
+          </span>
+
+        </div>
+
+
+        <div class="total-divider"></div>
+
+
+        <div class="total-final">
+
+          <div class="total-final-label">
+            К оплате
+          </div>
+
+          <div
+            class="total-final-price"
+            id="totalPrice"
           >
-            Копировать
-          </button>
+            0 ₽
+          </div>
 
         </div>
 
       </div>
 
+    </section>
+
+
+    <!-- PAYMENT -->
+
+    <div id="paymentContent">
+
+      <section class="card">
+
+        <div class="card-title">
+          Оплата
+        </div>
+
+
+        <div class="payment-method">
+
+          <div class="bank-icon">
+            Т
+          </div>
+
+          <div>
+
+            <div class="payment-method-title">
+              Перевод на Т-Банк
+            </div>
+
+            <div class="payment-method-sub">
+              Переведите точную сумму заказа
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="details">
+
+          <div class="detail-row">
+
+            <div class="detail-label">
+              Получатель
+            </div>
+
+            <div class="detail-value">
+              Мурат Межидов М
+            </div>
+
+          </div>
+
+
+          <div class="detail-row">
+
+            <div class="detail-label">
+              Банк
+            </div>
+
+            <div class="detail-value">
+              Т-Банк
+            </div>
+
+          </div>
+
+
+          <div class="detail-row">
+
+            <div class="detail-label">
+              Номер для перевода
+            </div>
+
+            <div
+              class="detail-value phone-value"
+            >
+              <span id="paymentPhone">
+                +7 928 948-07-06
+              </span>
+
+              <button
+                class="copy-button"
+                id="copyButton"
+                type="button"
+              >
+                Копировать
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- PHONE -->
+
+      <section class="card">
+
+        <div class="card-title">
+          Контакт для заказа
+        </div>
+
+        <label
+          class="field-label"
+          for="clientPhone"
+        >
+          Ваш номер WhatsApp
+        </label>
+
+        <input
+          id="clientPhone"
+          class="input"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel"
+          placeholder="+7 900 000-00-00"
+        >
+
+        <div class="help">
+          Номер нужен, чтобы связаться с вами после проверки оплаты.
+        </div>
+
+      </section>
+
+
+      <!-- NOTICE -->
+
+      <section class="card">
+
+        <div class="notice">
+
+          После перевода нажмите
+          <strong>«Я оплатил»</strong>.
+
+          Ваш заказ будет отправлен на проверку.
+          Ссылки на приложения не открываются автоматически —
+          они станут доступны после подтверждения оплаты.
+
+        </div>
+
+      </section>
+
+
+      <!-- SUBMIT -->
+
+      <button
+        id="paidButton"
+        class="submit"
+        type="button"
+      >
+        Я оплатил
+      </button>
+
     </div>
 
 
-    <div class="notice">
+    <!-- SUCCESS -->
 
-      <div class="notice-icon">
-        !
+    <section
+      id="successContent"
+      class="card success"
+    >
+
+      <div class="success-icon">
+        ✓
       </div>
 
-      <div>
-        Перед переводом обязательно проверьте имя получателя.
-        После оплаты нажмите кнопку «Я оплатил».
-      </div>
+      <h2>
+        Заказ отправлен
+      </h2>
 
-    </div>
+      <p>
+        Спасибо. Заказ принят на проверку.
+        После подтверждения оплаты вы получите
+        доступ к инструкции и ссылкам на выбранные приложения.
+      </p>
+
+      <div
+        class="success-order"
+        id="successOrder"
+      ></div>
+
+      <a
+        class="success-whatsapp"
+        href="https://wa.me/79289480706"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Написать в WhatsApp
+      </a>
+
+    </section>
 
   </div>
 
 
-  <!-- CLIENT -->
+  <!-- TOAST -->
 
   <div
-    class="card"
-    id="clientCard"
-  >
-
-    <div class="card-title">
-      Контакт для связи
-    </div>
-
-    <div class="input-label">
-      Ваш номер WhatsApp
-    </div>
-
-    <input
-      class="phone-input"
-      id="clientPhone"
-      type="tel"
-      inputmode="tel"
-      autocomplete="tel"
-      placeholder="+7 900 000-00-00"
-    >
-
-    <button
-      class="pay-btn"
-      id="paidBtn"
-      type="button"
-    >
-      Я оплатил
-    </button>
-
-  </div>
-
-
-  <!-- SUCCESS -->
-
-  <div
-    class="card success"
-    id="success"
-  >
-
-    <div class="success-icon">
-      ✓
-    </div>
-
-    <h2>
-      Заявка отправлена
-    </h2>
-
-    <p>
-      Оплата будет проверена вручную.
-      После подтверждения вам будут доступны
-      ссылки и инструкции по установке выбранных приложений.
-    </p>
-
-    <button
-      class="success-back"
-      id="successBack"
-      type="button"
-    >
-      Вернуться в AppCore
-    </button>
-
-  </div>
-
-</div>
-
-
-<div
-  class="toast"
-  id="toast"
-></div>
+    id="toast"
+    class="toast"
+  ></div>
 
 
 <script>
 
-  /*
-   * ==========================================
-   * НАСТРОЙКИ
-   * ==========================================
-   */
+  /* =========================================
+     НАСТРОЙКИ
+  ========================================= */
+
+  const PRICE = 500;
 
   const PAYMENT_PHONE =
     "+7 928 948-07-06";
 
-  const PAYMENT_PHONE_COPY =
-    "+79289480706";
+  const WHATSAPP_PHONE =
+    "79289480706";
 
 
-  /*
-   * ==========================================
-   * ELEMENTS
-   * ==========================================
-   */
+  /* =========================================
+     ПРИЛОЖЕНИЯ
+     
+     Данные должны совпадать
+     с index.html.
+  ========================================= */
+
+  const apps = [
+
+    {
+      id: "sberbank",
+      name: "Сбербанк",
+      logo: "https://cdn.simpleicons.org/sberbank"
+    },
+
+    {
+      id: "sberinvest",
+      name: "СберИнвестиции",
+      logo: "https://cdn.simpleicons.org/sber"
+    },
+
+    {
+      id: "tbank",
+      name: "Т-Банк",
+      logo: "https://cdn.simpleicons.org/tbank"
+    },
+
+    {
+      id: "tinvest",
+      name: "Т-Инвестиции",
+      logo: "https://cdn.simpleicons.org/tinkoff"
+    },
+
+    {
+      id: "alfabank",
+      name: "Альфа-Банк",
+      logo: "https://cdn.simpleicons.org/alfabank"
+    },
+
+    {
+      id: "alfainvest",
+      name: "Альфа-Инвестиции",
+      logo: "https://cdn.simpleicons.org/alfa"
+    },
+
+    {
+      id: "vtb",
+      name: "ВТБ",
+      logo: "https://cdn.simpleicons.org/vtb"
+    },
+
+    {
+      id: "vtbinvest",
+      name: "ВТБ Инвестиции",
+      logo: "https://cdn.simpleicons.org/vtb"
+    },
+
+    {
+      id: "gazprombank",
+      name: "Газпромбанк",
+      logo: "https://cdn.simpleicons.org/gazprombank"
+    },
+
+    {
+      id: "gazprominvest",
+      name: "Газпромбанк Инвестиции",
+      logo: "https://cdn.simpleicons.org/gazprombank"
+    },
+
+    {
+      id: "rshb",
+      name: "Россельхозбанк",
+      logo: "https://cdn.simpleicons.org/rshbank"
+    },
+
+    {
+      id: "psb",
+      name: "ПСБ Банк",
+      logo: "https://cdn.simpleicons.org/psbank"
+    },
+
+    {
+      id: "yandexpay",
+      name: "Яндекс Пэй",
+      logo: "https://cdn.simpleicons.org/yandex"
+    },
+
+    {
+      id: "vk",
+      name: "VK",
+      logo: "https://cdn.simpleicons.org/vk"
+    },
+
+    {
+      id: "vkvideo",
+      name: "VK Видео",
+      logo: "https://cdn.simpleicons.org/vk"
+    },
+
+    {
+      id: "vkmessenger",
+      name: "VK Мессенджер",
+      logo: "https://cdn.simpleicons.org/vk"
+    },
+
+    {
+      id: "max",
+      name: "MAX",
+      logo: "https://cdn.simpleicons.org/max"
+    },
+
+    {
+      id: "avito",
+      name: "Авито",
+      logo: "https://cdn.simpleicons.org/avito"
+    },
+
+    {
+      id: "rave",
+      name: "Rave",
+      logo: "https://cdn.simpleicons.org/rave"
+    },
+
+    {
+      id: "rutube",
+      name: "RUTUBE",
+      logo: "https://cdn.simpleicons.org/rutube"
+    },
+
+    {
+      id: "happplus",
+      name: "Happ Plus",
+      logo: "https://cdn.simpleicons.org/happ"
+    }
+
+  ];
+
+
+  /* =========================================
+     ELEMENTS
+  ========================================= */
 
   const appsList =
     document.getElementById("appsList");
 
-  const total =
-    document.getElementById("total");
+  const originalPrice =
+    document.getElementById("originalPrice");
 
   const discountRow =
     document.getElementById("discountRow");
 
-  const discountText =
-    document.getElementById("discountText");
+  const discountLabel =
+    document.getElementById("discountLabel");
 
-  const copyBtn =
-    document.getElementById("copyBtn");
+  const discountPrice =
+    document.getElementById("discountPrice");
+
+  const totalPrice =
+    document.getElementById("totalPrice");
 
   const clientPhone =
     document.getElementById("clientPhone");
 
-  const paidBtn =
-    document.getElementById("paidBtn");
+  const paidButton =
+    document.getElementById("paidButton");
 
-  const clientCard =
-    document.getElementById("clientCard");
+  const paymentContent =
+    document.getElementById("paymentContent");
 
-  const success =
-    document.getElementById("success");
+  const successContent =
+    document.getElementById("successContent");
 
-  const backBtn =
-    document.getElementById("backBtn");
-
-  const successBack =
-    document.getElementById("successBack");
+  const successOrder =
+    document.getElementById("successOrder");
 
   const toast =
     document.getElementById("toast");
 
+  const copyButton =
+    document.getElementById("copyButton");
 
-  /*
-   * ==========================================
-   * TOAST
-   * ==========================================
-   */
+  const backButton =
+    document.getElementById("backButton");
+
+
+  /* =========================================
+     ЗАГРУЗКА КОРЗИНЫ
+  ========================================= */
+
+  let cart = null;
+
+
+  try {
+
+    const saved =
+      sessionStorage.getItem(
+        "appcore_cart"
+      );
+
+
+    if (saved) {
+
+      cart =
+        JSON.parse(saved);
+
+    }
+
+  } catch (error) {
+
+    cart = null;
+
+  }
+
+
+  /* =========================================
+     ЕСЛИ КОРЗИНЫ НЕТ
+  ========================================= */
+
+  if (
+    !cart ||
+    !Array.isArray(cart.appIds) ||
+    cart.appIds.length === 0
+  ) {
+
+    window.location.replace(
+      "index.html"
+    );
+
+  }
+
+
+  /* =========================================
+     ЦЕНА
+     
+     Каждое 4-е приложение бесплатно.
+  ========================================= */
+
+  function calculatePrice(count) {
+
+    if (count <= 0) {
+
+      return {
+        original: 0,
+        total: 0,
+        discount: 0,
+        freeApps: 0
+      };
+
+    }
+
+
+    const freeApps =
+      Math.floor(count / 4);
+
+
+    const paidApps =
+      count - freeApps;
+
+
+    const original =
+      count * PRICE;
+
+
+    const total =
+      paidApps * PRICE;
+
+
+    return {
+
+      original: original,
+
+      total: total,
+
+      discount:
+        original - total,
+
+      freeApps:
+        freeApps
+
+    };
+
+  }
+
+
+  /* =========================================
+     ИНИЦИАЛЫ
+  ========================================= */
+
+  function getInitials(name) {
+
+    const words =
+      name
+        .replace(
+          /[^А-Яа-яA-Za-z0-9\s-]/g,
+          ""
+        )
+        .trim()
+        .split(/\s+/);
+
+
+    if (words.length >= 2) {
+
+      return (
+        words[0][0] +
+        words[1][0]
+      ).toUpperCase();
+
+    }
+
+
+    return name
+      .slice(0, 2)
+      .toUpperCase();
+
+  }
+
+
+  /* =========================================
+     ПОЛУЧИТЬ ДАННЫЕ ПРИЛОЖЕНИЯ
+  ========================================= */
+
+  function getApp(id) {
+
+    return apps.find(
+      app => app.id === id
+    );
+
+  }
+
+
+  /* =========================================
+     ОТОБРАЖЕНИЕ ЗАКАЗА
+  ========================================= */
+
+  function renderOrder() {
+
+    const appIds =
+      cart.appIds;
+
+
+    const count =
+      appIds.length;
+
+
+    const price =
+      calculatePrice(count);
+
+
+    /* =========================
+       ПРИЛОЖЕНИЯ
+    ========================= */
+
+    appsList.innerHTML =
+      "";
+
+
+    appIds.forEach(
+      (id, index) => {
+
+        const savedApp =
+          Array.isArray(cart.apps)
+            ? cart.apps.find(
+                item => item.id === id
+              )
+            : null;
+
+
+        const app =
+          getApp(id);
+
+
+        const name =
+          savedApp?.name ||
+          app?.name ||
+          "Приложение";
+
+
+        const logo =
+          app?.logo || "";
+
+
+        const row =
+          document.createElement("div");
+
+
+        row.className =
+          "app-row";
+
+
+        const logoBox =
+          document.createElement("div");
+
+
+        logoBox.className =
+          "app-logo";
+
+
+        if (logo) {
+
+          const img =
+            document.createElement("img");
+
+
+          img.src =
+            logo;
+
+
+          img.alt =
+            name;
+
+
+          img.onerror =
+            function() {
+
+              logoBox.innerHTML =
+                "";
+
+
+              const fallback =
+                document.createElement("div");
+
+
+              fallback.className =
+                "logo-fallback";
+
+
+              fallback.textContent =
+                getInitials(name);
+
+
+              logoBox.appendChild(
+                fallback
+              );
+
+            };
+
+
+          logoBox.appendChild(
+            img
+          );
+
+        } else {
+
+          const fallback =
+            document.createElement("div");
+
+
+          fallback.className =
+            "logo-fallback";
+
+
+          fallback.textContent =
+            getInitials(name);
+
+
+          logoBox.appendChild(
+            fallback
+          );
+
+        }
+
+
+        const nameBox =
+          document.createElement("div");
+
+
+        nameBox.className =
+          "app-name";
+
+
+        nameBox.textContent =
+          name;
+
+
+        const priceBox =
+          document.createElement("div");
+
+
+        priceBox.className =
+          "app-row-price";
+
+
+        /*
+         * Каждое 4-е приложение
+         * бесплатно.
+         *
+         * 4, 8, 12...
+         */
+
+        const isFree =
+          (index + 1) % 4 === 0;
+
+
+        if (isFree) {
+
+          priceBox.className =
+            "free-label";
+
+          priceBox.textContent =
+            "Бесплатно";
+
+        } else {
+
+          priceBox.textContent =
+            `${PRICE} ₽`;
+
+        }
+
+
+        row.appendChild(
+          logoBox
+        );
+
+        row.appendChild(
+          nameBox
+        );
+
+        row.appendChild(
+          priceBox
+        );
+
+
+        appsList.appendChild(
+          row
+        );
+
+      }
+    );
+
+
+    /* =========================
+       СТОИМОСТЬ
+    ========================= */
+
+    originalPrice.textContent =
+      `${price.original.toLocaleString("ru-RU")} ₽`;
+
+
+    totalPrice.textContent =
+      `${price.total.toLocaleString("ru-RU")} ₽`;
+
+
+    if (price.freeApps > 0) {
+
+      discountRow.style.display =
+        "flex";
+
+
+      const word =
+        price.freeApps === 1
+          ? "приложение"
+          : "приложения";
+
+
+      discountLabel.textContent =
+        `${price.freeApps} ${word} бесплатно`;
+
+
+      discountPrice.textContent =
+        `−${price.discount.toLocaleString("ru-RU")} ₽`;
+
+    } else {
+
+      discountRow.style.display =
+        "none";
+
+    }
+
+  }
+
+
+  /* =========================================
+     КОПИРОВАНИЕ НОМЕРА
+  ========================================= */
+
+  copyButton.addEventListener(
+    "click",
+    async function() {
+
+      try {
+
+        await navigator.clipboard.writeText(
+          PAYMENT_PHONE.replace(/\s/g, "")
+        );
+
+
+        showToast(
+          "Номер скопирован"
+        );
+
+
+        copyButton.textContent =
+          "Скопировано";
+
+
+        setTimeout(
+          function() {
+
+            copyButton.textContent =
+              "Копировать";
+
+          },
+          1800
+        );
+
+
+      } catch (error) {
+
+        showToast(
+          "Не удалось скопировать номер"
+        );
+
+      }
+
+    }
+  );
+
+
+  /* =========================================
+     НОМЕР WHATSAPP
+  ========================================= */
+
+  function normalizePhone(value) {
+
+    return value
+      .replace(/\D/g, "")
+      .replace(/^8/, "7")
+      .slice(0, 11);
+
+  }
+
+
+  clientPhone.addEventListener(
+    "input",
+    function() {
+
+      let value =
+        normalizePhone(
+          clientPhone.value
+        );
+
+
+      if (
+        value.length > 0 &&
+        !value.startsWith("7")
+      ) {
+
+        value =
+          "7" + value;
+
+      }
+
+
+      if (value.length === 0) {
+
+        clientPhone.value =
+          "";
+
+        return;
+
+      }
+
+
+      let formatted =
+        "+7";
+
+
+      if (value.length > 1) {
+
+        formatted +=
+          " " +
+          value.slice(1, 4);
+
+      }
+
+
+      if (value.length >= 5) {
+
+        formatted +=
+          " " +
+          value.slice(4, 7);
+
+      }
+
+
+      if (value.length >= 8) {
+
+        formatted +=
+          "-" +
+          value.slice(7, 9);
+
+      }
+
+
+      if (value.length >= 10) {
+
+        formatted +=
+          "-" +
+          value.slice(9, 11);
+
+      }
+
+
+      clientPhone.value =
+        formatted;
+
+    }
+  );
+
+
+  /* =========================================
+     ГЕНЕРАЦИЯ НОМЕРА ЗАКАЗА
+  ========================================= */
+
+  function generateOrderNumber() {
+
+    const now =
+      new Date();
+
+
+    const date =
+      now.getFullYear().toString() +
+      String(
+        now.getMonth() + 1
+      ).padStart(2, "0") +
+      String(
+        now.getDate()
+      ).padStart(2, "0");
+
+
+    const random =
+      Math.floor(
+        1000 +
+        Math.random() * 9000
+      );
+
+
+    return `AC-${date}-${random}`;
+
+  }
+
+
+  /* =========================================
+     УВЕДОМЛЕНИЕ
+  ========================================= */
 
   function showToast(message) {
 
     toast.textContent =
       message;
 
-    toast.classList.add("show");
+
+    toast.classList.add(
+      "show"
+    );
+
 
     clearTimeout(
       showToast.timer
     );
 
+
     showToast.timer =
-      setTimeout(() => {
+      setTimeout(
+        function() {
 
-        toast.classList.remove("show");
+          toast.classList.remove(
+            "show"
+          );
 
-      }, 2200);
-
-  }
-
-
-  /*
-   * ==========================================
-   * ПОЛУЧАЕМ КОРЗИНУ
-   * ==========================================
-   */
-
-  let cart = null;
-
-  try {
-
-    const raw =
-      sessionStorage.getItem(
-        "appcore_cart"
+        },
+        2200
       );
 
-    if (raw) {
-      cart = JSON.parse(raw);
-    }
-
-  } catch (error) {
-
-    console.error(
-      "Ошибка корзины:",
-      error
-    );
-
   }
 
 
-  /*
-   * ==========================================
-   * ЕСЛИ КОРЗИНЫ НЕТ
-   * ==========================================
-   */
+  /* =========================================
+     НАЗАД
+  ========================================= */
 
-  if (
-    !cart ||
-    !Array.isArray(cart.apps) ||
-    cart.apps.length === 0
-  ) {
-
-    window.location.href =
-      "index.html";
-
-  }
-
-
-  /*
-   * ==========================================
-   * ПОКАЗЫВАЕМ ПРИЛОЖЕНИЯ
-   * ==========================================
-   */
-
-  if (cart) {
-
-    appsList.innerHTML = "";
-
-    cart.apps.forEach(app => {
-
-      const row =
-        document.createElement("div");
-
-      row.className =
-        "app-row";
-
-      const name =
-        document.createElement("div");
-
-      name.className =
-        "app-name";
-
-      name.textContent =
-        app.name;
-
-      const price =
-        document.createElement("div");
-
-      price.className =
-        "app-price";
-
-      price.textContent =
-        `${app.price.toLocaleString("ru-RU")} ₽`;
-
-      row.appendChild(name);
-      row.appendChild(price);
-
-      appsList.appendChild(row);
-
-    });
-
-
-    total.textContent =
-      `${cart.total.toLocaleString("ru-RU")} ₽`;
-
-
-    if (
-      cart.discountPercent &&
-      cart.discountPercent > 0
-    ) {
-
-      discountRow.style.display =
-        "flex";
-
-      discountText.textContent =
-        `−${cart.discountPercent}%`;
-
-    }
-
-  }
-
-
-  /*
-   * ==========================================
-   * КОПИРОВАНИЕ НОМЕРА
-   * ==========================================
-   */
-
-  copyBtn.addEventListener(
+  backButton.addEventListener(
     "click",
-    async () => {
+    function() {
 
-      try {
-
-        await navigator.clipboard.writeText(
-          PAYMENT_PHONE_COPY
-        );
-
-        copyBtn.textContent =
-          "Скопировано";
-
-        showToast(
-          "Номер скопирован"
-        );
-
-        setTimeout(() => {
-
-          copyBtn.textContent =
-            "Копировать";
-
-        }, 1800);
-
-      } catch (error) {
-
-        /*
-         * Резервный вариант
-         */
-
-        const textarea =
-          document.createElement("textarea");
-
-        textarea.value =
-          PAYMENT_PHONE_COPY;
-
-        document.body.appendChild(
-          textarea
-        );
-
-        textarea.select();
-
-        try {
-          document.execCommand("copy");
-        } catch (e) {}
-
-        textarea.remove();
-
-        showToast(
-          "Номер скопирован"
-        );
-
-      }
+      window.location.href =
+        "index.html";
 
     }
   );
 
 
-  /*
-   * ==========================================
-   * ФОРМАТИРОВАНИЕ ТЕЛЕФОНА
-   * ==========================================
-   */
+  /* =========================================
+     ОТПРАВКА "Я ОПЛАТИЛ"
+     
+     ВАЖНО:
+     
+     Пока это локальная версия.
+     Она НЕ выдаёт ссылки на приложения.
+     
+     В дальнейшем этот блок подключается
+     к Supabase и заказ появляется
+     в админ-панели.
+  ========================================= */
 
-  clientPhone.addEventListener(
-    "input",
-    () => {
-
-      let value =
-        clientPhone.value
-          .replace(/\D/g, "");
-
-      if (value.startsWith("8")) {
-        value =
-          "7" + value.slice(1);
-      }
-
-      if (
-        value.startsWith("7")
-      ) {
-
-        let result =
-          "+7";
-
-        if (value.length > 1) {
-          result +=
-            " " +
-            value.slice(1, 4);
-        }
-
-        if (value.length >= 5) {
-          result +=
-            " " +
-            value.slice(4, 7);
-        }
-
-        if (value.length >= 8) {
-          result +=
-            "-" +
-            value.slice(7, 9);
-        }
-
-        if (value.length >= 10) {
-          result +=
-            "-" +
-            value.slice(9, 11);
-        }
-
-        clientPhone.value =
-          result;
-
-      }
-
-    }
-  );
-
-
-  /*
-   * ==========================================
-   * ПРОВЕРКА ТЕЛЕФОНА
-   * ==========================================
-   */
-
-  function validPhone(value) {
-
-    const digits =
-      value.replace(/\D/g, "");
-
-    return (
-      digits.length === 11 &&
-      (
-        digits.startsWith("7") ||
-        digits.startsWith("8")
-      )
-    );
-
-  }
-
-
-  /*
-   * ==========================================
-   * Я ОПЛАТИЛ
-   * ==========================================
-   */
-
-  paidBtn.addEventListener(
+  paidButton.addEventListener(
     "click",
-    () => {
+    function() {
 
       const phone =
         clientPhone.value.trim();
 
 
-      if (!validPhone(phone)) {
+      const normalized =
+        normalizePhone(phone);
+
+
+      if (
+        normalized.length !== 11 ||
+        !normalized.startsWith("7")
+      ) {
 
         showToast(
           "Введите номер WhatsApp"
         );
+
 
         clientPhone.focus();
 
@@ -1044,105 +1745,114 @@
       }
 
 
-      /*
-       * Создаём локальную заявку.
-       *
-       * Позже здесь подключим Supabase,
-       * чтобы заявка сразу попадала
-       * в настоящую админ-панель.
-       */
+      const appIds =
+        cart.appIds;
+
+
+      const price =
+        calculatePrice(
+          appIds.length
+        );
+
+
+      const orderNumber =
+        generateOrderNumber();
+
 
       const order = {
 
         id:
-          "APP-" +
-          Date.now(),
+          orderNumber,
 
-        createdAt:
-          new Date().toISOString(),
+        orderNumber:
+          orderNumber,
 
         clientPhone:
           phone,
 
-        apps:
-          cart.apps,
+        appIds:
+          appIds,
 
-        total:
-          cart.total,
+        apps:
+          cart.apps || [],
 
         original:
-          cart.original,
+          price.original,
 
-        discountPercent:
-          cart.discountPercent,
+        discount:
+          price.discount,
+
+        freeApps:
+          price.freeApps,
+
+        total:
+          price.total,
 
         status:
-          "awaiting_review"
+          "awaiting_review",
+
+        createdAt:
+          new Date().toISOString()
 
       };
 
 
-      let orders = [];
+      /*
+       * Временное локальное сохранение.
+       *
+       * Это НЕ подтверждение оплаты.
+       *
+       * Ссылки на приложения здесь
+       * специально НЕ выдаются.
+       */
 
       try {
 
-        const saved =
-          localStorage.getItem(
-            "appcore_demo_orders"
+        const oldOrders =
+          JSON.parse(
+            localStorage.getItem(
+              "appcore_demo_orders"
+            ) || "[]"
           );
 
-        if (saved) {
-          orders =
-            JSON.parse(saved);
-        }
 
-        if (!Array.isArray(orders)) {
-          orders = [];
-        }
+        oldOrders.push(
+          order
+        );
 
-      } catch (error) {
-
-        orders = [];
-
-      }
-
-
-      orders.unshift(order);
-
-
-      try {
 
         localStorage.setItem(
           "appcore_demo_orders",
-          JSON.stringify(orders)
+          JSON.stringify(
+            oldOrders
+          )
         );
 
       } catch (error) {
 
         console.error(
-          "Ошибка сохранения заказа",
+          "Не удалось сохранить заказ:",
           error
         );
 
       }
 
 
-      /*
-       * Скрываем оплату.
-       */
+      /* =========================
+         ПОКАЗЫВАЕМ УСПЕХ
+      ========================= */
 
-      clientCard.style.display =
+      paymentContent.style.display =
         "none";
 
-      success.style.display =
+
+      successContent.style.display =
         "block";
 
 
-      /*
-       * Не показываем ссылки.
-       * Они появятся только после
-       * подтверждения оплаты.
-       */
+      successOrder.textContent =
+        `Номер заказа: ${orderNumber}`;
+
 
       window.scrollTo({
         top: 0,
@@ -1153,36 +1863,11 @@
   );
 
 
-  /*
-   * ==========================================
-   * НАЗАД
-   * ==========================================
-   */
+  /* =========================================
+     ЗАПУСК
+  ========================================= */
 
-  backBtn.addEventListener(
-    "click",
-    () => {
-
-      window.location.href =
-        "index.html";
-
-    }
-  );
-
-
-  successBack.addEventListener(
-    "click",
-    () => {
-
-      sessionStorage.removeItem(
-        "appcore_cart"
-      );
-
-      window.location.href =
-        "index.html";
-
-    }
-  );
+  renderOrder();
 
 </script>
 
