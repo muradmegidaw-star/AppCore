@@ -1088,8 +1088,6 @@ const supabaseClient =
     </div>
 
 
-    <!-- ЗАКАЗ -->
-
     <div class="order-box">
 
       <div class="order-title">
@@ -1113,8 +1111,6 @@ const supabaseClient =
 
     </div>
 
-
-    <!-- ТЕЛЕФОН -->
 
     <div class="requisites-title">
       Контакт для заказа
@@ -1141,8 +1137,6 @@ const supabaseClient =
 
     </div>
 
-
-    <!-- РЕКВИЗИТЫ -->
 
     <div class="requisites-title">
       Реквизиты для оплаты
@@ -2291,14 +2285,18 @@ async function createOrder() {
 
   try {
 
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from("orders")
-      .insert([orderData])
-      .select()
-      .single();
+    /*
+      ВАЖНО:
+      Здесь специально НЕТ .select().single()
+
+      Anon-пользователю разрешён INSERT,
+      но SELECT для orders мы ему не открываем.
+    */
+
+    const { error } =
+      await supabaseClient
+        .from("orders")
+        .insert([orderData]);
 
 
     if (error) {
@@ -2309,7 +2307,8 @@ async function createOrder() {
       );
 
       showToast(
-        "Не удалось создать заказ"
+        "Ошибка Supabase: " +
+        (error.message || "неизвестная ошибка")
       );
 
       paymentDone.disabled = false;
@@ -2321,7 +2320,14 @@ async function createOrder() {
     }
 
 
-    currentOrder = data;
+    /*
+      Сохраняем данные заказа локально,
+      потому что Supabase не возвращает строку
+      через SELECT.
+    */
+
+    currentOrder =
+      orderData;
 
 
     closePaymentModal();
@@ -2329,15 +2335,21 @@ async function createOrder() {
 
     showToast(
       "Заказ " +
-      data.order_number +
+      orderNumber +
       " создан"
     );
 
 
     console.log(
       "AppCore order created:",
-      data
+      orderData
     );
+
+
+    paymentDone.disabled = false;
+
+    paymentDone.textContent =
+      "Я оплатил";
 
 
     return true;
