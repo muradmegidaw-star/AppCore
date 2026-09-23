@@ -85,11 +85,6 @@
       margin-top: 12px;
     }
 
-    .success {
-      color: #6ee7a0;
-      margin-top: 12px;
-    }
-
     .order {
       background: #0f141b;
       border: 1px solid #27303b;
@@ -124,15 +119,29 @@
       margin-bottom: 15px;
     }
 
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .paid-button {
+      background: #6ee7a0;
+      color: #07140c;
+      border: none;
+    }
+
+    .complete-button {
+      background: #fff;
+      color: #000;
+      border: none;
+    }
+
     .cancel-button {
       background: #ff5c5c;
       color: #fff;
       border: none;
-      margin-top: 10px;
-    }
-
-    .cancel-button:hover {
-      opacity: .85;
     }
 
     .top {
@@ -171,6 +180,10 @@
 
     @media (max-width: 650px) {
       .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
         grid-template-columns: 1fr;
       }
     }
@@ -506,7 +519,7 @@
 
 
   // =========================
-  // ЗАГРУЗКА
+  // ЗАГРУЗКА ЗАКАЗОВ
   // =========================
 
   async function loadOrders() {
@@ -628,7 +641,7 @@
 
 
   // =========================
-  // ЗАКАЗ
+  // ОТОБРАЖЕНИЕ ЗАКАЗА
   // =========================
 
   function renderOrder(order) {
@@ -781,15 +794,66 @@
 
 
       ${
+        order.status !== "paid" &&
+        order.status !== "completed" &&
         order.status !== "cancelled"
+
           ? `
+
+            <div class="actions">
+
+              <button
+                class="paid-button"
+                type="button"
+              >
+                💳 Оплата подтверждена
+              </button>
+
+            </div>
+
+          `
+
+          : ""
+      }
+
+
+      ${
+        order.status === "paid"
+
+          ? `
+
+            <div class="actions">
+
+              <button
+                class="complete-button"
+                type="button"
+              >
+                ✅ Заказ выполнен
+              </button>
+
+            </div>
+
+          `
+
+          : ""
+      }
+
+
+      ${
+        order.status !== "cancelled" &&
+        order.status !== "completed"
+
+          ? `
+
             <button
               class="cancel-button"
               type="button"
             >
               Отменить заказ
             </button>
+
           `
+
           : ""
       }
 
@@ -797,7 +861,7 @@
 
 
     // =========================
-    // ИЗМЕНЕНИЕ СТАТУСА
+    // SELECT СТАТУСА
     // =========================
 
     const select =
@@ -842,8 +906,10 @@
             error.message
           );
 
+
           select.value =
             oldStatus;
+
 
           return;
         }
@@ -857,6 +923,156 @@
 
       }
     );
+
+
+    // =========================
+    // ОПЛАТА ПОДТВЕРЖДЕНА
+    // =========================
+
+    const paidButton =
+      element.querySelector(
+        ".paid-button"
+      );
+
+
+    if (paidButton) {
+
+      paidButton.addEventListener(
+        "click",
+        async () => {
+
+          const confirmed =
+            confirm(
+              "Вы проверили перевод и подтверждаете оплату заказа " +
+              order.order_number +
+              "?"
+            );
+
+
+          if (!confirmed) {
+            return;
+          }
+
+
+          paidButton.disabled = true;
+
+          paidButton.textContent =
+            "Сохранение...";
+
+
+          const {
+            error
+          } =
+            await supabaseClient
+              .from("orders")
+              .update({
+                status: "paid"
+              })
+              .eq("id", order.id);
+
+
+          if (error) {
+
+            paidButton.disabled = false;
+
+            paidButton.textContent =
+              "💳 Оплата подтверждена";
+
+
+            alert(
+              "Не удалось подтвердить оплату:\n" +
+              error.message
+            );
+
+            return;
+          }
+
+
+          order.status =
+            "paid";
+
+
+          renderFilteredOrders();
+
+        }
+      );
+
+    }
+
+
+    // =========================
+    // ЗАКАЗ ВЫПОЛНЕН
+    // =========================
+
+    const completeButton =
+      element.querySelector(
+        ".complete-button"
+      );
+
+
+    if (completeButton) {
+
+      completeButton.addEventListener(
+        "click",
+        async () => {
+
+          const confirmed =
+            confirm(
+              "Отметить заказ " +
+              order.order_number +
+              " как выполненный?"
+            );
+
+
+          if (!confirmed) {
+            return;
+          }
+
+
+          completeButton.disabled = true;
+
+          completeButton.textContent =
+            "Сохранение...";
+
+
+          const {
+            error
+          } =
+            await supabaseClient
+              .from("orders")
+              .update({
+                status: "completed"
+              })
+              .eq("id", order.id);
+
+
+          if (error) {
+
+            completeButton.disabled = false;
+
+            completeButton.textContent =
+              "✅ Заказ выполнен";
+
+
+            alert(
+              "Не удалось завершить заказ:\n" +
+              error.message
+            );
+
+            return;
+          }
+
+
+          order.status =
+            "completed";
+
+
+          renderFilteredOrders();
+
+        }
+      );
+
+    }
 
 
     // =========================
