@@ -124,6 +124,17 @@
       margin-bottom: 15px;
     }
 
+    .cancel-button {
+      background: #ff5c5c;
+      color: #fff;
+      border: none;
+      margin-top: 10px;
+    }
+
+    .cancel-button:hover {
+      opacity: .85;
+    }
+
     .top {
       display: flex;
       justify-content: space-between;
@@ -152,6 +163,10 @@
       color: #aeb8c5;
       margin-top: 10px;
       font-size: 14px;
+    }
+
+    .cancelled {
+      opacity: .7;
     }
 
     @media (max-width: 650px) {
@@ -205,7 +220,6 @@
 
         <div>
           <h1>AppCore — Заказы</h1>
-
           <div id="userEmail"></div>
         </div>
 
@@ -231,7 +245,6 @@
       </button>
 
 
-      <!-- ПОИСК И ФИЛЬТР -->
       <div class="filters">
 
         <input
@@ -311,50 +324,38 @@
   const loginScreen =
     document.getElementById("loginScreen");
 
-
   const adminScreen =
     document.getElementById("adminScreen");
-
 
   const emailInput =
     document.getElementById("email");
 
-
   const passwordInput =
     document.getElementById("password");
-
 
   const loginButton =
     document.getElementById("loginButton");
 
-
   const logoutButton =
     document.getElementById("logoutButton");
-
 
   const refreshButton =
     document.getElementById("refreshButton");
 
-
   const loginMessage =
     document.getElementById("loginMessage");
-
 
   const ordersContainer =
     document.getElementById("orders");
 
-
   const userEmail =
     document.getElementById("userEmail");
-
 
   const searchInput =
     document.getElementById("searchInput");
 
-
   const statusFilter =
     document.getElementById("statusFilter");
-
 
   const ordersCount =
     document.getElementById("ordersCount");
@@ -376,14 +377,12 @@
 
 
       loginMessage.className = "";
-
       loginMessage.textContent = "";
 
 
       if (!email || !password) {
 
-        loginMessage.className =
-          "error";
+        loginMessage.className = "error";
 
         loginMessage.textContent =
           "Введите email и пароль.";
@@ -416,8 +415,7 @@
 
       if (error) {
 
-        loginMessage.className =
-          "error";
+        loginMessage.className = "error";
 
         loginMessage.textContent =
           "Ошибка входа: " +
@@ -450,7 +448,7 @@
 
 
   // =========================
-  // ПРОВЕРКА СЕССИИ
+  // СЕССИЯ
   // =========================
 
   async function checkSession() {
@@ -481,13 +479,9 @@
 
   function showLogin() {
 
-    loginScreen.classList.remove(
-      "hidden"
-    );
+    loginScreen.classList.remove("hidden");
 
-    adminScreen.classList.add(
-      "hidden"
-    );
+    adminScreen.classList.add("hidden");
 
     emailInput.value = "";
 
@@ -498,19 +492,13 @@
 
   function showAdmin(user) {
 
-    loginScreen.classList.add(
-      "hidden"
-    );
+    loginScreen.classList.add("hidden");
 
-    adminScreen.classList.remove(
-      "hidden"
-    );
-
+    adminScreen.classList.remove("hidden");
 
     userEmail.textContent =
       "Вы вошли как: " +
       user.email;
-
 
     loadOrders();
 
@@ -518,14 +506,13 @@
 
 
   // =========================
-  // ЗАГРУЗКА ЗАКАЗОВ
+  // ЗАГРУЗКА
   // =========================
 
   async function loadOrders() {
 
     ordersContainer.innerHTML =
       '<div class="loading">Загрузка заказов...</div>';
-
 
     ordersCount.textContent = "";
 
@@ -641,7 +628,7 @@
 
 
   // =========================
-  // ОТОБРАЖЕНИЕ ЗАКАЗА
+  // ЗАКАЗ
   // =========================
 
   function renderOrder(order) {
@@ -650,8 +637,12 @@
       document.createElement("div");
 
 
-    element.className =
-      "order";
+    element.className = "order";
+
+
+    if (order.status === "cancelled") {
+      element.classList.add("cancelled");
+    }
 
 
     const appsText =
@@ -662,9 +653,7 @@
               if (
                 typeof app === "string"
               ) {
-
                 return app;
-
               }
 
 
@@ -672,9 +661,7 @@
                 app &&
                 app.name
               ) {
-
                 return app.name;
-
               }
 
 
@@ -692,9 +679,7 @@
       order.created_at
         ? new Date(
             order.created_at
-          ).toLocaleString(
-            "ru-RU"
-          )
+          ).toLocaleString("ru-RU")
         : "—";
 
 
@@ -709,57 +694,37 @@
 
 
       <div class="order-row">
-
         <strong>Телефон:</strong>
-
         ${escapeHtml(
           order.client_phone || "—"
         )}
-
       </div>
 
 
       <div class="order-row">
-
         <strong>Приложения:</strong>
 
         <div class="apps">
-
           ${escapeHtml(appsText)}
-
         </div>
-
       </div>
 
 
       <div class="order-row">
-
         <strong>Сумма:</strong>
-
-        ${Number(
-          order.total || 0
-        )} ₽
-
+        ${Number(order.total || 0)} ₽
       </div>
 
 
       <div class="order-row">
-
         <strong>Скидка:</strong>
-
-        ${Number(
-          order.discount || 0
-        )} ₽
-
+        ${Number(order.discount || 0)} ₽
       </div>
 
 
       <div class="order-row">
-
         <strong>Дата:</strong>
-
         ${escapeHtml(date)}
-
       </div>
 
 
@@ -768,8 +733,7 @@
         <option
           value="awaiting_review"
           ${
-            order.status ===
-            "awaiting_review"
+            order.status === "awaiting_review"
               ? "selected"
               : ""
           }
@@ -815,8 +779,26 @@
 
       </select>
 
+
+      ${
+        order.status !== "cancelled"
+          ? `
+            <button
+              class="cancel-button"
+              type="button"
+            >
+              Отменить заказ
+            </button>
+          `
+          : ""
+      }
+
     `;
 
+
+    // =========================
+    // ИЗМЕНЕНИЕ СТАТУСА
+    // =========================
 
     const select =
       element.querySelector(
@@ -860,10 +842,8 @@
             error.message
           );
 
-
           select.value =
             oldStatus;
-
 
           return;
         }
@@ -877,6 +857,81 @@
 
       }
     );
+
+
+    // =========================
+    // ОТМЕНА
+    // =========================
+
+    const cancelButton =
+      element.querySelector(
+        ".cancel-button"
+      );
+
+
+    if (cancelButton) {
+
+      cancelButton.addEventListener(
+        "click",
+        async () => {
+
+          const confirmed =
+            confirm(
+              "Отменить заказ " +
+              order.order_number +
+              "?"
+            );
+
+
+          if (!confirmed) {
+            return;
+          }
+
+
+          cancelButton.disabled = true;
+
+          cancelButton.textContent =
+            "Отмена...";
+
+
+          const {
+            error
+          } =
+            await supabaseClient
+              .from("orders")
+              .update({
+                status: "cancelled"
+              })
+              .eq("id", order.id);
+
+
+          if (error) {
+
+            cancelButton.disabled = false;
+
+            cancelButton.textContent =
+              "Отменить заказ";
+
+
+            alert(
+              "Не удалось отменить заказ:\n" +
+              error.message
+            );
+
+            return;
+          }
+
+
+          order.status =
+            "cancelled";
+
+
+          renderFilteredOrders();
+
+        }
+      );
+
+    }
 
 
     ordersContainer.appendChild(
@@ -897,7 +952,7 @@
 
 
   // =========================
-  // ФИЛЬТР СТАТУСА
+  // ФИЛЬТР
   // =========================
 
   statusFilter.addEventListener(
@@ -922,29 +977,12 @@
 
   function escapeHtml(value) {
 
-    return String(
-      value ?? ""
-    )
-      .replace(
-        /&/g,
-        "&amp;"
-      )
-      .replace(
-        /</g,
-        "&lt;"
-      )
-      .replace(
-        />/g,
-        "&gt;"
-      )
-      .replace(
-        /"/g,
-        "&quot;"
-      )
-      .replace(
-        /'/g,
-        "&#039;"
-      );
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
 
   }
 
