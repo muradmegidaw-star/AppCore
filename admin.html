@@ -65,6 +65,11 @@
       opacity: .9;
     }
 
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
     .logout {
       width: auto;
       float: right;
@@ -130,6 +135,30 @@
     .loading {
       color: #aeb8c5;
     }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .filters input,
+    .filters select {
+      margin-top: 0;
+    }
+
+    .orders-count {
+      color: #aeb8c5;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 650px) {
+      .filters {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
@@ -139,7 +168,9 @@
 
   <!-- LOGIN -->
   <div id="loginScreen" class="card">
+
     <h1>AppCore</h1>
+
     <h2>Вход в админ-панель</h2>
 
     <input
@@ -156,9 +187,12 @@
       autocomplete="current-password"
     >
 
-    <button id="loginButton">Войти</button>
+    <button id="loginButton">
+      Войти
+    </button>
 
     <div id="loginMessage"></div>
+
   </div>
 
 
@@ -166,26 +200,87 @@
   <div id="adminScreen" class="hidden">
 
     <div class="card">
+
       <div class="top">
+
         <div>
           <h1>AppCore — Заказы</h1>
+
           <div id="userEmail"></div>
         </div>
 
-        <button id="logoutButton" class="logout">
+        <button
+          id="logoutButton"
+          class="logout"
+        >
           Выйти
         </button>
+
       </div>
+
     </div>
 
+
     <div class="card">
-      <button id="refreshButton" class="refresh">
+
+      <button
+        id="refreshButton"
+        class="refresh"
+      >
         Обновить заказы
       </button>
 
-      <div id="orders">
-        <div class="loading">Загрузка...</div>
+
+      <!-- ПОИСК И ФИЛЬТР -->
+      <div class="filters">
+
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Поиск по номеру или телефону"
+        >
+
+        <select id="statusFilter">
+
+          <option value="all">
+            Все статусы
+          </option>
+
+          <option value="awaiting_review">
+            Ожидает проверки
+          </option>
+
+          <option value="paid">
+            Оплачен
+          </option>
+
+          <option value="completed">
+            Выполнен
+          </option>
+
+          <option value="cancelled">
+            Отменён
+          </option>
+
+        </select>
+
       </div>
+
+
+      <div
+        id="ordersCount"
+        class="orders-count"
+      ></div>
+
+
+      <div id="orders">
+
+        <div class="loading">
+          Загрузка...
+        </div>
+
+      </div>
+
     </div>
 
   </div>
@@ -194,11 +289,14 @@
 
 
 <script>
+
   const SUPABASE_URL =
     "https://dkgipfotfjntlhabakns.supabase.co";
 
+
   const SUPABASE_KEY =
     "sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
+
 
   const supabaseClient =
     window.supabase.createClient(
@@ -207,286 +305,610 @@
     );
 
 
+  let allOrders = [];
+
+
   const loginScreen =
     document.getElementById("loginScreen");
+
 
   const adminScreen =
     document.getElementById("adminScreen");
 
+
   const emailInput =
     document.getElementById("email");
+
 
   const passwordInput =
     document.getElementById("password");
 
+
   const loginButton =
     document.getElementById("loginButton");
+
 
   const logoutButton =
     document.getElementById("logoutButton");
 
+
   const refreshButton =
     document.getElementById("refreshButton");
+
 
   const loginMessage =
     document.getElementById("loginMessage");
 
+
   const ordersContainer =
     document.getElementById("orders");
+
 
   const userEmail =
     document.getElementById("userEmail");
 
 
-  // Вход
-  loginButton.addEventListener("click", async () => {
+  const searchInput =
+    document.getElementById("searchInput");
 
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
 
-    loginMessage.className = "";
-    loginMessage.textContent = "";
+  const statusFilter =
+    document.getElementById("statusFilter");
 
-    if (!email || !password) {
-      loginMessage.className = "error";
-      loginMessage.textContent =
-        "Введите email и пароль.";
-      return;
+
+  const ordersCount =
+    document.getElementById("ordersCount");
+
+
+  // =========================
+  // ВХОД
+  // =========================
+
+  loginButton.addEventListener(
+    "click",
+    async () => {
+
+      const email =
+        emailInput.value.trim();
+
+      const password =
+        passwordInput.value;
+
+
+      loginMessage.className = "";
+
+      loginMessage.textContent = "";
+
+
+      if (!email || !password) {
+
+        loginMessage.className =
+          "error";
+
+        loginMessage.textContent =
+          "Введите email и пароль.";
+
+        return;
+      }
+
+
+      loginButton.disabled = true;
+
+      loginButton.textContent =
+        "Вход...";
+
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
+
+
+      loginButton.disabled = false;
+
+      loginButton.textContent =
+        "Войти";
+
+
+      if (error) {
+
+        loginMessage.className =
+          "error";
+
+        loginMessage.textContent =
+          "Ошибка входа: " +
+          error.message;
+
+        return;
+      }
+
+
+      showAdmin(data.user);
+
     }
+  );
 
-    loginButton.disabled = true;
-    loginButton.textContent = "Вход...";
 
-    const { data, error } =
-      await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-      });
+  // =========================
+  // ВЫХОД
+  // =========================
 
-    loginButton.disabled = false;
-    loginButton.textContent = "Войти";
+  logoutButton.addEventListener(
+    "click",
+    async () => {
 
-    if (error) {
-      loginMessage.className = "error";
-      loginMessage.textContent =
-        "Ошибка входа: " + error.message;
-      return;
+      await supabaseClient.auth.signOut();
+
+      showLogin();
+
     }
-
-    showAdmin(data.user);
-  });
+  );
 
 
-  // Выход
-  logoutButton.addEventListener("click", async () => {
-    await supabaseClient.auth.signOut();
-    showLogin();
-  });
+  // =========================
+  // ПРОВЕРКА СЕССИИ
+  // =========================
 
-
-  // Проверяем существующую сессию
   async function checkSession() {
 
     const {
-      data: { session }
-    } = await supabaseClient.auth.getSession();
+      data: {
+        session
+      }
+    } =
+      await supabaseClient.auth.getSession();
 
-    if (session && session.user) {
+
+    if (
+      session &&
+      session.user
+    ) {
+
       showAdmin(session.user);
+
     } else {
+
       showLogin();
+
     }
+
   }
 
 
   function showLogin() {
-    loginScreen.classList.remove("hidden");
-    adminScreen.classList.add("hidden");
+
+    loginScreen.classList.remove(
+      "hidden"
+    );
+
+    adminScreen.classList.add(
+      "hidden"
+    );
 
     emailInput.value = "";
+
     passwordInput.value = "";
+
   }
 
 
   function showAdmin(user) {
 
-    loginScreen.classList.add("hidden");
-    adminScreen.classList.remove("hidden");
+    loginScreen.classList.add(
+      "hidden"
+    );
+
+    adminScreen.classList.remove(
+      "hidden"
+    );
+
 
     userEmail.textContent =
-      "Вы вошли как: " + user.email;
+      "Вы вошли как: " +
+      user.email;
+
 
     loadOrders();
+
   }
 
 
-  // Загрузка заказов
+  // =========================
+  // ЗАГРУЗКА ЗАКАЗОВ
+  // =========================
+
   async function loadOrders() {
 
     ordersContainer.innerHTML =
       '<div class="loading">Загрузка заказов...</div>';
 
+
+    ordersCount.textContent = "";
+
+
     const {
       data,
       error
-    } = await supabaseClient
-      .from("orders")
-      .select("*")
-      .order("created_at", {
-        ascending: false
-      });
+    } =
+      await supabaseClient
+        .from("orders")
+        .select("*")
+        .order("created_at", {
+          ascending: false
+        });
+
 
     if (error) {
+
       ordersContainer.innerHTML =
-        '<div class="error">Ошибка загрузки: '
-        + escapeHtml(error.message)
-        + '</div>';
+        '<div class="error">Ошибка загрузки: ' +
+        escapeHtml(error.message) +
+        '</div>';
 
       return;
     }
 
-    if (!data || data.length === 0) {
-      ordersContainer.innerHTML =
-        '<div class="loading">Заказов пока нет.</div>';
 
-      return;
-    }
+    allOrders =
+      data || [];
+
+
+    renderFilteredOrders();
+
+  }
+
+
+  // =========================
+  // ФИЛЬТРАЦИЯ
+  // =========================
+
+  function renderFilteredOrders() {
+
+    const search =
+      searchInput.value
+        .trim()
+        .toLowerCase();
+
+
+    const selectedStatus =
+      statusFilter.value;
+
+
+    const filtered =
+      allOrders.filter(order => {
+
+        const orderNumber =
+          String(
+            order.order_number || ""
+          ).toLowerCase();
+
+
+        const phone =
+          String(
+            order.client_phone || ""
+          ).toLowerCase();
+
+
+        const matchesSearch =
+          !search ||
+          orderNumber.includes(search) ||
+          phone.includes(search);
+
+
+        const matchesStatus =
+          selectedStatus === "all" ||
+          order.status === selectedStatus;
+
+
+        return (
+          matchesSearch &&
+          matchesStatus
+        );
+
+      });
+
+
+    ordersCount.textContent =
+      "Найдено заказов: " +
+      filtered.length;
+
 
     ordersContainer.innerHTML = "";
 
-    data.forEach(order => {
+
+    if (filtered.length === 0) {
+
+      ordersContainer.innerHTML =
+        '<div class="loading">' +
+        'Заказов по заданным условиям нет.' +
+        '</div>';
+
+      return;
+    }
+
+
+    filtered.forEach(order => {
+
       renderOrder(order);
+
     });
+
   }
 
+
+  // =========================
+  // ОТОБРАЖЕНИЕ ЗАКАЗА
+  // =========================
 
   function renderOrder(order) {
 
     const element =
       document.createElement("div");
 
-    element.className = "order";
+
+    element.className =
+      "order";
+
 
     const appsText =
       Array.isArray(order.apps)
-        ? order.apps.map(app => {
+        ? order.apps
+            .map(app => {
 
-            if (typeof app === "string") {
-              return app;
-            }
+              if (
+                typeof app === "string"
+              ) {
 
-            if (app && app.name) {
-              return app.name;
-            }
+                return app;
 
-            return JSON.stringify(app);
+              }
 
-          }).join(", ")
-        : JSON.stringify(order.apps || []);
+
+              if (
+                app &&
+                app.name
+              ) {
+
+                return app.name;
+
+              }
+
+
+              return JSON.stringify(app);
+
+            })
+            .join(", ")
+
+        : JSON.stringify(
+            order.apps || []
+          );
 
 
     const date =
       order.created_at
-        ? new Date(order.created_at).toLocaleString("ru-RU")
+        ? new Date(
+            order.created_at
+          ).toLocaleString(
+            "ru-RU"
+          )
         : "—";
 
 
     element.innerHTML = `
+
       <div class="order-number">
-        Заказ: ${escapeHtml(order.order_number || "—")}
+        Заказ:
+        ${escapeHtml(
+          order.order_number || "—"
+        )}
       </div>
 
+
       <div class="order-row">
+
         <strong>Телефон:</strong>
-        ${escapeHtml(order.client_phone || "—")}
+
+        ${escapeHtml(
+          order.client_phone || "—"
+        )}
+
       </div>
 
+
       <div class="order-row">
+
         <strong>Приложения:</strong>
-        <div class="apps">${escapeHtml(appsText)}</div>
+
+        <div class="apps">
+
+          ${escapeHtml(appsText)}
+
+        </div>
+
       </div>
 
+
       <div class="order-row">
+
         <strong>Сумма:</strong>
-        ${Number(order.total || 0)} ₽
+
+        ${Number(
+          order.total || 0
+        )} ₽
+
       </div>
 
+
       <div class="order-row">
+
         <strong>Скидка:</strong>
-        ${Number(order.discount || 0)} ₽
+
+        ${Number(
+          order.discount || 0
+        )} ₽
+
       </div>
 
+
       <div class="order-row">
+
         <strong>Дата:</strong>
+
         ${escapeHtml(date)}
+
       </div>
+
 
       <select class="status-select">
-        <option value="awaiting_review"
-          ${order.status === "awaiting_review" ? "selected" : ""}>
+
+        <option
+          value="awaiting_review"
+          ${
+            order.status ===
+            "awaiting_review"
+              ? "selected"
+              : ""
+          }
+        >
           Ожидает проверки
         </option>
 
-        <option value="paid"
-          ${order.status === "paid" ? "selected" : ""}>
+
+        <option
+          value="paid"
+          ${
+            order.status === "paid"
+              ? "selected"
+              : ""
+          }
+        >
           Оплачен
         </option>
 
-        <option value="completed"
-          ${order.status === "completed" ? "selected" : ""}>
+
+        <option
+          value="completed"
+          ${
+            order.status === "completed"
+              ? "selected"
+              : ""
+          }
+        >
           Выполнен
         </option>
 
-        <option value="cancelled"
-          ${order.status === "cancelled" ? "selected" : ""}>
+
+        <option
+          value="cancelled"
+          ${
+            order.status === "cancelled"
+              ? "selected"
+              : ""
+          }
+        >
           Отменён
         </option>
+
       </select>
+
     `;
 
 
     const select =
-      element.querySelector(".status-select");
+      element.querySelector(
+        ".status-select"
+      );
 
 
-    select.addEventListener("change", async () => {
+    select.addEventListener(
+      "change",
+      async () => {
 
-      const newStatus = select.value;
-
-      select.disabled = true;
-
-      const {
-        error
-      } = await supabaseClient
-        .from("orders")
-        .update({
-          status: newStatus
-        })
-        .eq("id", order.id);
+        const newStatus =
+          select.value;
 
 
-      select.disabled = false;
-
-      if (error) {
-
-        alert(
-          "Не удалось изменить статус:\n"
-          + error.message
-        );
-
-        select.value =
+        const oldStatus =
           order.status;
 
-        return;
+
+        select.disabled = true;
+
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("orders")
+            .update({
+              status: newStatus
+            })
+            .eq("id", order.id);
+
+
+        select.disabled = false;
+
+
+        if (error) {
+
+          alert(
+            "Не удалось изменить статус:\n" +
+            error.message
+          );
+
+
+          select.value =
+            oldStatus;
+
+
+          return;
+        }
+
+
+        order.status =
+          newStatus;
+
+
+        renderFilteredOrders();
+
       }
-
-      order.status = newStatus;
-    });
+    );
 
 
-    ordersContainer.appendChild(element);
+    ordersContainer.appendChild(
+      element
+    );
+
   }
 
+
+  // =========================
+  // ПОИСК
+  // =========================
+
+  searchInput.addEventListener(
+    "input",
+    renderFilteredOrders
+  );
+
+
+  // =========================
+  // ФИЛЬТР СТАТУСА
+  // =========================
+
+  statusFilter.addEventListener(
+    "change",
+    renderFilteredOrders
+  );
+
+
+  // =========================
+  // ОБНОВИТЬ
+  // =========================
 
   refreshButton.addEventListener(
     "click",
@@ -494,16 +916,42 @@
   );
 
 
+  // =========================
+  // ЗАЩИТА HTML
+  // =========================
+
   function escapeHtml(value) {
 
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+    return String(
+      value ?? ""
+    )
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
   }
 
+
+  // =========================
+  // ЗАПУСК
+  // =========================
 
   checkSession();
 
