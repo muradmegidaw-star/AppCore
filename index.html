@@ -1,1384 +1,1190 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#08090d">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>AppCore — приложения</title>
-<style>
-:root{
-  --bg:#08090d;
-  --card:#12141b;
-  --card2:#171922;
-  --text:#fff;
-  --muted:#8d93a3;
-  --line:rgba(255,255,255,.08);
-  --accent:#7657ff;
-  --green:#48df88;
-}
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-html{
-  background:var(--bg);
-}
-body{
-  margin:0;
-  min-height:100vh;
-  padding-bottom:150px;
-  background:
-    radial-gradient(circle at 15% 0%,rgba(112,80,255,.14),transparent 32%),
-    radial-gradient(circle at 100% 15%,rgba(0,190,255,.07),transparent 28%),
-    var(--bg);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
-}
-body.no-scroll{
-  overflow:hidden;
-}
-button,
-input{
-  font:inherit;
-}
-button{
-  -webkit-appearance:none;
-}
-.container{
-  width:100%;
-  max-width:920px;
-  margin:0 auto;
-  padding:18px 15px 30px;
-}
-/* HEADER */
-.header{
-  margin-bottom:18px;
-}
-.top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-.brand{
-  display:flex;
-  align-items:center;
-  gap:11px;
-}
-.brand-logo{
-  width:43px;
-  height:43px;
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(135deg,#795aff,#4a31d8);
-  box-shadow:0 8px 28px rgba(93,65,255,.28);
-  font-size:20px;
-  font-weight:900;
-}
-.brand-title{
-  font-size:20px;
-  font-weight:800;
-  letter-spacing:-.5px;
-}
-.online{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  padding:7px 11px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.035);
-  border-radius:20px;
-  color:#b5bac7;
-  font-size:12px;
-}
-.online-dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#37db7c;
-  box-shadow:0 0 10px rgba(55,219,124,.7);
-}
-h1{
-  margin:27px 0 7px;
-  font-size:clamp(30px,8vw,44px);
-  line-height:1;
-  letter-spacing:-1.7px;
-}
-.subtitle{
-  max-width:650px;
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.5;
-}
-/* DISCOUNT */
-.discount-box{
-  margin-top:18px;
-  padding:15px;
-  border-radius:18px;
-  background:linear-gradient(
-    135deg,
-    rgba(118,83,255,.18),
-    rgba(0,180,255,.08)
-  );
-  border:1px solid rgba(135,109,255,.22);
-  overflow:hidden;
-  position:relative;
-}
-.discount-box:after{
-  content:"";
-  position:absolute;
-  width:130px;
-  height:130px;
-  right:-45px;
-  top:-65px;
-  border-radius:50%;
-  background:rgba(110,80,255,.16);
-}
-.discount-title,
-.discount-text{
-  position:relative;
-  z-index:1;
-}
-.discount-title{
-  font-size:14px;
-  font-weight:800;
-}
-.discount-text{
-  margin-top:5px;
-  color:#aeb4c4;
-  font-size:12px;
-  line-height:1.45;
-}
-.discount-highlight{
-  color:#b69cff;
-  font-weight:800;
-}
-/* SEARCH */
-.search-wrap{
-  margin-top:17px;
-  position:relative;
-}
-.search{
-  width:100%;
-  height:49px;
-  border:1px solid var(--line);
-  border-radius:15px;
-  background:rgba(18,20,27,.94);
-  color:#fff;
-  outline:none;
-  padding:0 44px;
-  font-size:14px;
-}
-.search:focus{
-  border-color:rgba(135,109,255,.4);
-  box-shadow:0 0 0 3px rgba(117,83,255,.07);
-}
-.search::placeholder{
-  color:#656b7a;
-}
-.search-icon{
-  position:absolute;
-  left:15px;
-  top:50%;
-  transform:translateY(-50%);
-  color:#858b99;
-  font-size:19px;
-}
-.clear{
-  display:none;
-  position:absolute;
-  right:8px;
-  top:7px;
-  width:35px;
-  height:35px;
-  border:0;
-  border-radius:10px;
-  background:rgba(255,255,255,.06);
-  color:#aeb4c0;
-}
-/* CATEGORIES */
-.categories{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  scrollbar-width:none;
-  padding:13px 1px 3px;
-}
-.categories::-webkit-scrollbar{
-  display:none;
-}
-.category{
-  flex:0 0 auto;
-  height:36px;
-  padding:0 14px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  background:rgba(255,255,255,.035);
-  color:#9298a7;
-  cursor:pointer;
-  font-size:12px;
-  font-weight:650;
-}
-.category.active{
-  color:#fff;
-  border-color:rgba(126,98,255,.42);
-  background:linear-gradient(
-    135deg,
-    rgba(110,77,255,.28),
-    rgba(73,52,170,.2)
-  );
-}
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:10px;
-  margin-top:16px;
-}
-/* APP CARD */
-.app-card{
-  min-height:165px;
-  padding:14px;
-  position:relative;
-  overflow:hidden;
-  cursor:pointer;
-  border-radius:20px;
-  border:1px solid rgba(255,255,255,.07);
-  background:#12141a;
-  transition:.18s ease;
-}
-.app-card:before{
-  content:"";
-  position:absolute;
-  width:110px;
-  height:110px;
-  right:-50px;
-  top:-50px;
-  border-radius:50%;
-  background:var(--app-color);
-  opacity:.13;
-  filter:blur(3px);
-}
-.app-card:active{
-  transform:scale(.975);
-}
-.app-card.selected{
-  border-color:var(--app-color);
-  box-shadow:
-    0 0 0 1px var(--app-color),
-    0 12px 35px rgba(0,0,0,.25);
-}
-.app-icon{
-  position:relative;
-  z-index:1;
-  width:50px;
-  height:50px;
-  border-radius:15px;
-  background:var(--app-gradient);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  box-shadow:0 8px 20px rgba(0,0,0,.22);
-}
-.app-icon img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-.fallback{
-  color:#fff;
-  font-size:16px;
-  font-weight:900;
-}
-.check{
-  position:absolute;
-  z-index:3;
-  right:11px;
-  top:11px;
-  width:25px;
-  height:25px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(0,0,0,.22);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:transparent;
-  font-size:13px;
-  font-weight:900;
-}
-.app-card.selected .check{
-  color:#111;
-  background:#fff;
-  border-color:#fff;
-}
-.app-name{
-  position:relative;
-  z-index:1;
-  margin-top:13px;
-  padding-right:22px;
-  font-size:14px;
-  font-weight:800;
-  line-height:1.25;
-}
-.app-type{
-  position:relative;
-  z-index:1;
-  margin-top:5px;
-  color:#777e8c;
-  font-size:11px;
-}
-/* EMPTY */
-.empty{
-  display:none;
-  padding:65px 20px;
-  text-align:center;
-}
-.empty.show{
-  display:block;
-}
-.empty-icon{
-  width:52px;
-  height:52px;
-  margin:0 auto 13px;
-  border-radius:17px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(255,255,255,.05);
-  color:#737a89;
-  font-size:22px;
-}
-.empty-title{
-  font-size:16px;
-  font-weight:800;
-}
-.empty-text{
-  margin-top:6px;
-  color:#707785;
-  font-size:13px;
-}
-/* BOTTOM */
-.bottom{
-  position:fixed;
-  z-index:20;
-  left:0;
-  right:0;
-  bottom:0;
-  padding:10px 14px calc(11px + env(safe-area-inset-bottom));
-  background:linear-gradient(
-    to top,
-    rgba(8,9,13,1) 55%,
-    rgba(8,9,13,.96) 76%,
-    rgba(8,9,13,0)
-  );
-}
-.bottom-inner{
-  width:100%;
-  max-width:920px;
-  margin:0 auto;
-}
-.price-panel{
-  display:none;
-  margin-bottom:9px;
-  padding:12px 14px;
-  border-radius:17px;
-  background:rgba(20,22,29,.97);
-  border:1px solid rgba(255,255,255,.08);
-  backdrop-filter:blur(20px);
-}
-.price-panel.visible{
-  display:block;
-}
-.price-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-}
-.price-label{
-  color:#858c9a;
-  font-size:12px;
-}
-.price-value{
-  color:#fff;
-  font-size:13px;
-  font-weight:700;
-}
-.total-row{
-  margin-top:7px;
-  padding-top:8px;
-  border-top:1px solid rgba(255,255,255,.06);
-}
-.total-row .price-label{
-  color:#fff;
-  font-weight:700;
-}
-.total-row .price-value{
-  font-size:17px;
-}
-.sale{
-  color:#55e18b !important;
-}
-.continue{
-  width:100%;
-  height:52px;
-  border:0;
-  border-radius:16px;
-  background:linear-gradient(135deg,#fff,#e9e9ee);
-  color:#090a0e;
-  font-size:15px;
-  font-weight:850;
-  cursor:pointer;
-  box-shadow:0 8px 25px rgba(0,0,0,.22);
-  transition:.18s;
-}
-.continue:disabled{
-  opacity:.38;
-  box-shadow:none;
-}
-.continue:not(:disabled):active{
-  transform:scale(.985);
-}
-/* MODAL */
-.payment-modal{
-  position:fixed;
-  z-index:100;
-  inset:0;
-  display:none;
-  align-items:flex-end;
-  justify-content:center;
-  padding:15px;
-  background:rgba(0,0,0,.72);
-  backdrop-filter:blur(10px);
-}
-.payment-modal.show{
-  display:flex;
-}
-.payment-card{
-  width:100%;
-  max-width:520px;
-  max-height:90vh;
-  overflow-y:auto;
-  position:relative;
-  padding:22px;
-  border-radius:24px;
-  background:#15171f;
-  border:1px solid rgba(255,255,255,.1);
-  box-shadow:0 20px 70px rgba(0,0,0,.5);
-  animation:paymentUp .22s ease;
-}
-@keyframes paymentUp{
-  from{
-    opacity:0;
-    transform:translateY(30px);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
-}
-.payment-close{
-  position:absolute;
-  right:14px;
-  top:14px;
-  width:34px;
-  height:34px;
-  border:0;
-  border-radius:10px;
-  background:rgba(255,255,255,.07);
-  color:#aaa;
-  font-size:22px;
-  cursor:pointer;
-}
-.payment-title{
-  font-size:21px;
-  font-weight:850;
-  padding-right:40px;
-}
-.payment-subtitle{
-  margin-top:6px;
-  color:#858c9a;
-  font-size:13px;
-}
-.payment-subtitle strong{
-  color:#fff;
-}
-.payment-total{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  margin-top:18px;
-  padding:15px;
-  border-radius:16px;
-  background:rgba(255,255,255,.05);
-}
-.payment-total span{
-  color:#8d93a3;
-  font-size:13px;
-}
-.payment-total strong{
-  font-size:21px;
-}
-.payment-details{
-  margin-top:12px;
-  padding:4px 14px;
-  border-radius:16px;
-  background:rgba(255,255,255,.035);
-}
-.payment-detail{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  min-height:53px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-.payment-detail:last-child{
-  border-bottom:0;
-}
-.payment-detail span{
-  color:#777e8c;
-  font-size:12px;
-}
-.payment-detail strong{
-  color:#fff;
-  font-size:13px;
-  text-align:right;
-  word-break:break-word;
-}
-.copy-payment{
-  width:100%;
-  height:49px;
-  margin-top:14px;
-  border:0;
-  border-radius:14px;
-  background:#fff;
-  color:#090a0e;
-  font-size:14px;
-  font-weight:800;
-  cursor:pointer;
-}
-.paid-button{
-  width:100%;
-  min-height:50px;
-  margin-top:10px;
-  border:1px solid rgba(255,255,255,.09);
-  border-radius:14px;
-  background:#242731;
-  color:#fff;
-  font-size:14px;
-  font-weight:750;
-  cursor:pointer;
-}
-.payment-note{
-  margin-top:12px;
-  color:#6f7685;
-  font-size:11px;
-  line-height:1.45;
-  text-align:center;
-}
-/* SUCCESS */
-.success{
-  display:none;
-  text-align:center;
-  padding:15px 4px 4px;
-}
-.success.show{
-  display:block;
-}
-.success-icon{
-  width:62px;
-  height:62px;
-  margin:0 auto 15px;
-  border-radius:20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(72,223,136,.12);
-  color:var(--green);
-  font-size:28px;
-}
-.success-title{
-  font-size:20px;
-  font-weight:850;
-}
-.success-text{
-  margin-top:8px;
-  color:#858c9a;
-  font-size:13px;
-  line-height:1.5;
-}
-.instruction{
-  margin-top:16px;
-  padding:15px;
-  text-align:left;
-  border-radius:16px;
-  background:rgba(255,255,255,.04);
-}
-.instruction strong{
-  font-size:13px;
-}
-.instruction p{
-  margin:7px 0 0;
-  color:#858c9a;
-  font-size:12px;
-  line-height:1.5;
-}
-/* TOAST */
-.toast{
-  position:fixed;
-  z-index:200;
-  left:50%;
-  bottom:155px;
-  transform:translate(-50%,20px);
-  max-width:calc(100% - 30px);
-  padding:11px 15px;
-  border-radius:13px;
-  background:#242731;
-  border:1px solid rgba(255,255,255,.09);
-  color:#fff;
-  font-size:13px;
-  opacity:0;
-  pointer-events:none;
-  transition:.22s;
-  white-space:nowrap;
-}
-.toast.show{
-  opacity:1;
-  transform:translate(-50%,0);
-}
-@media(max-width:380px){
-  .grid{
-    gap:8px;
-  }
-  .app-card{
-    padding:12px;
-    min-height:155px;
-  }
-  .app-name{
-    font-size:13px;
-  }
-  .online{
-    padding:6px 8px;
-  }
-}
-@media(min-width:700px){
-  .grid{
-    grid-template-columns:repeat(3,minmax(0,1fr));
-  }
-}
-</style>
-</head>
-<body>
-<div class="container">
-  <header class="header">
-    <div class="top">
-      <div class="brand">
-        <div class="brand-logo">A</div>
-        <div class="brand-title">AppCore</div>
-      </div>
-      <div class="online">
-        <span class="online-dot"></span>
-        Онлайн
-      </div>
-    </div>
-    <h1>Приложения<br>для iPhone</h1>
-    <div class="subtitle">
-      Выберите нужные приложения. После оплаты вы получите дальнейшую инструкцию.
-    </div>
-    <div class="discount-box">
-      <div class="discount-title">Специальное предложение</div>
-      <div class="discount-text">
-        Первые 3 приложения — по
-        <span class="discount-highlight">500 ₽</span>.
-        При выборе 4 приложений — четвёртое
-        <span class="discount-highlight">бесплатно</span>.
-      </div>
-    </div>
-    <div class="search-wrap">
-      <span class="search-icon">⌕</span>
-      <input
-        id="search"
-        class="search"
-        type="search"
-        autocomplete="off"
-        placeholder="Поиск приложения..."
-      >
-      <button id="clearSearch" class="clear" type="button">×</button>
-    </div>
-    <div id="categories" class="categories"></div>
-  </header>
-  <main>
-    <div id="grid" class="grid"></div>
-    <div id="empty" class="empty">
-      <div class="empty-icon">⌕</div>
-      <div class="empty-title">
-        Ничего не найдено
-      </div>
-      <div class="empty-text">
-        Попробуйте изменить запрос.
-      </div>
-    </div>
-  </main>
-</div>
-<!-- BOTTOM -->
-<div class="bottom">
-  <div class="bottom-inner">
-    <div id="pricePanel" class="price-panel">
-      <div class="price-row">
-        <span class="price-label">Выбрано</span>
-        <span id="countText" class="price-value">0</span>
-      </div>
-      <div class="price-row">
-        <span class="price-label">Стоимость</span>
-        <span id="basePrice" class="price-value">0 ₽</span>
-      </div>
-      <div id="discountRow" class="price-row" style="display:none">
-        <span class="price-label">Скидка</span>
-        <span id="discountPrice" class="price-value sale">−0 ₽</span>
-      </div>
-      <div class="price-row total-row">
-        <span class="price-label">Итого</span>
-        <span id="totalPrice" class="price-value">0 ₽</span>
-      </div>
-    </div>
-    <button id="continueBtn" class="continue" type="button" disabled>
-      Выберите приложение
-    </button>
-  </div>
-</div>
-<!-- PAYMENT MODAL -->
-<div id="paymentModal" class="payment-modal">
-  <div class="payment-card">
-    <button id="closePayment" class="payment-close" type="button">
-      ×
-    </button>
-    <div id="paymentContent">
-      <div class="payment-title">
-        Оплата заказа
-      </div>
-      <div class="payment-subtitle">
-        Вы выбрали:
-        <strong id="paymentAppsCount">0 приложений</strong>
-      </div>
-      <div class="payment-total">
-        <span>К оплате</span>
-        <strong id="paymentAmount">0 ₽</strong>
-      </div>
-      <div class="payment-details">
-        <div class="payment-detail">
-          <span>Получатель</span>
-          <strong id="recipientName">Укажите получателя</strong>
-        </div>
-        <div class="payment-detail">
-          <span>Банк</span>
-          <strong id="bankName">Укажите банк</strong>
-        </div>
-        <div class="payment-detail">
-          <span>Номер</span>
-          <strong id="cardNumber">Укажите номер</strong>
-        </div>
-      </div>
-      <button id="copyPayment" class="copy-payment" type="button">
-        Скопировать номер
-      </button>
-      <button id="paidButton" class="paid-button" type="button">
-        Я оплатил — продолжить
-      </button>
-      <div class="payment-note">
-        После оплаты нажмите кнопку «Я оплатил».
-        Не закрывайте страницу до завершения.
-      </div>
-    </div>
-    <div id="successContent" class="success">
-      <div class="success-icon">
-        ✓
-      </div>
-      <div class="success-title">
-        Оплата отмечена
-      </div>
-      <div class="success-text">
-        Следующий этап заказа подготовлен.
-        Свяжитесь с исполнителем и отправьте подтверждение оплаты.
-      </div>
-      <div class="instruction">
-        <strong>Что делать дальше</strong>
-        <p>
-          Отправьте подтверждение оплаты в WhatsApp.
-          После проверки вам будет предоставлена дальнейшая инструкция
-          по установке выбранных приложений.
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-<div id="toast" class="toast"></div>
-<script>
-"use strict";
-/*
-==========================================================
- APPCORE — ОСНОВНЫЕ НАСТРОЙКИ
-==========================================================
- ВАЖНО:
- Здесь укажи свои реальные реквизиты.
- Не вставляй данные банковской карты в JavaScript,
- если не хочешь хранить их публично в GitHub.
- Для публичного сайта лучше использовать номер телефона
- или СБП/платёжную страницу.
-*/
-const CONFIG = {
-  pricePerApp: 500,
-  freeAppNumber: 4,
-  recipientName: "УКАЖИТЕ ПОЛУЧАТЕЛЯ",
-  bankName: "УКАЖИТЕ БАНК",
-  paymentNumber: "УКАЖИТЕ НОМЕР",
-  whatsapp: "79289480706"
-};
-/*
-==========================================================
- СПИСОК ПРИЛОЖЕНИЙ
-==========================================================
-*/
-const APPS = [
-  {
-    id:"sber",
-    name:"Сбербанк",
-    type:"Банковское приложение",
-    category:"Банки",
-    color:"#21c76b",
-    gradient:"linear-gradient(135deg,#20c76b,#087a3c)",
-    logo:"https://cdn.simpleicons.org/sberbank/ffffff"
-  },
-  {
-    id:"tbank",
-    name:"Т-Банк",
-    type:"Банковское приложение",
-    category:"Банки",
-    color:"#ffdd00",
-    gradient:"linear-gradient(135deg,#ffe900,#d6ad00)",
-    logo:"https://cdn.simpleicons.org/tbank/111111"
-  },
-  {
-    id:"vtb",
-    name:"ВТБ",
-    type:"Банковское приложение",
-    category:"Банки",
-    color:"#1594ff",
-    gradient:"linear-gradient(135deg,#27a4ff,#1255d6)",
-    logo:"https://cdn.simpleicons.org/vtb/ffffff"
-  },
-  {
-    id:"alfa",
-    name:"Альфа-Банк",
-    type:"Банковское приложение",
-    category:"Банки",
-    color:"#ef3124",
-    gradient:"linear-gradient(135deg,#ff493b,#c81913)",
-    logo:"https://cdn.simpleicons.org/alfabank/ffffff"
-  },
-  {
-    id:"gazprom",
-    name:"Газпромбанк",
-    type:"Банковское приложение",
-    category:"Банки",
-    color:"#1597ff",
-    gradient:"linear-gradient(135deg,#32adff,#1762d2)",
-    logo:"https://cdn.simpleicons.org/gazprombank/ffffff"
-  },
-  {
-    id:"rosselkhoz",
-    name:"Россельхозбанк",
-    type:"Банковское приложение",
-    category:"Банки",
-    color:"#45a843",
-    gradient:"linear-gradient(135deg,#55c951,#207721)",
-    logo:"https://cdn.simpleicons.org/rosselkhozbank/ffffff"
-  },
-  {
-    id:"psb",
-    name:"ПСБ",
-    type:"Банковское приложение",
-    category:"Банки",
-    color:"#e6332a",
-    gradient:"linear-gradient(135deg,#ff4b42,#a91815)",
-    logo:"https://cdn.simpleicons.org/psbank/ffffff"
-  },
-  {
-    id:"sberbusiness",
-    name:"СберБизнес",
-    type:"Для бизнеса",
-    category:"Бизнес",
-    color:"#21c76b",
-    gradient:"linear-gradient(135deg,#2bd878,#087a3c)",
-    logo:"https://cdn.simpleicons.org/sberbank/ffffff"
-  },
-  {
-    id:"tinvest",
-    name:"Т-Инвестиции",
-    type:"Инвестиции",
-    category:"Финансы",
-    color:"#ffdd00",
-    gradient:"linear-gradient(135deg,#ffe900,#d6ad00)",
-    logo:"https://cdn.simpleicons.org/tbank/111111"
-  },
-  {
-    id:"avito",
-    name:"Авито",
-    type:"Объявления",
-    category:"Сервисы",
-    color:"#75c943",
-    gradient:"linear-gradient(135deg,#8be34e,#43931d)",
-    logo:"https://cdn.simpleicons.org/avito/ffffff"
-  },
-  {
-    id:"vk",
-    name:"VK",
-    type:"Социальная сеть",
-    category:"Соцсети",
-    color:"#0077ff",
-    gradient:"linear-gradient(135deg,#1687ff,#0058c9)",
-    logo:"https://cdn.simpleicons.org/vk/ffffff"
-  },
-  {
-    id:"vkvideo",
-    name:"VK Видео",
-    type:"Видео",
-    category:"Видео",
-    color:"#0077ff",
-    gradient:"linear-gradient(135deg,#238eff,#0058c9)",
-    logo:"https://cdn.simpleicons.org/vk/ffffff"
-  },
-  {
-    id:"rutube",
-    name:"RUTUBE",
-    type:"Видео",
-    category:"Видео",
-    color:"#008cff",
-    gradient:"linear-gradient(135deg,#16a2ff,#0060ca)",
-    logo:"https://cdn.simpleicons.org/rutube/ffffff"
-  },
-  {
-    id:"rave",
-    name:"Rave",
-    type:"Совместный просмотр",
-    category:"Видео",
-    color:"#7757ff",
-    gradient:"linear-gradient(135deg,#8e6aff,#4428be)",
-    logo:"https://cdn.simpleicons.org/rave/ffffff"
-  },
-  {
-    id:"happ",
-    name:"Happ",
-    type:"Сетевое приложение",
-    category:"Сервисы",
-    color:"#6d6dff",
-    gradient:"linear-gradient(135deg,#8b82ff,#423ac0)",
-    logo:""
-  }
-];
-/*
-==========================================================
- СОСТОЯНИЕ
-==========================================================
-*/
-let selectedApps = new Set();
-let activeCategory = "Все";
-let searchValue = "";
-/*
-==========================================================
- DOM
-==========================================================
-*/
-const grid = document.getElementById("grid");
-const empty = document.getElementById("empty");
-const categories = document.getElementById("categories");
-const search = document.getElementById("search");
-const clearSearch = document.getElementById("clearSearch");
-const pricePanel = document.getElementById("pricePanel");
-const countText = document.getElementById("countText");
-const basePrice = document.getElementById("basePrice");
-const discountRow = document.getElementById("discountRow");
-const discountPrice = document.getElementById("discountPrice");
-const totalPrice = document.getElementById("totalPrice");
-const continueBtn = document.getElementById("continueBtn");
-const paymentModal = document.getElementById("paymentModal");
-const closePayment = document.getElementById("closePayment");
-const paymentAppsCount = document.getElementById("paymentAppsCount");
-const paymentAmount = document.getElementById("paymentAmount");
-const recipientName = document.getElementById("recipientName");
-const bankName = document.getElementById("bankName");
-const cardNumber = document.getElementById("cardNumber");
-const copyPayment = document.getElementById("copyPayment");
-const paidButton = document.getElementById("paidButton");
-const paymentContent = document.getElementById("paymentContent");
-const successContent = document.getElementById("successContent");
-const toast = document.getElementById("toast");
-/*
-==========================================================
- HELPERS
-==========================================================
-*/
-function escapeHtml(value){
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-function formatPrice(value){
-  return new Intl.NumberFormat("ru-RU").format(value) + " ₽";
-}
-function pluralApps(number){
-  const mod10 = number % 10;
-  const mod100 = number % 100;
-  if(mod10 === 1 && mod100 !== 11){
-    return "приложение";
-  }
-  if(
-    mod10 >= 2 &&
-    mod10 <= 4 &&
-    !(mod100 >= 12 && mod100 <= 14)
-  ){
-    return "приложения";
-  }
-  return "приложений";
-}
-function showToast(message){
-  toast.textContent = message;
-  toast.classList.add("show");
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => {
-    toast.classList.remove("show");
-  },2200);
-}
-/*
-==========================================================
- CATEGORIES
-==========================================================
-*/
-function buildCategories(){
-  const unique = [
-    "Все",
-    ...new Set(APPS.map(app => app.category))
-  ];
-  categories.innerHTML = unique.map(category => {
-    const active = category === activeCategory
-      ? "active"
-      : "";
-    return `
-      <button
-        type="button"
-        class="category ${active}"
-        data-category="${escapeHtml(category)}"
-      >
-        ${escapeHtml(category)}
-      </button>
-    `;
-  }).join("");
-  categories
-    .querySelectorAll(".category")
-    .forEach(button => {
-      button.addEventListener("click",() => {
-        activeCategory = button.dataset.category;
-        buildCategories();
-        renderApps();
-      });
-    });
-}
-/*
-==========================================================
- FILTER
-==========================================================
-*/
-function getFilteredApps(){
-  const query = searchValue.trim().toLowerCase();
-  return APPS.filter(app => {
-    const categoryMatch =
-      activeCategory === "Все" ||
-      app.category === activeCategory;
-    const searchMatch =
-      !query ||
-      app.name.toLowerCase().includes(query) ||
-      app.type.toLowerCase().includes(query) ||
-      app.category.toLowerCase().includes(query);
-    return categoryMatch && searchMatch;
-  });
-}
-/*
-==========================================================
- RENDER APPS
-==========================================================
-*/
-function renderApps(){
-  const apps = getFilteredApps();
-  if(!apps.length){
-    grid.innerHTML = "";
-    empty.classList.add("show");
-    return;
-  }
-  empty.classList.remove("show");
-  grid.innerHTML = apps.map(app => {
-    const selected = selectedApps.has(app.id)
-      ? "selected"
-      : "";
-    const logo = app.logo
-      ? `
-        <img
-          src="${app.logo}"
-          alt=""
-          loading="lazy"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-        >
-      `
-      : "";
-    return `
-      <article
-        class="app-card ${selected}"
-        data-id="${escapeHtml(app.id)}"
-        style="
-          --app-color:${app.color};
-          --app-gradient:${app.gradient};
-        "
-      >
-        <div class="check">✓</div>
-        <div class="app-icon">
-          ${logo}
-          <div
-            class="fallback"
-            style="${app.logo ? "display:none" : ""}"
-          >
-            ${escapeHtml(app.name.charAt(0))}
-          </div>
-        </div>
-        <div class="app-name">
-          ${escapeHtml(app.name)}
-        </div>
-        <div class="app-type">
-          ${escapeHtml(app.type)}
-        </div>
-      </article>
-    `;
-  }).join("");
-  grid
-    .querySelectorAll(".app-card")
-    .forEach(card => {
-      card.addEventListener("click",() => {
-        toggleApp(card.dataset.id);
-      });
-    });
-}
-/*
-==========================================================
- SELECT APP
-==========================================================
-*/
-function toggleApp(id){
-  if(selectedApps.has(id)){
-    selectedApps.delete(id);
-  }else{
-    selectedApps.add(id);
-  }
-  renderApps();
-  updatePrice();
-}
-/*
-==========================================================
- PRICE
-==========================================================
-*/
-function calculatePrice(){
-  const count = selectedApps.size;
-  if(count === 0){
-    return {
-      base:0,
-      discount:0,
-      total:0
-    };
-  }
-  const base = count * CONFIG.pricePerApp;
-  let discount = 0;
-  /*
-    4-е приложение бесплатно.
-    8-е, 12-е и т.д. также бесплатно,
-    если пользователь выберет такие количества.
-  */
-  if(
-    count >= CONFIG.freeAppNumber &&
-    count % CONFIG.freeAppNumber === 0
-  ){
-    discount =
-      (count / CONFIG.freeAppNumber) *
-      CONFIG.pricePerApp;
-  }
-  /*
-    Для 5–7 приложений бесплатным остаётся
-    только каждое 4-е приложение.
-  */
-  if(count >= CONFIG.freeAppNumber){
-    const freeCount =
-      Math.floor(count / CONFIG.freeAppNumber);
-    discount =
-      freeCount * CONFIG.pricePerApp;
-  }
-  return {
-    base,
-    discount,
-    total:base - discount
-  };
-}
-function updatePrice(){
-  const count = selectedApps.size;
-  if(count === 0){
-    pricePanel.classList.remove("visible");
-    continueBtn.disabled = true;
-    continueBtn.textContent = "Выберите приложение";
-    return;
-  }
-  const price = calculatePrice();
-  pricePanel.classList.add("visible");
-  countText.textContent =
-    `${count} ${pluralApps(count)}`;
-  basePrice.textContent =
-    formatPrice(price.base);
-  totalPrice.textContent =
-    formatPrice(price.total);
-  if(price.discount > 0){
-    discountRow.style.display = "flex";
-    discountPrice.textContent =
-      "−" + formatPrice(price.discount);
-  }else{
-    discountRow.style.display = "none";
-  }
-  continueBtn.disabled = false;
-  continueBtn.textContent =
-    `Продолжить — ${formatPrice(price.total)}`;
-}
-/*
-==========================================================
- PAYMENT
-==========================================================
-*/
-function openPayment(){
-  if(selectedApps.size === 0){
-    showToast("Сначала выберите приложение");
-    return;
-  }
-  const price = calculatePrice();
-  paymentAppsCount.textContent =
-    `${selectedApps.size} ${pluralApps(selectedApps.size)}`;
-  paymentAmount.textContent =
-    formatPrice(price.total);
-  recipientName.textContent =
-    CONFIG.recipientName;
-  bankName.textContent =
-    CONFIG.bankName;
-  cardNumber.textContent =
-    CONFIG.paymentNumber;
-  paymentContent.style.display = "block";
-  successContent.classList.remove("show");
-  paymentModal.classList.add("show");
-  document.body.classList.add("no-scroll");
-}
-function closePaymentModal(){
-  paymentModal.classList.remove("show");
-  document.body.classList.remove("no-scroll");
-}
-/*
-==========================================================
- COPY PAYMENT
-==========================================================
-*/
-async function copyPaymentNumber(){
-  const number = CONFIG.paymentNumber;
-  if(
-    !number ||
-    number.includes("УКАЖИТЕ")
-  ){
-    showToast("Сначала укажите реквизиты");
-    return;
-  }
-  try{
-    await navigator.clipboard.writeText(number);
-    showToast("Номер скопирован");
-  }catch(error){
-    const input =
-      document.createElement("textarea");
-    input.value = number;
-    input.style.position = "fixed";
-    input.style.opacity = "0";
-    document.body.appendChild(input);
-    input.select();
-    try{
-      document.execCommand("copy");
-      showToast("Номер скопирован");
-    }catch(e){
-      showToast("Не удалось скопировать");
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>AppCore — Оплата</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
-    input.remove();
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #090a0c;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+        "SF Pro Text", Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 18px 16px 40px;
+    }
+
+    /* HEADER */
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .back {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      background: #121417;
+      border: 1px solid #202328;
+      color: #fff;
+      font-size: 21px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+    }
+
+    /* TITLE */
+
+    .title {
+      margin-bottom: 20px;
+    }
+
+    .title-small {
+      color: #7c8188;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 8px;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 29px;
+      line-height: 1.08;
+      letter-spacing: -.8px;
+    }
+
+    .title p {
+      color: #777c83;
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 10px 0 0;
+    }
+
+    /* CARDS */
+
+    .card {
+      background: #101215;
+      border: 1px solid #1e2125;
+      border-radius: 20px;
+      padding: 17px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    /* APPS */
+
+    .apps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .app-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 42px;
+      padding: 10px 12px;
+      border-radius: 13px;
+      background: #15171a;
+      border: 1px solid #202328;
+    }
+
+    .app-name {
+      font-size: 13px;
+      color: #e9eaec;
+      font-weight: 600;
+    }
+
+    .app-price {
+      font-size: 12px;
+      color: #898e95;
+      white-space: nowrap;
+    }
+
+    /* TOTAL */
+
+    .total-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 3px;
+    }
+
+    .total-label {
+      color: #858a91;
+      font-size: 13px;
+    }
+
+    .total-value {
+      font-size: 24px;
+      font-weight: 850;
+      letter-spacing: -.6px;
+    }
+
+    .discount-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 9px;
+      color: #63d478;
+      font-size: 11px;
+    }
+
+    /* PAYMENT */
+
+    .payment-card {
+      background:
+        radial-gradient(
+          circle at 100% 0%,
+          rgba(255,255,255,.055),
+          transparent 38%
+        ),
+        #101215;
+    }
+
+    .payment-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .bank-logo {
+      width: 47px;
+      height: 47px;
+      border-radius: 14px;
+      background: #ffd400;
+      color: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .bank-name {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .bank-subtitle {
+      color: #777c83;
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .details {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .detail {
+      padding: 12px 13px;
+      border-radius: 14px;
+      background: #15171a;
+      border: 1px solid #202328;
+    }
+
+    .detail-label {
+      color: #70757c;
+      font-size: 10px;
+      margin-bottom: 5px;
+    }
+
+    .detail-value {
+      color: #f1f2f3;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .phone-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .phone {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .copy-btn {
+      height: 34px;
+      padding: 0 11px;
+      border-radius: 10px;
+      background: #25282d;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* WARNING */
+
+    .notice {
+      display: flex;
+      gap: 10px;
+      padding: 13px;
+      margin-top: 12px;
+      border-radius: 14px;
+      background: #141619;
+      border: 1px solid #24272b;
+      color: #858a91;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .notice-icon {
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+      border-radius: 7px;
+      background: #25282d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    /* PHONE */
+
+    .input-label {
+      color: #777c83;
+      font-size: 11px;
+      margin-bottom: 7px;
+    }
+
+    .phone-input {
+      width: 100%;
+      height: 50px;
+      border-radius: 14px;
+      background: #15171a;
+      border: 1px solid #24272c;
+      color: #fff;
+      outline: none;
+      padding: 0 14px;
+      font-size: 14px;
+    }
+
+    .phone-input::placeholder {
+      color: #60656c;
+    }
+
+    .phone-input:focus {
+      border-color: #50555c;
+    }
+
+    /* BUTTON */
+
+    .pay-btn {
+      width: 100%;
+      height: 54px;
+      border-radius: 16px;
+      background: #f3f3f4;
+      color: #090a0c;
+      font-size: 14px;
+      font-weight: 850;
+      margin-top: 14px;
+      transition: .2s;
+    }
+
+    .pay-btn:active {
+      transform: scale(.985);
+    }
+
+    .pay-btn:disabled {
+      background: #25282d;
+      color: #656a71;
+    }
+
+    /* SUCCESS */
+
+    .success {
+      display: none;
+      text-align: center;
+      padding: 28px 15px;
+    }
+
+    .success-icon {
+      width: 66px;
+      height: 66px;
+      margin: 0 auto 16px;
+      border-radius: 22px;
+      background: #18321f;
+      color: #62d477;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 29px;
+      font-weight: 900;
+    }
+
+    .success h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .success p {
+      color: #777c83;
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 10px auto 0;
+      max-width: 430px;
+    }
+
+    .success-back {
+      height: 48px;
+      padding: 0 20px;
+      margin-top: 18px;
+      border-radius: 14px;
+      background: #1a1d21;
+      border: 1px solid #292c31;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* TOAST */
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 25px;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      background: #f2f3f4;
+      color: #08090a;
+      padding: 11px 16px;
+      border-radius: 13px;
+      font-size: 12px;
+      font-weight: 700;
+      z-index: 100;
+      transition: .25s;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (min-width: 600px) {
+      .page {
+        padding-top: 30px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+
+  <header class="header">
+
+    <button
+      class="back"
+      id="backBtn"
+      type="button"
+      aria-label="Назад"
+    >
+      ‹
+    </button>
+
+    <div class="brand">
+      AppCore
+    </div>
+
+  </header>
+
+
+  <!-- TITLE -->
+
+  <div class="title">
+
+    <div class="title-small">
+      Оформление заказа
+    </div>
+
+    <h1>
+      Оплата
+    </h1>
+
+    <p>
+      Переведите указанную сумму по реквизитам ниже.
+      После оплаты нажмите «Я оплатил».
+    </p>
+
+  </div>
+
+
+  <!-- ORDER -->
+
+  <div class="card">
+
+    <div class="card-title">
+      Ваш заказ
+    </div>
+
+    <div
+      class="apps-list"
+      id="appsList"
+    ></div>
+
+  </div>
+
+
+  <!-- TOTAL -->
+
+  <div class="card">
+
+    <div class="total-row">
+
+      <div class="total-label">
+        К оплате
+      </div>
+
+      <div
+        class="total-value"
+        id="total"
+      >
+        0 ₽
+      </div>
+
+    </div>
+
+    <div
+      class="discount-row"
+      id="discountRow"
+      style="display:none"
+    >
+      <span>Скидка</span>
+      <span id="discountText"></span>
+    </div>
+
+  </div>
+
+
+  <!-- PAYMENT -->
+
+  <div class="card payment-card">
+
+    <div class="card-title">
+      Реквизиты для оплаты
+    </div>
+
+    <div class="payment-head">
+
+      <div class="bank-logo">
+        Т
+      </div>
+
+      <div>
+
+        <div class="bank-name">
+          Т-Банк
+        </div>
+
+        <div class="bank-subtitle">
+          Перевод по номеру телефона
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="details">
+
+      <div class="detail">
+
+        <div class="detail-label">
+          Получатель
+        </div>
+
+        <div class="detail-value">
+          Мурат Межидов М
+        </div>
+
+      </div>
+
+
+      <div class="detail">
+
+        <div class="detail-label">
+          Номер для перевода
+        </div>
+
+        <div class="phone-line">
+
+          <div
+            class="detail-value phone"
+            id="paymentPhone"
+          >
+            +7 928 948-07-06
+          </div>
+
+          <button
+            class="copy-btn"
+            id="copyBtn"
+            type="button"
+          >
+            Копировать
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="notice">
+
+      <div class="notice-icon">
+        !
+      </div>
+
+      <div>
+        Перед переводом обязательно проверьте имя получателя.
+        После оплаты нажмите кнопку «Я оплатил».
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- CLIENT -->
+
+  <div
+    class="card"
+    id="clientCard"
+  >
+
+    <div class="card-title">
+      Контакт для связи
+    </div>
+
+    <div class="input-label">
+      Ваш номер WhatsApp
+    </div>
+
+    <input
+      class="phone-input"
+      id="clientPhone"
+      type="tel"
+      inputmode="tel"
+      autocomplete="tel"
+      placeholder="+7 900 000-00-00"
+    >
+
+    <button
+      class="pay-btn"
+      id="paidBtn"
+      type="button"
+    >
+      Я оплатил
+    </button>
+
+  </div>
+
+
+  <!-- SUCCESS -->
+
+  <div
+    class="card success"
+    id="success"
+  >
+
+    <div class="success-icon">
+      ✓
+    </div>
+
+    <h2>
+      Заявка отправлена
+    </h2>
+
+    <p>
+      Оплата будет проверена вручную.
+      После подтверждения вам будут доступны
+      ссылки и инструкции по установке выбранных приложений.
+    </p>
+
+    <button
+      class="success-back"
+      id="successBack"
+      type="button"
+    >
+      Вернуться в AppCore
+    </button>
+
+  </div>
+
+</div>
+
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
+<script>
+
+  /*
+   * ==========================================
+   * НАСТРОЙКИ
+   * ==========================================
+   */
+
+  const PAYMENT_PHONE =
+    "+7 928 948-07-06";
+
+  const PAYMENT_PHONE_COPY =
+    "+79289480706";
+
+
+  /*
+   * ==========================================
+   * ELEMENTS
+   * ==========================================
+   */
+
+  const appsList =
+    document.getElementById("appsList");
+
+  const total =
+    document.getElementById("total");
+
+  const discountRow =
+    document.getElementById("discountRow");
+
+  const discountText =
+    document.getElementById("discountText");
+
+  const copyBtn =
+    document.getElementById("copyBtn");
+
+  const clientPhone =
+    document.getElementById("clientPhone");
+
+  const paidBtn =
+    document.getElementById("paidBtn");
+
+  const clientCard =
+    document.getElementById("clientCard");
+
+  const success =
+    document.getElementById("success");
+
+  const backBtn =
+    document.getElementById("backBtn");
+
+  const successBack =
+    document.getElementById("successBack");
+
+  const toast =
+    document.getElementById("toast");
+
+
+  /*
+   * ==========================================
+   * TOAST
+   * ==========================================
+   */
+
+  function showToast(message) {
+
+    toast.textContent =
+      message;
+
+    toast.classList.add("show");
+
+    clearTimeout(
+      showToast.timer
+    );
+
+    showToast.timer =
+      setTimeout(() => {
+
+        toast.classList.remove("show");
+
+      }, 2200);
+
   }
-}
-/*
-==========================================================
- PAYMENT CONFIRMATION
-==========================================================
-*/
-function markAsPaid(){
-  paymentContent.style.display = "none";
-  successContent.classList.add("show");
-}
-/*
-==========================================================
- SEARCH
-==========================================================
-*/
-search.addEventListener("input",() => {
-  searchValue = search.value;
-  clearSearch.style.display =
-    searchValue ? "block" : "none";
-  renderApps();
-});
-clearSearch.addEventListener("click",() => {
-  search.value = "";
-  searchValue = "";
-  clearSearch.style.display = "none";
-  renderApps();
-  search.focus();
-});
-/*
-==========================================================
- EVENTS
-==========================================================
-*/
-continueBtn.addEventListener("click",openPayment);
-closePayment.addEventListener("click",closePaymentModal);
-copyPayment.addEventListener("click",copyPaymentNumber);
-paidButton.addEventListener("click",markAsPaid);
-paymentModal.addEventListener("click",(event) => {
-  if(event.target === paymentModal){
-    closePaymentModal();
+
+
+  /*
+   * ==========================================
+   * ПОЛУЧАЕМ КОРЗИНУ
+   * ==========================================
+   */
+
+  let cart = null;
+
+  try {
+
+    const raw =
+      sessionStorage.getItem(
+        "appcore_cart"
+      );
+
+    if (raw) {
+      cart = JSON.parse(raw);
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Ошибка корзины:",
+      error
+    );
+
   }
-});
-document.addEventListener("keydown",(event) => {
-  if(event.key === "Escape"){
-    closePaymentModal();
+
+
+  /*
+   * ==========================================
+   * ЕСЛИ КОРЗИНЫ НЕТ
+   * ==========================================
+   */
+
+  if (
+    !cart ||
+    !Array.isArray(cart.apps) ||
+    cart.apps.length === 0
+  ) {
+
+    window.location.href =
+      "index.html";
+
   }
-});
-/*
-==========================================================
- INITIALIZATION
-==========================================================
-*/
-buildCategories();
-renderApps();
-updatePrice();
+
+
+  /*
+   * ==========================================
+   * ПОКАЗЫВАЕМ ПРИЛОЖЕНИЯ
+   * ==========================================
+   */
+
+  if (cart) {
+
+    appsList.innerHTML = "";
+
+    cart.apps.forEach(app => {
+
+      const row =
+        document.createElement("div");
+
+      row.className =
+        "app-row";
+
+      const name =
+        document.createElement("div");
+
+      name.className =
+        "app-name";
+
+      name.textContent =
+        app.name;
+
+      const price =
+        document.createElement("div");
+
+      price.className =
+        "app-price";
+
+      price.textContent =
+        `${app.price.toLocaleString("ru-RU")} ₽`;
+
+      row.appendChild(name);
+      row.appendChild(price);
+
+      appsList.appendChild(row);
+
+    });
+
+
+    total.textContent =
+      `${cart.total.toLocaleString("ru-RU")} ₽`;
+
+
+    if (
+      cart.discountPercent &&
+      cart.discountPercent > 0
+    ) {
+
+      discountRow.style.display =
+        "flex";
+
+      discountText.textContent =
+        `−${cart.discountPercent}%`;
+
+    }
+
+  }
+
+
+  /*
+   * ==========================================
+   * КОПИРОВАНИЕ НОМЕРА
+   * ==========================================
+   */
+
+  copyBtn.addEventListener(
+    "click",
+    async () => {
+
+      try {
+
+        await navigator.clipboard.writeText(
+          PAYMENT_PHONE_COPY
+        );
+
+        copyBtn.textContent =
+          "Скопировано";
+
+        showToast(
+          "Номер скопирован"
+        );
+
+        setTimeout(() => {
+
+          copyBtn.textContent =
+            "Копировать";
+
+        }, 1800);
+
+      } catch (error) {
+
+        /*
+         * Резервный вариант
+         */
+
+        const textarea =
+          document.createElement("textarea");
+
+        textarea.value =
+          PAYMENT_PHONE_COPY;
+
+        document.body.appendChild(
+          textarea
+        );
+
+        textarea.select();
+
+        try {
+          document.execCommand("copy");
+        } catch (e) {}
+
+        textarea.remove();
+
+        showToast(
+          "Номер скопирован"
+        );
+
+      }
+
+    }
+  );
+
+
+  /*
+   * ==========================================
+   * ФОРМАТИРОВАНИЕ ТЕЛЕФОНА
+   * ==========================================
+   */
+
+  clientPhone.addEventListener(
+    "input",
+    () => {
+
+      let value =
+        clientPhone.value
+          .replace(/\D/g, "");
+
+      if (value.startsWith("8")) {
+        value =
+          "7" + value.slice(1);
+      }
+
+      if (
+        value.startsWith("7")
+      ) {
+
+        let result =
+          "+7";
+
+        if (value.length > 1) {
+          result +=
+            " " +
+            value.slice(1, 4);
+        }
+
+        if (value.length >= 5) {
+          result +=
+            " " +
+            value.slice(4, 7);
+        }
+
+        if (value.length >= 8) {
+          result +=
+            "-" +
+            value.slice(7, 9);
+        }
+
+        if (value.length >= 10) {
+          result +=
+            "-" +
+            value.slice(9, 11);
+        }
+
+        clientPhone.value =
+          result;
+
+      }
+
+    }
+  );
+
+
+  /*
+   * ==========================================
+   * ПРОВЕРКА ТЕЛЕФОНА
+   * ==========================================
+   */
+
+  function validPhone(value) {
+
+    const digits =
+      value.replace(/\D/g, "");
+
+    return (
+      digits.length === 11 &&
+      (
+        digits.startsWith("7") ||
+        digits.startsWith("8")
+      )
+    );
+
+  }
+
+
+  /*
+   * ==========================================
+   * Я ОПЛАТИЛ
+   * ==========================================
+   */
+
+  paidBtn.addEventListener(
+    "click",
+    () => {
+
+      const phone =
+        clientPhone.value.trim();
+
+
+      if (!validPhone(phone)) {
+
+        showToast(
+          "Введите номер WhatsApp"
+        );
+
+        clientPhone.focus();
+
+        return;
+
+      }
+
+
+      /*
+       * Создаём локальную заявку.
+       *
+       * Позже здесь подключим Supabase,
+       * чтобы заявка сразу попадала
+       * в настоящую админ-панель.
+       */
+
+      const order = {
+
+        id:
+          "APP-" +
+          Date.now(),
+
+        createdAt:
+          new Date().toISOString(),
+
+        clientPhone:
+          phone,
+
+        apps:
+          cart.apps,
+
+        total:
+          cart.total,
+
+        original:
+          cart.original,
+
+        discountPercent:
+          cart.discountPercent,
+
+        status:
+          "awaiting_review"
+
+      };
+
+
+      let orders = [];
+
+      try {
+
+        const saved =
+          localStorage.getItem(
+            "appcore_demo_orders"
+          );
+
+        if (saved) {
+          orders =
+            JSON.parse(saved);
+        }
+
+        if (!Array.isArray(orders)) {
+          orders = [];
+        }
+
+      } catch (error) {
+
+        orders = [];
+
+      }
+
+
+      orders.unshift(order);
+
+
+      try {
+
+        localStorage.setItem(
+          "appcore_demo_orders",
+          JSON.stringify(orders)
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Ошибка сохранения заказа",
+          error
+        );
+
+      }
+
+
+      /*
+       * Скрываем оплату.
+       */
+
+      clientCard.style.display =
+        "none";
+
+      success.style.display =
+        "block";
+
+
+      /*
+       * Не показываем ссылки.
+       * Они появятся только после
+       * подтверждения оплаты.
+       */
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    }
+  );
+
+
+  /*
+   * ==========================================
+   * НАЗАД
+   * ==========================================
+   */
+
+  backBtn.addEventListener(
+    "click",
+    () => {
+
+      window.location.href =
+        "index.html";
+
+    }
+  );
+
+
+  successBack.addEventListener(
+    "click",
+    () => {
+
+      sessionStorage.removeItem(
+        "appcore_cart"
+      );
+
+      window.location.href =
+        "index.html";
+
+    }
+  );
+
 </script>
+
 </body>
 </html>
