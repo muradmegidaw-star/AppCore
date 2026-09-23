@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AppCore — Админ-панель</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0f14;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    .card {
+      background: #151b23;
+      border: 1px solid #27303b;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    input,
+    button,
+    select {
+      width: 100%;
+      padding: 13px;
+      margin-top: 10px;
+      border-radius: 9px;
+      border: 1px solid #303a47;
+      font-size: 16px;
+    }
+
+    input,
+    select {
+      background: #0f141b;
+      color: #fff;
+    }
+
+    button {
+      background: #fff;
+      color: #000;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      opacity: .9;
+    }
+
+    .logout {
+      width: auto;
+      float: right;
+      margin-top: 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .error {
+      color: #ff7070;
+      margin-top: 12px;
+    }
+
+    .success {
+      color: #6ee7a0;
+      margin-top: 12px;
+    }
+
+    .order {
+      background: #0f141b;
+      border: 1px solid #27303b;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    .order-row {
+      margin: 7px 0;
+    }
+
+    .order-number {
+      font-size: 19px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .apps {
+      color: #b9c3d0;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+
+    .status-select {
+      margin-top: 12px;
+    }
+
+    .refresh {
+      width: auto;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .loading {
+      color: #aeb8c5;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- LOGIN -->
+  <div id="loginScreen" class="card">
+    <h1>AppCore</h1>
+    <h2>Вход в админ-панель</h2>
+
+    <input
+      id="email"
+      type="email"
+      placeholder="Email"
+      autocomplete="email"
+    >
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Пароль"
+      autocomplete="current-password"
+    >
+
+    <button id="loginButton">Войти</button>
+
+    <div id="loginMessage"></div>
+  </div>
+
+
+  <!-- ADMIN -->
+  <div id="adminScreen" class="hidden">
+
+    <div class="card">
+      <div class="top">
+        <div>
+          <h1>AppCore — Заказы</h1>
+          <div id="userEmail"></div>
+        </div>
+
+        <button id="logoutButton" class="logout">
+          Выйти
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <button id="refreshButton" class="refresh">
+        Обновить заказы
+      </button>
+
+      <div id="orders">
+        <div class="loading">Загрузка...</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+  const SUPABASE_URL =
+    "https://dkgipfotfjntlhabakns.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  const loginScreen =
+    document.getElementById("loginScreen");
+
+  const adminScreen =
+    document.getElementById("adminScreen");
+
+  const emailInput =
+    document.getElementById("email");
+
+  const passwordInput =
+    document.getElementById("password");
+
+  const loginButton =
+    document.getElementById("loginButton");
+
+  const logoutButton =
+    document.getElementById("logoutButton");
+
+  const refreshButton =
+    document.getElementById("refreshButton");
+
+  const loginMessage =
+    document.getElementById("loginMessage");
+
+  const ordersContainer =
+    document.getElementById("orders");
+
+  const userEmail =
+    document.getElementById("userEmail");
+
+
+  // Вход
+  loginButton.addEventListener("click", async () => {
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    loginMessage.className = "";
+    loginMessage.textContent = "";
+
+    if (!email || !password) {
+      loginMessage.className = "error";
+      loginMessage.textContent =
+        "Введите email и пароль.";
+      return;
+    }
+
+    loginButton.disabled = true;
+    loginButton.textContent = "Вход...";
+
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+    loginButton.disabled = false;
+    loginButton.textContent = "Войти";
+
+    if (error) {
+      loginMessage.className = "error";
+      loginMessage.textContent =
+        "Ошибка входа: " + error.message;
+      return;
+    }
+
+    showAdmin(data.user);
+  });
+
+
+  // Выход
+  logoutButton.addEventListener("click", async () => {
+    await supabaseClient.auth.signOut();
+    showLogin();
+  });
+
+
+  // Проверяем существующую сессию
+  async function checkSession() {
+
+    const {
+      data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if (session && session.user) {
+      showAdmin(session.user);
+    } else {
+      showLogin();
+    }
+  }
+
+
+  function showLogin() {
+    loginScreen.classList.remove("hidden");
+    adminScreen.classList.add("hidden");
+
+    emailInput.value = "";
+    passwordInput.value = "";
+  }
+
+
+  function showAdmin(user) {
+
+    loginScreen.classList.add("hidden");
+    adminScreen.classList.remove("hidden");
+
+    userEmail.textContent =
+      "Вы вошли как: " + user.email;
+
+    loadOrders();
+  }
+
+
+  // Загрузка заказов
+  async function loadOrders() {
+
+    ordersContainer.innerHTML =
+      '<div class="loading">Загрузка заказов...</div>';
+
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("orders")
+      .select("*")
+      .order("created_at", {
+        ascending: false
+      });
+
+    if (error) {
+      ordersContainer.innerHTML =
+        '<div class="error">Ошибка загрузки: '
+        + escapeHtml(error.message)
+        + '</div>';
+
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      ordersContainer.innerHTML =
+        '<div class="loading">Заказов пока нет.</div>';
+
+      return;
+    }
+
+    ordersContainer.innerHTML = "";
+
+    data.forEach(order => {
+      renderOrder(order);
+    });
+  }
+
+
+  function renderOrder(order) {
+
+    const element =
+      document.createElement("div");
+
+    element.className = "order";
+
+    const appsText =
+      Array.isArray(order.apps)
+        ? order.apps.map(app => {
+
+            if (typeof app === "string") {
+              return app;
+            }
+
+            if (app && app.name) {
+              return app.name;
+            }
+
+            return JSON.stringify(app);
+
+          }).join(", ")
+        : JSON.stringify(order.apps || []);
+
+
+    const date =
+      order.created_at
+        ? new Date(order.created_at).toLocaleString("ru-RU")
+        : "—";
+
+
+    element.innerHTML = `
+      <div class="order-number">
+        Заказ: ${escapeHtml(order.order_number || "—")}
+      </div>
+
+      <div class="order-row">
+        <strong>Телефон:</strong>
+        ${escapeHtml(order.client_phone || "—")}
+      </div>
+
+      <div class="order-row">
+        <strong>Приложения:</strong>
+        <div class="apps">${escapeHtml(appsText)}</div>
+      </div>
+
+      <div class="order-row">
+        <strong>Сумма:</strong>
+        ${Number(order.total || 0)} ₽
+      </div>
+
+      <div class="order-row">
+        <strong>Скидка:</strong>
+        ${Number(order.discount || 0)} ₽
+      </div>
+
+      <div class="order-row">
+        <strong>Дата:</strong>
+        ${escapeHtml(date)}
+      </div>
+
+      <select class="status-select">
+        <option value="awaiting_review"
+          ${order.status === "awaiting_review" ? "selected" : ""}>
+          Ожидает проверки
+        </option>
+
+        <option value="paid"
+          ${order.status === "paid" ? "selected" : ""}>
+          Оплачен
+        </option>
+
+        <option value="completed"
+          ${order.status === "completed" ? "selected" : ""}>
+          Выполнен
+        </option>
+
+        <option value="cancelled"
+          ${order.status === "cancelled" ? "selected" : ""}>
+          Отменён
+        </option>
+      </select>
+    `;
+
+
+    const select =
+      element.querySelector(".status-select");
+
+
+    select.addEventListener("change", async () => {
+
+      const newStatus = select.value;
+
+      select.disabled = true;
+
+      const {
+        error
+      } = await supabaseClient
+        .from("orders")
+        .update({
+          status: newStatus
+        })
+        .eq("id", order.id);
+
+
+      select.disabled = false;
+
+      if (error) {
+
+        alert(
+          "Не удалось изменить статус:\n"
+          + error.message
+        );
+
+        select.value =
+          order.status;
+
+        return;
+      }
+
+      order.status = newStatus;
+    });
+
+
+    ordersContainer.appendChild(element);
+  }
+
+
+  refreshButton.addEventListener(
+    "click",
+    loadOrders
+  );
+
+
+  function escapeHtml(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+
+  checkSession();
+
+</script>
+
+</body>
+</html>
