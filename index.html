@@ -408,42 +408,6 @@ h1 {
   font-size: 11px;
 }
 
-/* EMPTY */
-
-.empty {
-  display: none;
-  padding: 65px 20px;
-  text-align: center;
-}
-
-.empty.show {
-  display: block;
-}
-
-.empty-icon {
-  width: 52px;
-  height: 52px;
-  margin: 0 auto 13px;
-  border-radius: 17px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,.05);
-  color: #737a89;
-  font-size: 22px;
-}
-
-.empty-title {
-  font-size: 16px;
-  font-weight: 800;
-}
-
-.empty-text {
-  margin-top: 6px;
-  color: #707785;
-  font-size: 13px;
-}
-
 /* BOTTOM PANEL */
 
 .bottom {
@@ -470,59 +434,6 @@ h1 {
   margin: 0 auto;
 }
 
-/* PRICE */
-
-.price-panel {
-  display: none;
-  margin-bottom: 9px;
-  padding: 12px 14px;
-  border-radius: 17px;
-  background: rgba(20,22,29,.97);
-  border: 1px solid rgba(255,255,255,.08);
-  backdrop-filter: blur(20px);
-}
-
-.price-panel.visible {
-  display: block;
-}
-
-.price-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.price-label {
-  color: #858c9a;
-  font-size: 12px;
-}
-
-.price-value {
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.total-row {
-  margin-top: 7px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255,255,255,.06);
-}
-
-.total-row .price-label {
-  color: #fff;
-  font-weight: 700;
-}
-
-.total-row .price-value {
-  font-size: 17px;
-}
-
-.sale {
-  color: #55e18b !important;
-}
-
 /* BUTTON */
 
 .continue {
@@ -540,14 +451,76 @@ h1 {
 <body>
 
 <div class="container">
-  <!-- Здесь будет ваша HTML разметка (карточки приложений, поиск и т.д.) -->
-</div>
-
-<div class="bottom">
-  <div class="bottom-inner">
-    <button class="continue">Выбрать приложение</button>
+  
+  <!-- HEADER -->
+  <div class="header">
+    <div class="top">
+      <div class="brand">
+        <div class="brand-logo">A</div>
+        <div class="brand-title">AppCore</div>
+      </div>
+      <div class="online">
+        <div class="online-dot"></div>
+        Доступно
+      </div>
+    </div>
+    <h1>Что установить?</h1>
+    <div class="subtitle">Выберите одно или несколько приложений. Мы подготовим установку дистанционно.</div>
   </div>
-</div>
 
-</body>
-</html>
+  <!-- DISCOUNT BOX -->
+  <div class="discount-box">
+    <div class="discount-title">🎁 Чем больше приложений — тем больше скидка</div>
+    <div class="discount-text">1 приложение — без скидки · 2 — <span class="discount-highlight">3%</span> · 3 — <span class="discount-highlight">6%</span> · 4 — <span class="discount-highlight">9%</span> · 5+ — <span class="discount-highlight">30%</span></div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <input type="text" class="search" placeholder="Поиск приложения...">
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="categories">
+    <button class="category active">Все</button>
+    <button class="category">Банки и инвестиции</button>
+    <button class="category">Социальные</button>
+    <button class="category">Сервисы</button>
+  </div>
+
+  <!-- GRID WITH APPS -->
+  <div class="grid">
+    
+    <!-- Сбербанк -->
+    <div class="app-card" style="--app-color: #21a038;">
+      <div class="check">✓</div>
+      <div class="app-icon" style="--app-gradient: linear-gradient(135deg, #1cc44e, #0c7526);">
+        <img src="path_to_sber_logo.png" alt="Сбербанк">
+      </div>
+      <div class="app-name">Сбербанк</div>
+      <div class="app-type">Банк</div>
+    </div>
+
+    <!-- Т-Банк -->
+    <div class="app-card" style="--app-color: #ffdd2d;">
+      <div class="check">✓</div>
+      <div class="app-icon" style="--app-gradient: linear-gradient(135deg, #fff275, #ffcc00);">
+        <img src="path_to_tbank_logo.png" alt="Т-Банк">
+      </div>
+      <div class="app-name">Т-Банк</div>
+      <div class="app-type">Банк</div>
+    </div>
+
+    <!-- Альфа-Банк -->
+    <div class="app-card" style="--app-color: #ef3124;">
+      <div class="check">✓</div>
+      <div class="app-icon" style="--app-gradient: linear-gradient(135deg, #ff5c4e, #cf160a);">
+        <img src="path_to_alfa_logo.png" alt="Альфа-Банк">
+      </div>
+      <div class="app-name">Альфа-Банк</div>
+      <div class="app-type">Банк</div>
+    </div>
+
+    <!-- ВТБ -->
+    <div class="app-card" style="--app-color: #00aaff;">
+      <div class="check">✓</div>
+      <div class="app-icon" style="--app-gradient: linear-gradient(135deg, #33bfff, #0055a5);">
