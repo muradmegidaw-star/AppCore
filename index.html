@@ -569,7 +569,7 @@ h1 {
 
 .toast {
   position: fixed;
-  z-index: 50;
+  z-index: 150;
   left: 50%;
   bottom: 155px;
   transform: translate(-50%, 20px);
@@ -770,6 +770,29 @@ h1 {
   cursor: pointer;
 }
 
+/* =========================
+   PHONE
+========================= */
+
+.phone-input {
+  width: 100%;
+  height: 43px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.phone-input::placeholder {
+  color: #656b7a;
+}
+
+/* =========================
+   PAYMENT NOTE
+========================= */
+
 .payment-note {
   margin-top: 13px;
   padding: 12px;
@@ -792,6 +815,10 @@ h1 {
   font-size: 14px;
   font-weight: 850;
   cursor: pointer;
+}
+
+.payment-done:disabled {
+  opacity: .5;
 }
 
 /* =========================
@@ -839,6 +866,27 @@ h1 {
 </head>
 
 <body>
+
+<!-- =========================
+     SUPABASE
+========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL =
+  "https://dkgipfotfjntlhabakns.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_Yqtu6SOTncAsze5_whAAFQ_KjTUbK_6";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+</script>
+
 
 <div class="container">
 
@@ -955,6 +1003,7 @@ h1 {
 
 </div>
 
+
 <!-- =========================
      BOTTOM
 ========================= -->
@@ -1002,6 +1051,7 @@ h1 {
 
 </div>
 
+
 <!-- =========================
      PAYMENT MODAL
 ========================= -->
@@ -1037,6 +1087,9 @@ h1 {
       указанную сумму по реквизитам ниже.
     </div>
 
+
+    <!-- ЗАКАЗ -->
+
     <div class="order-box">
 
       <div class="order-title">
@@ -1059,6 +1112,37 @@ h1 {
       </div>
 
     </div>
+
+
+    <!-- ТЕЛЕФОН -->
+
+    <div class="requisites-title">
+      Контакт для заказа
+    </div>
+
+    <div class="requisite">
+
+      <div class="requisite-label">
+        Номер телефона
+      </div>
+
+      <div class="requisite-value-row">
+
+        <input
+          id="phoneInput"
+          class="phone-input"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel"
+          placeholder="+7 900 000-00-00"
+        >
+
+      </div>
+
+    </div>
+
+
+    <!-- РЕКВИЗИТЫ -->
 
     <div class="requisites-title">
       Реквизиты для оплаты
@@ -1091,6 +1175,7 @@ h1 {
 
     </div>
 
+
     <div class="requisite">
 
       <div class="requisite-label">
@@ -1117,6 +1202,7 @@ h1 {
       </div>
 
     </div>
+
 
     <div class="requisite">
 
@@ -1145,11 +1231,13 @@ h1 {
 
     </div>
 
+
     <div class="payment-note">
       ⚠️ После перевода сохраните чек об оплате.
       Не закрывайте страницу, пока не убедитесь,
       что перевод выполнен.
     </div>
+
 
     <button
       id="paymentDone"
@@ -1163,11 +1251,13 @@ h1 {
 
 </div>
 
+
 <div id="toast" class="toast"></div>
 
 
 <script>
 "use strict";
+
 
 /* ==========================================
    НАСТРОЙКИ
@@ -1424,25 +1514,42 @@ let selected = new Set();
 let currentCategory = "all";
 let query = "";
 
+let currentOrder = null;
+
 
 /* ==========================================
    ЭЛЕМЕНТЫ
 ========================================== */
 
-const appList = document.getElementById("appList");
-const empty = document.getElementById("empty");
+const appList =
+  document.getElementById("appList");
 
-const search = document.getElementById("search");
-const clear = document.getElementById("clear");
+const empty =
+  document.getElementById("empty");
 
-const categories = document.getElementById("categories");
+const search =
+  document.getElementById("search");
 
-const pricePanel = document.getElementById("pricePanel");
+const clear =
+  document.getElementById("clear");
 
-const countEl = document.getElementById("count");
-const originalEl = document.getElementById("original");
-const discountEl = document.getElementById("discount");
-const totalEl = document.getElementById("total");
+const categories =
+  document.getElementById("categories");
+
+const pricePanel =
+  document.getElementById("pricePanel");
+
+const countEl =
+  document.getElementById("count");
+
+const originalEl =
+  document.getElementById("original");
+
+const discountEl =
+  document.getElementById("discount");
+
+const totalEl =
+  document.getElementById("total");
 
 const continueButton =
   document.getElementById("continue");
@@ -1464,6 +1571,9 @@ const selectedApps =
 
 const paymentTotal =
   document.getElementById("paymentTotal");
+
+const phoneInput =
+  document.getElementById("phoneInput");
 
 
 /* ==========================================
@@ -1661,16 +1771,12 @@ function render() {
     );
 
 
-    /* CHECK */
-
     const check =
       document.createElement("div");
 
     check.className = "check";
     check.textContent = "✓";
 
-
-    /* ICON */
 
     const icon =
       document.createElement("div");
@@ -1708,16 +1814,12 @@ function render() {
     }
 
 
-    /* NAME */
-
     const name =
       document.createElement("div");
 
     name.className = "app-name";
     name.textContent = app.name;
 
-
-    /* TYPE */
 
     const type =
       document.createElement("div");
@@ -1836,7 +1938,59 @@ function showToast(message) {
   toastTimer =
     setTimeout(() => {
       toast.classList.remove("show");
-    }, 2500);
+    }, 3000);
+}
+
+
+/* ==========================================
+   НОМЕР ЗАКАЗА
+========================================== */
+
+function generateOrderNumber() {
+
+  const now = new Date();
+
+  const year =
+    String(now.getFullYear()).slice(-2);
+
+  const month =
+    String(now.getMonth() + 1)
+      .padStart(2, "0");
+
+  const day =
+    String(now.getDate())
+      .padStart(2, "0");
+
+  const random =
+    Math.floor(1000 + Math.random() * 9000);
+
+  return `AC-${year}${month}${day}-${random}`;
+}
+
+
+/* ==========================================
+   НОРМАЛИЗАЦИЯ ТЕЛЕФОНА
+========================================== */
+
+function normalizePhone(value) {
+
+  return value
+    .replace(/[^\d+]/g, "")
+    .trim();
+}
+
+
+/* ==========================================
+   ПРОВЕРКА ТЕЛЕФОНА
+========================================== */
+
+function isValidPhone(phone) {
+
+  const digits =
+    phone.replace(/\D/g, "");
+
+  return digits.length >= 10 &&
+         digits.length <= 15;
 }
 
 
@@ -1847,15 +2001,23 @@ function showToast(message) {
 function openPaymentModal() {
 
   if (selected.size === 0) {
-    showToast("Сначала выберите приложение");
+
+    showToast(
+      "Сначала выберите приложение"
+    );
+
     return;
   }
 
   const selectedList =
-    apps.filter(app => selected.has(app.id));
+    apps.filter(app =>
+      selected.has(app.id)
+    );
 
   const price =
-    calculatePrice(selectedList.length);
+    calculatePrice(
+      selectedList.length
+    );
 
   selectedApps.innerHTML = "";
 
@@ -1869,14 +2031,20 @@ function openPaymentModal() {
     const name =
       document.createElement("span");
 
-    name.className = "selected-app-name";
-    name.textContent = app.name;
+    name.className =
+      "selected-app-name";
+
+    name.textContent =
+      app.name;
 
     const appPrice =
       document.createElement("span");
 
-    appPrice.className = "selected-app-price";
-    appPrice.textContent = money(PRICE);
+    appPrice.className =
+      "selected-app-price";
+
+    appPrice.textContent =
+      money(PRICE);
 
     row.appendChild(name);
     row.appendChild(appPrice);
@@ -1889,7 +2057,16 @@ function openPaymentModal() {
 
   paymentOverlay.classList.add("show");
 
-  document.body.style.overflow = "hidden";
+  document.body.style.overflow =
+    "hidden";
+
+  setTimeout(() => {
+
+    if (phoneInput) {
+      phoneInput.focus();
+    }
+
+  }, 250);
 }
 
 
@@ -1962,7 +2139,8 @@ document
 
         try {
 
-          await navigator.clipboard.writeText(value);
+          await navigator.clipboard
+            .writeText(value);
 
           const oldText =
             button.textContent;
@@ -1976,8 +2154,6 @@ document
 
         } catch (error) {
 
-          /* Запасной вариант для старых браузеров */
-
           const textarea =
             document.createElement("textarea");
 
@@ -1986,14 +2162,19 @@ document
           textarea.style.position = "fixed";
           textarea.style.opacity = "0";
 
-          document.body.appendChild(textarea);
+          document.body.appendChild(
+            textarea
+          );
 
           textarea.select();
 
           try {
             document.execCommand("copy");
           } catch (e) {
-            console.log("Copy error:", e);
+            console.log(
+              "Copy error:",
+              e
+            );
           }
 
           textarea.remove();
@@ -2016,18 +2197,181 @@ document
 
 
 /* ==========================================
+   СОЗДАНИЕ ЗАКАЗА В SUPABASE
+========================================== */
+
+async function createOrder() {
+
+  const rawPhone =
+    phoneInput.value;
+
+  const phone =
+    normalizePhone(rawPhone);
+
+  if (!isValidPhone(phone)) {
+
+    showToast(
+      "Введите корректный номер телефона"
+    );
+
+    phoneInput.focus();
+
+    return false;
+  }
+
+
+  if (selected.size === 0) {
+
+    showToast(
+      "Сначала выберите приложение"
+    );
+
+    return false;
+  }
+
+
+  const selectedList =
+    apps.filter(app =>
+      selected.has(app.id)
+    );
+
+
+  const price =
+    calculatePrice(
+      selectedList.length
+    );
+
+
+  const orderNumber =
+    generateOrderNumber();
+
+
+  const orderData = {
+
+    order_number:
+      orderNumber,
+
+    client_phone:
+      phone,
+
+    app_ids:
+      selectedList.map(app =>
+        app.id
+      ),
+
+    apps:
+      selectedList.map(app => ({
+        id: app.id,
+        name: app.name,
+        type: app.type
+      })),
+
+    original:
+      Math.round(price.original),
+
+    discount:
+      Math.round(price.discountAmount),
+
+    free_apps:
+      0,
+
+    total:
+      Math.round(price.total),
+
+    status:
+      "awaiting_review"
+  };
+
+
+  paymentDone.disabled = true;
+
+  paymentDone.textContent =
+    "Сохраняем заказ…";
+
+
+  try {
+
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("orders")
+      .insert([orderData])
+      .select()
+      .single();
+
+
+    if (error) {
+
+      console.error(
+        "Supabase order error:",
+        error
+      );
+
+      showToast(
+        "Не удалось создать заказ"
+      );
+
+      paymentDone.disabled = false;
+
+      paymentDone.textContent =
+        "Я оплатил";
+
+      return false;
+    }
+
+
+    currentOrder = data;
+
+
+    closePaymentModal();
+
+
+    showToast(
+      "Заказ " +
+      data.order_number +
+      " создан"
+    );
+
+
+    console.log(
+      "AppCore order created:",
+      data
+    );
+
+
+    return true;
+
+  } catch (error) {
+
+    console.error(
+      "Create order error:",
+      error
+    );
+
+    showToast(
+      "Ошибка соединения с сервером"
+    );
+
+    paymentDone.disabled = false;
+
+    paymentDone.textContent =
+      "Я оплатил";
+
+    return false;
+  }
+}
+
+
+/* ==========================================
    КНОПКА "Я ОПЛАТИЛ"
 ========================================== */
 
 paymentDone.addEventListener(
   "click",
-  () => {
+  async () => {
 
-    closePaymentModal();
-
-    showToast(
-      "Спасибо! Ожидаем подтверждение оплаты."
-    );
+    await createOrder();
 
   }
 );
@@ -2053,11 +2397,19 @@ function initTelegram() {
       tg.expand();
 
       if (tg.setHeaderColor) {
-        tg.setHeaderColor("#08090d");
+
+        tg.setHeaderColor(
+          "#08090d"
+        );
+
       }
 
       if (tg.setBackgroundColor) {
-        tg.setBackgroundColor("#08090d");
+
+        tg.setBackgroundColor(
+          "#08090d"
+        );
+
       }
 
     } catch (error) {
