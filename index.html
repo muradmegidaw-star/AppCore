@@ -1,706 +1,1384 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0b0b12">
+<meta name="theme-color" content="#08090d">
 <meta name="apple-mobile-web-app-capable" content="yes">
-
-<title>AppCore</title>
-
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>AppCore — приложения</title>
 <style>
-:root {
-  --bg: #08090d;
-  --card: #12141b;
-  --text: #ffffff;
-  --muted: #8d93a3;
-  --line: rgba(255,255,255,.08);
+:root{
+  --bg:#08090d;
+  --card:#12141b;
+  --card2:#171922;
+  --text:#fff;
+  --muted:#8d93a3;
+  --line:rgba(255,255,255,.08);
+  --accent:#7657ff;
+  --green:#48df88;
 }
-
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
-
-html {
-  background: var(--bg);
+html{
+  background:var(--bg);
 }
-
-body {
-  margin: 0;
-  min-height: 100vh;
+body{
+  margin:0;
+  min-height:100vh;
+  padding-bottom:150px;
   background:
-    radial-gradient(circle at 20% 0%, rgba(91,70,255,.13), transparent 32%),
-    radial-gradient(circle at 100% 15%, rgba(0,200,255,.08), transparent 28%),
+    radial-gradient(circle at 15% 0%,rgba(112,80,255,.14),transparent 32%),
+    radial-gradient(circle at 100% 15%,rgba(0,190,255,.07),transparent 28%),
     var(--bg);
-  color: var(--text);
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "SF Pro Display",
-    "Segoe UI",
-    Arial,
-    sans-serif;
-  padding-bottom: 150px;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
 }
-
-body.no-scroll {
-  overflow: hidden;
+body.no-scroll{
+  overflow:hidden;
 }
-
 button,
-input {
-  font: inherit;
+input{
+  font:inherit;
 }
-
-button {
-  -webkit-appearance: none;
+button{
+  -webkit-appearance:none;
 }
-
-.container {
-  width: 100%;
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 18px 15px 30px;
+.container{
+  width:100%;
+  max-width:920px;
+  margin:0 auto;
+  padding:18px 15px 30px;
 }
-
 /* HEADER */
-
-.header {
-  margin-bottom: 18px;
+.header{
+  margin-bottom:18px;
 }
-
-.top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
 }
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 11px;
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
 }
-
-.brand-logo {
-  width: 43px;
-  height: 43px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 21px;
-  font-weight: 900;
-  color: white;
-  background:
-    linear-gradient(135deg, #7557ff, #4b31d9);
-  box-shadow: 0 8px 28px rgba(93,65,255,.28);
+.brand-logo{
+  width:43px;
+  height:43px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#795aff,#4a31d8);
+  box-shadow:0 8px 28px rgba(93,65,255,.28);
+  font-size:20px;
+  font-weight:900;
 }
-
-.brand-title {
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -.5px;
+.brand-title{
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.5px;
 }
-
-.online {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 11px;
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.035);
-  border-radius: 20px;
-  color: #b5bac7;
-  font-size: 12px;
+.online{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 11px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.035);
+  border-radius:20px;
+  color:#b5bac7;
+  font-size:12px;
 }
-
-.online-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #37db7c;
-  box-shadow: 0 0 10px rgba(55,219,124,.7);
+.online-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#37db7c;
+  box-shadow:0 0 10px rgba(55,219,124,.7);
 }
-
-h1 {
-  margin: 27px 0 7px;
-  font-size: clamp(30px, 8vw, 44px);
-  line-height: 1;
-  letter-spacing: -1.7px;
+h1{
+  margin:27px 0 7px;
+  font-size:clamp(30px,8vw,44px);
+  line-height:1;
+  letter-spacing:-1.7px;
 }
-
-.subtitle {
-  max-width: 650px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.5;
+.subtitle{
+  max-width:650px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
 }
-
 /* DISCOUNT */
-
-.discount-box {
-  margin-top: 18px;
-  padding: 15px;
-  border-radius: 18px;
-  background:
-    linear-gradient(
-      135deg,
-      rgba(118,83,255,.18),
-      rgba(0,180,255,.08)
-    );
-  border: 1px solid rgba(135,109,255,.22);
-  overflow: hidden;
-  position: relative;
+.discount-box{
+  margin-top:18px;
+  padding:15px;
+  border-radius:18px;
+  background:linear-gradient(
+    135deg,
+    rgba(118,83,255,.18),
+    rgba(0,180,255,.08)
+  );
+  border:1px solid rgba(135,109,255,.22);
+  overflow:hidden;
+  position:relative;
 }
-
-.discount-box::after {
-  content: "";
-  position: absolute;
-  width: 130px;
-  height: 130px;
-  right: -45px;
-  top: -65px;
-  border-radius: 50%;
-  background: rgba(110,80,255,.16);
-  filter: blur(2px);
+.discount-box:after{
+  content:"";
+  position:absolute;
+  width:130px;
+  height:130px;
+  right:-45px;
+  top:-65px;
+  border-radius:50%;
+  background:rgba(110,80,255,.16);
 }
-
-.discount-title {
-  position: relative;
-  z-index: 1;
-  font-size: 14px;
-  font-weight: 800;
+.discount-title,
+.discount-text{
+  position:relative;
+  z-index:1;
 }
-
-.discount-text {
-  position: relative;
-  z-index: 1;
-  margin-top: 5px;
-  color: #aeb4c4;
-  font-size: 12px;
-  line-height: 1.45;
+.discount-title{
+  font-size:14px;
+  font-weight:800;
 }
-
-.discount-highlight {
-  color: #b69cff;
-  font-weight: 800;
+.discount-text{
+  margin-top:5px;
+  color:#aeb4c4;
+  font-size:12px;
+  line-height:1.45;
 }
-
+.discount-highlight{
+  color:#b69cff;
+  font-weight:800;
+}
 /* SEARCH */
-
-.search-wrap {
-  margin-top: 17px;
-  position: relative;
+.search-wrap{
+  margin-top:17px;
+  position:relative;
 }
-
-.search {
-  width: 100%;
-  height: 49px;
-  border: 1px solid var(--line);
-  border-radius: 15px;
-  background: rgba(18,20,27,.94);
-  color: white;
-  outline: none;
-  padding: 0 44px 0 43px;
-  font-size: 14px;
-  transition: .2s;
+.search{
+  width:100%;
+  height:49px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:rgba(18,20,27,.94);
+  color:#fff;
+  outline:none;
+  padding:0 44px;
+  font-size:14px;
 }
-
-.search:focus {
-  border-color: rgba(135,109,255,.4);
-  box-shadow: 0 0 0 3px rgba(117,83,255,.07);
+.search:focus{
+  border-color:rgba(135,109,255,.4);
+  box-shadow:0 0 0 3px rgba(117,83,255,.07);
 }
-
-.search::placeholder {
-  color: #656b7a;
+.search::placeholder{
+  color:#656b7a;
 }
-
-.search-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #858b99;
-  font-size: 20px;
-  z-index: 2;
+.search-icon{
+  position:absolute;
+  left:15px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#858b99;
+  font-size:19px;
 }
-
-.clear {
-  display: none;
-  position: absolute;
-  right: 8px;
-  top: 7px;
-  width: 35px;
-  height: 35px;
-  border: 0;
-  border-radius: 10px;
-  background: rgba(255,255,255,.06);
-  color: #aeb4c0;
-  cursor: pointer;
+.clear{
+  display:none;
+  position:absolute;
+  right:8px;
+  top:7px;
+  width:35px;
+  height:35px;
+  border:0;
+  border-radius:10px;
+  background:rgba(255,255,255,.06);
+  color:#aeb4c0;
 }
-
 /* CATEGORIES */
-
-.categories {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding: 13px 1px 3px;
+.categories{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding:13px 1px 3px;
 }
-
-.categories::-webkit-scrollbar {
-  display: none;
+.categories::-webkit-scrollbar{
+  display:none;
 }
-
-.category {
-  flex: 0 0 auto;
-  height: 36px;
-  padding: 0 14px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(255,255,255,.035);
-  color: #9298a7;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 650;
-  transition: .2s;
+.category{
+  flex:0 0 auto;
+  height:36px;
+  padding:0 14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:rgba(255,255,255,.035);
+  color:#9298a7;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:650;
 }
-
-.category.active {
-  color: #fff;
-  border-color: rgba(126,98,255,.42);
-  background: linear-gradient(
+.category.active{
+  color:#fff;
+  border-color:rgba(126,98,255,.42);
+  background:linear-gradient(
     135deg,
     rgba(110,77,255,.28),
     rgba(73,52,170,.2)
   );
 }
-
 /* GRID */
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 16px;
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-top:16px;
 }
-
 /* APP CARD */
-
-.app-card {
-  min-height: 165px;
-  padding: 14px;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,.07);
-  background: #12141a;
-  transition:
-    transform .18s ease,
-    border-color .18s ease,
-    box-shadow .18s ease;
+.app-card{
+  min-height:165px;
+  padding:14px;
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.07);
+  background:#12141a;
+  transition:.18s ease;
 }
-
-.app-card::before {
-  content: "";
-  position: absolute;
-  width: 110px;
-  height: 110px;
-  right: -50px;
-  top: -50px;
-  border-radius: 50%;
-  background: var(--app-color);
-  opacity: .13;
-  filter: blur(3px);
+.app-card:before{
+  content:"";
+  position:absolute;
+  width:110px;
+  height:110px;
+  right:-50px;
+  top:-50px;
+  border-radius:50%;
+  background:var(--app-color);
+  opacity:.13;
+  filter:blur(3px);
 }
-
-.app-card:active {
-  transform: scale(.975);
+.app-card:active{
+  transform:scale(.975);
 }
-
-.app-card.selected {
-  border-color: var(--app-color);
+.app-card.selected{
+  border-color:var(--app-color);
   box-shadow:
     0 0 0 1px var(--app-color),
     0 12px 35px rgba(0,0,0,.25);
 }
-
-/* APP ICON */
-
-.app-icon {
-  position: relative;
-  z-index: 1;
-  width: 50px;
-  height: 50px;
-  border-radius: 15px;
-  background: var(--app-gradient);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,.22);
+.app-icon{
+  position:relative;
+  z-index:1;
+  width:50px;
+  height:50px;
+  border-radius:15px;
+  background:var(--app-gradient);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  box-shadow:0 8px 20px rgba(0,0,0,.22);
 }
-
-.app-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.app-icon img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
-
-.fallback {
-  color: white;
-  font-size: 16px;
-  font-weight: 900;
+.fallback{
+  color:#fff;
+  font-size:16px;
+  font-weight:900;
 }
-
-/* CHECK */
-
-.check {
-  position: absolute;
-  z-index: 3;
-  right: 11px;
-  top: 11px;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.22);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: transparent;
-  font-size: 13px;
-  font-weight: 900;
+.check{
+  position:absolute;
+  z-index:3;
+  right:11px;
+  top:11px;
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.22);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:transparent;
+  font-size:13px;
+  font-weight:900;
 }
-
-.app-card.selected .check {
-  color: #111;
-  background: white;
-  border-color: white;
+.app-card.selected .check{
+  color:#111;
+  background:#fff;
+  border-color:#fff;
 }
-
-/* APP INFO */
-
-.app-name {
-  position: relative;
-  z-index: 1;
-  margin-top: 13px;
-  padding-right: 22px;
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 1.25;
+.app-name{
+  position:relative;
+  z-index:1;
+  margin-top:13px;
+  padding-right:22px;
+  font-size:14px;
+  font-weight:800;
+  line-height:1.25;
 }
-
-.app-type {
-  position: relative;
-  z-index: 1;
-  margin-top: 5px;
-  color: #777e8c;
-  font-size: 11px;
+.app-type{
+  position:relative;
+  z-index:1;
+  margin-top:5px;
+  color:#777e8c;
+  font-size:11px;
 }
-
 /* EMPTY */
-
-.empty {
-  display: none;
-  padding: 65px 20px;
-  text-align: center;
+.empty{
+  display:none;
+  padding:65px 20px;
+  text-align:center;
 }
-
-.empty.show {
-  display: block;
+.empty.show{
+  display:block;
 }
-
-.empty-icon {
-  width: 52px;
-  height: 52px;
-  margin: 0 auto 13px;
-  border-radius: 17px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,.05);
-  color: #737a89;
-  font-size: 22px;
+.empty-icon{
+  width:52px;
+  height:52px;
+  margin:0 auto 13px;
+  border-radius:17px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.05);
+  color:#737a89;
+  font-size:22px;
 }
-
-.empty-title {
-  font-size: 16px;
-  font-weight: 800;
+.empty-title{
+  font-size:16px;
+  font-weight:800;
 }
-
-.empty-text {
-  margin-top: 6px;
-  color: #707785;
-  font-size: 13px;
+.empty-text{
+  margin-top:6px;
+  color:#707785;
+  font-size:13px;
 }
-
-/* BOTTOM PANEL */
-
-.bottom {
-  position: fixed;
-  z-index: 20;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding:
-    10px 14px
-    calc(11px + env(safe-area-inset-bottom));
-  background:
-    linear-gradient(
-      to top,
-      rgba(8,9,13,1) 55%,
-      rgba(8,9,13,.96) 76%,
-      rgba(8,9,13,0)
-    );
+/* BOTTOM */
+.bottom{
+  position:fixed;
+  z-index:20;
+  left:0;
+  right:0;
+  bottom:0;
+  padding:10px 14px calc(11px + env(safe-area-inset-bottom));
+  background:linear-gradient(
+    to top,
+    rgba(8,9,13,1) 55%,
+    rgba(8,9,13,.96) 76%,
+    rgba(8,9,13,0)
+  );
 }
-
-.bottom-inner {
-  width: 100%;
-  max-width: 920px;
-  margin: 0 auto;
+.bottom-inner{
+  width:100%;
+  max-width:920px;
+  margin:0 auto;
 }
-
-/* PRICE */
-
-.price-panel {
-  display: none;
-  margin-bottom: 9px;
-  padding: 12px 14px;
-  border-radius: 17px;
-  background: rgba(20,22,29,.97);
-  border: 1px solid rgba(255,255,255,.08);
-  backdrop-filter: blur(20px);
+.price-panel{
+  display:none;
+  margin-bottom:9px;
+  padding:12px 14px;
+  border-radius:17px;
+  background:rgba(20,22,29,.97);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(20px);
 }
-
-.price-panel.visible {
-  display: block;
+.price-panel.visible{
+  display:block;
 }
-
-.price-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+.price-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
 }
-
-.price-label {
-  color: #858c9a;
-  font-size: 12px;
+.price-label{
+  color:#858c9a;
+  font-size:12px;
 }
-
-.price-value {
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
+.price-value{
+  color:#fff;
+  font-size:13px;
+  font-weight:700;
 }
-
-.total-row {
-  margin-top: 7px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255,255,255,.06);
+.total-row{
+  margin-top:7px;
+  padding-top:8px;
+  border-top:1px solid rgba(255,255,255,.06);
 }
-
-.total-row .price-label {
-  color: #fff;
-  font-weight: 700;
+.total-row .price-label{
+  color:#fff;
+  font-weight:700;
 }
-
-.total-row .price-value {
-  font-size: 17px;
+.total-row .price-value{
+  font-size:17px;
 }
-
-.sale {
-  color: #55e18b !important;
+.sale{
+  color:#55e18b !important;
 }
-
-/* BUTTON */
-
-.continue {
-  width: 100%;
-  height: 52px;
-  border: 0;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #ffffff, #e9e9ee);
-  color: #090a0e;
-  font-size: 15px;
-  font-weight: 850;
-  cursor: pointer;
-  box-shadow: 0 8px 25px rgba(0,0,0,.22);
-  transition: .18s;
+.continue{
+  width:100%;
+  height:52px;
+  border:0;
+  border-radius:16px;
+  background:linear-gradient(135deg,#fff,#e9e9ee);
+  color:#090a0e;
+  font-size:15px;
+  font-weight:850;
+  cursor:pointer;
+  box-shadow:0 8px 25px rgba(0,0,0,.22);
+  transition:.18s;
 }
-
-.continue:disabled {
-  opacity: .38;
-  box-shadow: none;
+.continue:disabled{
+  opacity:.38;
+  box-shadow:none;
 }
-
-.continue:not(:disabled):active {
-  transform: scale(.985);
+.continue:not(:disabled):active{
+  transform:scale(.985);
 }
-
+/* MODAL */
+.payment-modal{
+  position:fixed;
+  z-index:100;
+  inset:0;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:15px;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(10px);
+}
+.payment-modal.show{
+  display:flex;
+}
+.payment-card{
+  width:100%;
+  max-width:520px;
+  max-height:90vh;
+  overflow-y:auto;
+  position:relative;
+  padding:22px;
+  border-radius:24px;
+  background:#15171f;
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 20px 70px rgba(0,0,0,.5);
+  animation:paymentUp .22s ease;
+}
+@keyframes paymentUp{
+  from{
+    opacity:0;
+    transform:translateY(30px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+.payment-close{
+  position:absolute;
+  right:14px;
+  top:14px;
+  width:34px;
+  height:34px;
+  border:0;
+  border-radius:10px;
+  background:rgba(255,255,255,.07);
+  color:#aaa;
+  font-size:22px;
+  cursor:pointer;
+}
+.payment-title{
+  font-size:21px;
+  font-weight:850;
+  padding-right:40px;
+}
+.payment-subtitle{
+  margin-top:6px;
+  color:#858c9a;
+  font-size:13px;
+}
+.payment-subtitle strong{
+  color:#fff;
+}
+.payment-total{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-top:18px;
+  padding:15px;
+  border-radius:16px;
+  background:rgba(255,255,255,.05);
+}
+.payment-total span{
+  color:#8d93a3;
+  font-size:13px;
+}
+.payment-total strong{
+  font-size:21px;
+}
+.payment-details{
+  margin-top:12px;
+  padding:4px 14px;
+  border-radius:16px;
+  background:rgba(255,255,255,.035);
+}
+.payment-detail{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  min-height:53px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.payment-detail:last-child{
+  border-bottom:0;
+}
+.payment-detail span{
+  color:#777e8c;
+  font-size:12px;
+}
+.payment-detail strong{
+  color:#fff;
+  font-size:13px;
+  text-align:right;
+  word-break:break-word;
+}
+.copy-payment{
+  width:100%;
+  height:49px;
+  margin-top:14px;
+  border:0;
+  border-radius:14px;
+  background:#fff;
+  color:#090a0e;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+}
+.paid-button{
+  width:100%;
+  min-height:50px;
+  margin-top:10px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:14px;
+  background:#242731;
+  color:#fff;
+  font-size:14px;
+  font-weight:750;
+  cursor:pointer;
+}
+.payment-note{
+  margin-top:12px;
+  color:#6f7685;
+  font-size:11px;
+  line-height:1.45;
+  text-align:center;
+}
+/* SUCCESS */
+.success{
+  display:none;
+  text-align:center;
+  padding:15px 4px 4px;
+}
+.success.show{
+  display:block;
+}
+.success-icon{
+  width:62px;
+  height:62px;
+  margin:0 auto 15px;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(72,223,136,.12);
+  color:var(--green);
+  font-size:28px;
+}
+.success-title{
+  font-size:20px;
+  font-weight:850;
+}
+.success-text{
+  margin-top:8px;
+  color:#858c9a;
+  font-size:13px;
+  line-height:1.5;
+}
+.instruction{
+  margin-top:16px;
+  padding:15px;
+  text-align:left;
+  border-radius:16px;
+  background:rgba(255,255,255,.04);
+}
+.instruction strong{
+  font-size:13px;
+}
+.instruction p{
+  margin:7px 0 0;
+  color:#858c9a;
+  font-size:12px;
+  line-height:1.5;
+}
 /* TOAST */
-
-.toast {
-  position: fixed;
-  z-index: 200;
-  left: 50%;
-  bottom: 155px;
-  transform: translate(-50%, 20px);
-  max-width: calc(100% - 30px);
-  padding: 11px 15px;
-  border-radius: 13px;
-  background: #242731;
-  border: 1px solid rgba(255,255,255,.09);
-  color: #fff;
-  font-size: 13px;
-  opacity: 0;
-  pointer-events: none;
-  transition: .22s;
-  white-space: nowrap;
+.toast{
+  position:fixed;
+  z-index:200;
+  left:50%;
+  bottom:155px;
+  transform:translate(-50%,20px);
+  max-width:calc(100% - 30px);
+  padding:11px 15px;
+  border-radius:13px;
+  background:#242731;
+  border:1px solid rgba(255,255,255,.09);
+  color:#fff;
+  font-size:13px;
+  opacity:0;
+  pointer-events:none;
+  transition:.22s;
+  white-space:nowrap;
 }
-
-.toast.show {
-  opacity: 1;
-  transform: translate(-50%, 0);
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
 }
-
-/* ==========================================
-   PAYMENT MODAL
-========================================== */
-
-.payment-modal {
-  position: fixed;
-  z-index: 100;
-  inset: 0;
-  display: none;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 15px;
-  background: rgba(0,0,0,.72);
-  backdrop-filter: blur(10px);
-}
-
-.payment-modal.show {
-  display: flex;
-}
-
-.payment-card {
-  width: 100%;
-  max-width: 520px;
-  position: relative;
-  padding: 22px;
-  border-radius: 24px;
-  background: #15171f;
-  border: 1px solid rgba(255,255,255,.1);
-  box-shadow: 0 20px 70px rgba(0,0,0,.5);
-  animation: paymentUp .22s ease;
-}
-
-@keyframes paymentUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
+@media(max-width:380px){
+  .grid{
+    gap:8px;
   }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .app-card{
+    padding:12px;
+    min-height:155px;
+  }
+  .app-name{
+    font-size:13px;
+  }
+  .online{
+    padding:6px 8px;
   }
 }
-
-.payment-close {
-  position: absolute;
-  right: 14px;
-  top: 14px;
-  width: 34px;
-  height: 34px;
-  border: 0;
-  border-radius: 10px;
-  background: rgba(255,255,255,.07);
-  color: #aaa;
-  font-size: 22px;
-  cursor: pointer;
+@media(min-width:700px){
+  .grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
 }
-
-.payment-title {
-  font-size: 21px;
-  font-weight: 850;
-  padding-right: 40px;
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <div class="top">
+      <div class="brand">
+        <div class="brand-logo">A</div>
+        <div class="brand-title">AppCore</div>
+      </div>
+      <div class="online">
+        <span class="online-dot"></span>
+        Онлайн
+      </div>
+    </div>
+    <h1>Приложения<br>для iPhone</h1>
+    <div class="subtitle">
+      Выберите нужные приложения. После оплаты вы получите дальнейшую инструкцию.
+    </div>
+    <div class="discount-box">
+      <div class="discount-title">Специальное предложение</div>
+      <div class="discount-text">
+        Первые 3 приложения — по
+        <span class="discount-highlight">500 ₽</span>.
+        При выборе 4 приложений — четвёртое
+        <span class="discount-highlight">бесплатно</span>.
+      </div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input
+        id="search"
+        class="search"
+        type="search"
+        autocomplete="off"
+        placeholder="Поиск приложения..."
+      >
+      <button id="clearSearch" class="clear" type="button">×</button>
+    </div>
+    <div id="categories" class="categories"></div>
+  </header>
+  <main>
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty">
+      <div class="empty-icon">⌕</div>
+      <div class="empty-title">
+        Ничего не найдено
+      </div>
+      <div class="empty-text">
+        Попробуйте изменить запрос.
+      </div>
+    </div>
+  </main>
+</div>
+<!-- BOTTOM -->
+<div class="bottom">
+  <div class="bottom-inner">
+    <div id="pricePanel" class="price-panel">
+      <div class="price-row">
+        <span class="price-label">Выбрано</span>
+        <span id="countText" class="price-value">0</span>
+      </div>
+      <div class="price-row">
+        <span class="price-label">Стоимость</span>
+        <span id="basePrice" class="price-value">0 ₽</span>
+      </div>
+      <div id="discountRow" class="price-row" style="display:none">
+        <span class="price-label">Скидка</span>
+        <span id="discountPrice" class="price-value sale">−0 ₽</span>
+      </div>
+      <div class="price-row total-row">
+        <span class="price-label">Итого</span>
+        <span id="totalPrice" class="price-value">0 ₽</span>
+      </div>
+    </div>
+    <button id="continueBtn" class="continue" type="button" disabled>
+      Выберите приложение
+    </button>
+  </div>
+</div>
+<!-- PAYMENT MODAL -->
+<div id="paymentModal" class="payment-modal">
+  <div class="payment-card">
+    <button id="closePayment" class="payment-close" type="button">
+      ×
+    </button>
+    <div id="paymentContent">
+      <div class="payment-title">
+        Оплата заказа
+      </div>
+      <div class="payment-subtitle">
+        Вы выбрали:
+        <strong id="paymentAppsCount">0 приложений</strong>
+      </div>
+      <div class="payment-total">
+        <span>К оплате</span>
+        <strong id="paymentAmount">0 ₽</strong>
+      </div>
+      <div class="payment-details">
+        <div class="payment-detail">
+          <span>Получатель</span>
+          <strong id="recipientName">Укажите получателя</strong>
+        </div>
+        <div class="payment-detail">
+          <span>Банк</span>
+          <strong id="bankName">Укажите банк</strong>
+        </div>
+        <div class="payment-detail">
+          <span>Номер</span>
+          <strong id="cardNumber">Укажите номер</strong>
+        </div>
+      </div>
+      <button id="copyPayment" class="copy-payment" type="button">
+        Скопировать номер
+      </button>
+      <button id="paidButton" class="paid-button" type="button">
+        Я оплатил — продолжить
+      </button>
+      <div class="payment-note">
+        После оплаты нажмите кнопку «Я оплатил».
+        Не закрывайте страницу до завершения.
+      </div>
+    </div>
+    <div id="successContent" class="success">
+      <div class="success-icon">
+        ✓
+      </div>
+      <div class="success-title">
+        Оплата отмечена
+      </div>
+      <div class="success-text">
+        Следующий этап заказа подготовлен.
+        Свяжитесь с исполнителем и отправьте подтверждение оплаты.
+      </div>
+      <div class="instruction">
+        <strong>Что делать дальше</strong>
+        <p>
+          Отправьте подтверждение оплаты в WhatsApp.
+          После проверки вам будет предоставлена дальнейшая инструкция
+          по установке выбранных приложений.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+<script>
+"use strict";
+/*
+==========================================================
+ APPCORE — ОСНОВНЫЕ НАСТРОЙКИ
+==========================================================
+ ВАЖНО:
+ Здесь укажи свои реальные реквизиты.
+ Не вставляй данные банковской карты в JavaScript,
+ если не хочешь хранить их публично в GitHub.
+ Для публичного сайта лучше использовать номер телефона
+ или СБП/платёжную страницу.
+*/
+const CONFIG = {
+  pricePerApp: 500,
+  freeAppNumber: 4,
+  recipientName: "УКАЖИТЕ ПОЛУЧАТЕЛЯ",
+  bankName: "УКАЖИТЕ БАНК",
+  paymentNumber: "УКАЖИТЕ НОМЕР",
+  whatsapp: "79289480706"
+};
+/*
+==========================================================
+ СПИСОК ПРИЛОЖЕНИЙ
+==========================================================
+*/
+const APPS = [
+  {
+    id:"sber",
+    name:"Сбербанк",
+    type:"Банковское приложение",
+    category:"Банки",
+    color:"#21c76b",
+    gradient:"linear-gradient(135deg,#20c76b,#087a3c)",
+    logo:"https://cdn.simpleicons.org/sberbank/ffffff"
+  },
+  {
+    id:"tbank",
+    name:"Т-Банк",
+    type:"Банковское приложение",
+    category:"Банки",
+    color:"#ffdd00",
+    gradient:"linear-gradient(135deg,#ffe900,#d6ad00)",
+    logo:"https://cdn.simpleicons.org/tbank/111111"
+  },
+  {
+    id:"vtb",
+    name:"ВТБ",
+    type:"Банковское приложение",
+    category:"Банки",
+    color:"#1594ff",
+    gradient:"linear-gradient(135deg,#27a4ff,#1255d6)",
+    logo:"https://cdn.simpleicons.org/vtb/ffffff"
+  },
+  {
+    id:"alfa",
+    name:"Альфа-Банк",
+    type:"Банковское приложение",
+    category:"Банки",
+    color:"#ef3124",
+    gradient:"linear-gradient(135deg,#ff493b,#c81913)",
+    logo:"https://cdn.simpleicons.org/alfabank/ffffff"
+  },
+  {
+    id:"gazprom",
+    name:"Газпромбанк",
+    type:"Банковское приложение",
+    category:"Банки",
+    color:"#1597ff",
+    gradient:"linear-gradient(135deg,#32adff,#1762d2)",
+    logo:"https://cdn.simpleicons.org/gazprombank/ffffff"
+  },
+  {
+    id:"rosselkhoz",
+    name:"Россельхозбанк",
+    type:"Банковское приложение",
+    category:"Банки",
+    color:"#45a843",
+    gradient:"linear-gradient(135deg,#55c951,#207721)",
+    logo:"https://cdn.simpleicons.org/rosselkhozbank/ffffff"
+  },
+  {
+    id:"psb",
+    name:"ПСБ",
+    type:"Банковское приложение",
+    category:"Банки",
+    color:"#e6332a",
+    gradient:"linear-gradient(135deg,#ff4b42,#a91815)",
+    logo:"https://cdn.simpleicons.org/psbank/ffffff"
+  },
+  {
+    id:"sberbusiness",
+    name:"СберБизнес",
+    type:"Для бизнеса",
+    category:"Бизнес",
+    color:"#21c76b",
+    gradient:"linear-gradient(135deg,#2bd878,#087a3c)",
+    logo:"https://cdn.simpleicons.org/sberbank/ffffff"
+  },
+  {
+    id:"tinvest",
+    name:"Т-Инвестиции",
+    type:"Инвестиции",
+    category:"Финансы",
+    color:"#ffdd00",
+    gradient:"linear-gradient(135deg,#ffe900,#d6ad00)",
+    logo:"https://cdn.simpleicons.org/tbank/111111"
+  },
+  {
+    id:"avito",
+    name:"Авито",
+    type:"Объявления",
+    category:"Сервисы",
+    color:"#75c943",
+    gradient:"linear-gradient(135deg,#8be34e,#43931d)",
+    logo:"https://cdn.simpleicons.org/avito/ffffff"
+  },
+  {
+    id:"vk",
+    name:"VK",
+    type:"Социальная сеть",
+    category:"Соцсети",
+    color:"#0077ff",
+    gradient:"linear-gradient(135deg,#1687ff,#0058c9)",
+    logo:"https://cdn.simpleicons.org/vk/ffffff"
+  },
+  {
+    id:"vkvideo",
+    name:"VK Видео",
+    type:"Видео",
+    category:"Видео",
+    color:"#0077ff",
+    gradient:"linear-gradient(135deg,#238eff,#0058c9)",
+    logo:"https://cdn.simpleicons.org/vk/ffffff"
+  },
+  {
+    id:"rutube",
+    name:"RUTUBE",
+    type:"Видео",
+    category:"Видео",
+    color:"#008cff",
+    gradient:"linear-gradient(135deg,#16a2ff,#0060ca)",
+    logo:"https://cdn.simpleicons.org/rutube/ffffff"
+  },
+  {
+    id:"rave",
+    name:"Rave",
+    type:"Совместный просмотр",
+    category:"Видео",
+    color:"#7757ff",
+    gradient:"linear-gradient(135deg,#8e6aff,#4428be)",
+    logo:"https://cdn.simpleicons.org/rave/ffffff"
+  },
+  {
+    id:"happ",
+    name:"Happ",
+    type:"Сетевое приложение",
+    category:"Сервисы",
+    color:"#6d6dff",
+    gradient:"linear-gradient(135deg,#8b82ff,#423ac0)",
+    logo:""
+  }
+];
+/*
+==========================================================
+ СОСТОЯНИЕ
+==========================================================
+*/
+let selectedApps = new Set();
+let activeCategory = "Все";
+let searchValue = "";
+/*
+==========================================================
+ DOM
+==========================================================
+*/
+const grid = document.getElementById("grid");
+const empty = document.getElementById("empty");
+const categories = document.getElementById("categories");
+const search = document.getElementById("search");
+const clearSearch = document.getElementById("clearSearch");
+const pricePanel = document.getElementById("pricePanel");
+const countText = document.getElementById("countText");
+const basePrice = document.getElementById("basePrice");
+const discountRow = document.getElementById("discountRow");
+const discountPrice = document.getElementById("discountPrice");
+const totalPrice = document.getElementById("totalPrice");
+const continueBtn = document.getElementById("continueBtn");
+const paymentModal = document.getElementById("paymentModal");
+const closePayment = document.getElementById("closePayment");
+const paymentAppsCount = document.getElementById("paymentAppsCount");
+const paymentAmount = document.getElementById("paymentAmount");
+const recipientName = document.getElementById("recipientName");
+const bankName = document.getElementById("bankName");
+const cardNumber = document.getElementById("cardNumber");
+const copyPayment = document.getElementById("copyPayment");
+const paidButton = document.getElementById("paidButton");
+const paymentContent = document.getElementById("paymentContent");
+const successContent = document.getElementById("successContent");
+const toast = document.getElementById("toast");
+/*
+==========================================================
+ HELPERS
+==========================================================
+*/
+function escapeHtml(value){
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
-
-.payment-subtitle {
-  margin-top: 6px;
-  color: #858c9a;
-  font-size: 13px;
+function formatPrice(value){
+  return new Intl.NumberFormat("ru-RU").format(value) + " ₽";
 }
-
-.payment-subtitle strong {
-  color: #fff;
+function pluralApps(number){
+  const mod10 = number % 10;
+  const mod100 = number % 100;
+  if(mod10 === 1 && mod100 !== 11){
+    return "приложение";
+  }
+  if(
+    mod10 >= 2 &&
+    mod10 <= 4 &&
+    !(mod100 >= 12 && mod100 <= 14)
+  ){
+    return "приложения";
+  }
+  return "приложений";
 }
-
-.payment-total {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  margin-top: 18px;
-  padding: 15px;
-  border-radius: 16px;
-  background: rgba(255,255,255,.05);
+function showToast(message){
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => {
+    toast.classList.remove("show");
+  },2200);
 }
-
-.payment-total span {
-  color: #8d93a3;
-  font-size: 13px;
+/*
+==========================================================
+ CATEGORIES
+==========================================================
+*/
+function buildCategories(){
+  const unique = [
+    "Все",
+    ...new Set(APPS.map(app => app.category))
+  ];
+  categories.innerHTML = unique.map(category => {
+    const active = category === activeCategory
+      ? "active"
+      : "";
+    return `
+      <button
+        type="button"
+        class="category ${active}"
+        data-category="${escapeHtml(category)}"
+      >
+        ${escapeHtml(category)}
+      </button>
+    `;
+  }).join("");
+  categories
+    .querySelectorAll(".category")
+    .forEach(button => {
+      button.addEventListener("click",() => {
+        activeCategory = button.dataset.category;
+        buildCategories();
+        renderApps();
+      });
+    });
 }
-
-.payment-total strong {
-  font-size: 21px;
+/*
+==========================================================
+ FILTER
+==========================================================
+*/
+function getFilteredApps(){
+  const query = searchValue.trim().toLowerCase();
+  return APPS.filter(app => {
+    const categoryMatch =
+      activeCategory === "Все" ||
+      app.category === activeCategory;
+    const searchMatch =
+      !query ||
+      app.name.toLowerCase().includes(query) ||
+      app.type.toLowerCase().includes(query) ||
+      app.category.toLowerCase().includes(query);
+    return categoryMatch && searchMatch;
+  });
 }
-
-.payment-details {
-  margin-top: 12px;
-  padding: 4px 14px;
-  border-radius: 16px;
-  background: rgba(255,255,255,.035);
+/*
+==========================================================
+ RENDER APPS
+==========================================================
+*/
+function renderApps(){
+  const apps = getFilteredApps();
+  if(!apps.length){
+    grid.innerHTML = "";
+    empty.classList.add("show");
+    return;
+  }
+  empty.classList.remove("show");
+  grid.innerHTML = apps.map(app => {
+    const selected = selectedApps.has(app.id)
+      ? "selected"
+      : "";
+    const logo = app.logo
+      ? `
+        <img
+          src="${app.logo}"
+          alt=""
+          loading="lazy"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+        >
+      `
+      : "";
+    return `
+      <article
+        class="app-card ${selected}"
+        data-id="${escapeHtml(app.id)}"
+        style="
+          --app-color:${app.color};
+          --app-gradient:${app.gradient};
+        "
+      >
+        <div class="check">✓</div>
+        <div class="app-icon">
+          ${logo}
+          <div
+            class="fallback"
+            style="${app.logo ? "display:none" : ""}"
+          >
+            ${escapeHtml(app.name.charAt(0))}
+          </div>
+        </div>
+        <div class="app-name">
+          ${escapeHtml(app.name)}
+        </div>
+        <div class="app-type">
+          ${escapeHtml(app.type)}
+        </div>
+      </article>
+    `;
+  }).join("");
+  grid
+    .querySelectorAll(".app-card")
+    .forEach(card => {
+      card.addEventListener("click",() => {
+        toggleApp(card.dataset.id);
+      });
+    });
 }
-
-.payment-detail {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  min-height: 53px;
-  border-bottom: 1px solid rgba(255,255,255,.06);
+/*
+==========================================================
+ SELECT APP
+==========================================================
+*/
+function toggleApp(id){
+  if(selectedApps.has(id)){
+    selectedApps.delete(id);
+  }else{
+    selectedApps.add(id);
+  }
+  renderApps();
+  updatePrice();
 }
-
-.payment-detail:last-child {
-  border-bottom: 0;
+/*
+==========================================================
+ PRICE
+==========================================================
+*/
+function calculatePrice(){
+  const count = selectedApps.size;
+  if(count === 0){
+    return {
+      base:0,
+      discount:0,
+      total:0
+    };
+  }
+  const base = count * CONFIG.pricePerApp;
+  let discount = 0;
+  /*
+    4-е приложение бесплатно.
+    8-е, 12-е и т.д. также бесплатно,
+    если пользователь выберет такие количества.
+  */
+  if(
+    count >= CONFIG.freeAppNumber &&
+    count % CONFIG.freeAppNumber === 0
+  ){
+    discount =
+      (count / CONFIG.freeAppNumber) *
+      CONFIG.pricePerApp;
+  }
+  /*
+    Для 5–7 приложений бесплатным остаётся
+    только каждое 4-е приложение.
+  */
+  if(count >= CONFIG.freeAppNumber){
+    const freeCount =
+      Math.floor(count / CONFIG.freeAppNumber);
+    discount =
+      freeCount * CONFIG.pricePerApp;
+  }
+  return {
+    base,
+    discount,
+    total:base - discount
+  };
 }
-
-.payment-detail span {
-  color: #777e8c;
-  font-size: 12px;
+function updatePrice(){
+  const count = selectedApps.size;
+  if(count === 0){
+    pricePanel.classList.remove("visible");
+    continueBtn.disabled = true;
+    continueBtn.textContent = "Выберите приложение";
+    return;
+  }
+  const price = calculatePrice();
+  pricePanel.classList.add("visible");
+  countText.textContent =
+    `${count} ${pluralApps(count)}`;
+  basePrice.textContent =
+    formatPrice(price.base);
+  totalPrice.textContent =
+    formatPrice(price.total);
+  if(price.discount > 0){
+    discountRow.style.display = "flex";
+    discountPrice.textContent =
+      "−" + formatPrice(price.discount);
+  }else{
+    discountRow.style.display = "none";
+  }
+  continueBtn.disabled = false;
+  continueBtn.textContent =
+    `Продолжить — ${formatPrice(price.total)}`;
 }
-
-.payment-detail strong {
-  color: #fff;
-  font-size: 13px;
-  text-align: right;
+/*
+==========================================================
+ PAYMENT
+==========================================================
+*/
+function openPayment(){
+  if(selectedApps.size === 0){
+    showToast("Сначала выберите приложение");
+    return;
+  }
+  const price = calculatePrice();
+  paymentAppsCount.textContent =
+    `${selectedApps.size} ${pluralApps(selectedApps.size)}`;
+  paymentAmount.textContent =
+    formatPrice(price.total);
+  recipientName.textContent =
+    CONFIG.recipientName;
+  bankName.textContent =
+    CONFIG.bankName;
+  cardNumber.textContent =
+    CONFIG.paymentNumber;
+  paymentContent.style.display = "block";
+  successContent.classList.remove("show");
+  paymentModal.classList.add("show");
+  document.body.classList.add("no-scroll");
 }
-
-.copy-payment {
-  width: 100%;
-  height: 49px;
-  margin-top: 14px;
-  border: 0;
-  border-radius: 14px;
-  background: #fff;
-  color: #090a0e;
-  font-size: 14px
-```
+function closePaymentModal(){
+  paymentModal.classList.remove("show");
+  document.body.classList.remove("no-scroll");
+}
+/*
+==========================================================
+ COPY PAYMENT
+==========================================================
+*/
+async function copyPaymentNumber(){
+  const number = CONFIG.paymentNumber;
+  if(
+    !number ||
+    number.includes("УКАЖИТЕ")
+  ){
+    showToast("Сначала укажите реквизиты");
+    return;
+  }
+  try{
+    await navigator.clipboard.writeText(number);
+    showToast("Номер скопирован");
+  }catch(error){
+    const input =
+      document.createElement("textarea");
+    input.value = number;
+    input.style.position = "fixed";
+    input.style.opacity = "0";
+    document.body.appendChild(input);
+    input.select();
+    try{
+      document.execCommand("copy");
+      showToast("Номер скопирован");
+    }catch(e){
+      showToast("Не удалось скопировать");
+    }
+    input.remove();
+  }
+}
+/*
+==========================================================
+ PAYMENT CONFIRMATION
+==========================================================
+*/
+function markAsPaid(){
+  paymentContent.style.display = "none";
+  successContent.classList.add("show");
+}
+/*
+==========================================================
+ SEARCH
+==========================================================
+*/
+search.addEventListener("input",() => {
+  searchValue = search.value;
+  clearSearch.style.display =
+    searchValue ? "block" : "none";
+  renderApps();
+});
+clearSearch.addEventListener("click",() => {
+  search.value = "";
+  searchValue = "";
+  clearSearch.style.display = "none";
+  renderApps();
+  search.focus();
+});
+/*
+==========================================================
+ EVENTS
+==========================================================
+*/
+continueBtn.addEventListener("click",openPayment);
+closePayment.addEventListener("click",closePaymentModal);
+copyPayment.addEventListener("click",copyPaymentNumber);
+paidButton.addEventListener("click",markAsPaid);
+paymentModal.addEventListener("click",(event) => {
+  if(event.target === paymentModal){
+    closePaymentModal();
+  }
+});
+document.addEventListener("keydown",(event) => {
+  if(event.key === "Escape"){
+    closePaymentModal();
+  }
+});
+/*
+==========================================================
+ INITIALIZATION
+==========================================================
+*/
+buildCategories();
+renderApps();
+updatePrice();
+</script>
+</body>
+</html>
