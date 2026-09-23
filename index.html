@@ -60,10 +60,6 @@ button {
   padding: 18px 15px 30px;
 }
 
-/* =========================
-   HEADER
-========================= */
-
 .header {
   margin-bottom: 18px;
 }
@@ -134,10 +130,6 @@ h1 {
   line-height: 1.5;
 }
 
-/* =========================
-   DISCOUNT
-========================= */
-
 .discount-box {
   margin-top: 18px;
   padding: 15px;
@@ -185,10 +177,6 @@ h1 {
   color: #b69cff;
   font-weight: 800;
 }
-
-/* =========================
-   SEARCH
-========================= */
 
 .search-wrap {
   margin-top: 17px;
@@ -241,10 +229,6 @@ h1 {
   cursor: pointer;
 }
 
-/* =========================
-   CATEGORIES
-========================= */
-
 .categories {
   display: flex;
   gap: 8px;
@@ -281,20 +265,12 @@ h1 {
   );
 }
 
-/* =========================
-   GRID
-========================= */
-
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin-top: 16px;
 }
-
-/* =========================
-   APP CARD
-========================= */
 
 .app-card {
   min-height: 165px;
@@ -335,10 +311,6 @@ h1 {
     0 12px 35px rgba(0,0,0,.25);
 }
 
-/* =========================
-   APP ICON
-========================= */
-
 .app-icon {
   position: relative;
   z-index: 1;
@@ -365,10 +337,6 @@ h1 {
   font-weight: 900;
 }
 
-/* =========================
-   CHECK
-========================= */
-
 .check {
   position: absolute;
   z-index: 3;
@@ -393,10 +361,6 @@ h1 {
   border-color: white;
 }
 
-/* =========================
-   APP INFO
-========================= */
-
 .app-name {
   position: relative;
   z-index: 1;
@@ -414,10 +378,6 @@ h1 {
   color: #777e8c;
   font-size: 11px;
 }
-
-/* =========================
-   EMPTY
-========================= */
 
 .empty {
   display: none;
@@ -453,10 +413,6 @@ h1 {
   font-size: 13px;
 }
 
-/* =========================
-   BOTTOM PANEL
-========================= */
-
 .bottom {
   position: fixed;
   z-index: 20;
@@ -480,10 +436,6 @@ h1 {
   max-width: 920px;
   margin: 0 auto;
 }
-
-/* =========================
-   PRICE
-========================= */
 
 .price-panel {
   display: none;
@@ -536,10 +488,6 @@ h1 {
   color: #55e18b !important;
 }
 
-/* =========================
-   BUTTON
-========================= */
-
 .continue {
   width: 100%;
   height: 52px;
@@ -562,10 +510,6 @@ h1 {
 .continue:not(:disabled):active {
   transform: scale(.985);
 }
-
-/* =========================
-   TOAST
-========================= */
 
 .toast {
   position: fixed;
@@ -590,10 +534,6 @@ h1 {
   opacity: 1;
   transform: translate(-50%, 0);
 }
-
-/* =========================
-   PAYMENT MODAL
-========================= */
 
 .payment-overlay {
   position: fixed;
@@ -770,10 +710,6 @@ h1 {
   cursor: pointer;
 }
 
-/* =========================
-   PHONE
-========================= */
-
 .phone-input {
   width: 100%;
   height: 43px;
@@ -788,10 +724,6 @@ h1 {
 .phone-input::placeholder {
   color: #656b7a;
 }
-
-/* =========================
-   PAYMENT NOTE
-========================= */
 
 .payment-note {
   margin-top: 13px;
@@ -820,10 +752,6 @@ h1 {
 .payment-done:disabled {
   opacity: .5;
 }
-
-/* =========================
-   DESKTOP
-========================= */
 
 @media (min-width: 650px) {
 
@@ -866,10 +794,6 @@ h1 {
 </head>
 
 <body>
-
-<!-- =========================
-     SUPABASE
-========================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -1004,10 +928,6 @@ const supabaseClient =
 </div>
 
 
-<!-- =========================
-     BOTTOM
-========================= -->
-
 <div class="bottom">
 
   <div class="bottom-inner">
@@ -1052,10 +972,6 @@ const supabaseClient =
 </div>
 
 
-<!-- =========================
-     PAYMENT MODAL
-========================= -->
-
 <div id="paymentOverlay" class="payment-overlay">
 
   <div
@@ -1087,7 +1003,6 @@ const supabaseClient =
       указанную сумму по реквизитам ниже.
     </div>
 
-
     <div class="order-box">
 
       <div class="order-title">
@@ -1110,7 +1025,6 @@ const supabaseClient =
       </div>
 
     </div>
-
 
     <div class="requisites-title">
       Контакт для заказа
@@ -1136,7 +1050,6 @@ const supabaseClient =
       </div>
 
     </div>
-
 
     <div class="requisites-title">
       Реквизиты для оплаты
@@ -1169,7 +1082,6 @@ const supabaseClient =
 
     </div>
 
-
     <div class="requisite">
 
       <div class="requisite-label">
@@ -1196,7 +1108,6 @@ const supabaseClient =
       </div>
 
     </div>
-
 
     <div class="requisite">
 
@@ -1225,13 +1136,11 @@ const supabaseClient =
 
     </div>
 
-
     <div class="payment-note">
       ⚠️ После перевода сохраните чек об оплате.
       Не закрывайте страницу, пока не убедитесь,
       что перевод выполнен.
     </div>
-
 
     <button
       id="paymentDone"
@@ -1252,28 +1161,13 @@ const supabaseClient =
 <script>
 "use strict";
 
-
-/* ==========================================
-   НАСТРОЙКИ
-========================================== */
-
 const PRICE = 500;
-
-
-/* ==========================================
-   РЕКВИЗИТЫ
-========================================== */
 
 const PAYMENT_DETAILS = {
   recipient: "Мурат Межидов М",
   card: "+79289480706",
   bank: "Т-Банк"
 };
-
-
-/* ==========================================
-   ПРИЛОЖЕНИЯ
-========================================== */
 
 const apps = [
 
@@ -1499,21 +1393,10 @@ const apps = [
 
 ];
 
-
-/* ==========================================
-   СОСТОЯНИЕ
-========================================== */
-
 let selected = new Set();
 let currentCategory = "all";
 let query = "";
-
 let currentOrder = null;
-
-
-/* ==========================================
-   ЭЛЕМЕНТЫ
-========================================== */
 
 const appList =
   document.getElementById("appList");
@@ -1569,11 +1452,6 @@ const paymentTotal =
 const phoneInput =
   document.getElementById("phoneInput");
 
-
-/* ==========================================
-   СКИДКА
-========================================== */
-
 function getDiscount(count) {
 
   if (count >= 5) return 30;
@@ -1583,11 +1461,6 @@ function getDiscount(count) {
 
   return 0;
 }
-
-
-/* ==========================================
-   ЦЕНА
-========================================== */
 
 function calculatePrice(count) {
 
@@ -1610,21 +1483,11 @@ function calculatePrice(count) {
   };
 }
 
-
-/* ==========================================
-   ФОРМАТ ЦЕНЫ
-========================================== */
-
 function money(value) {
 
   return Math.round(value)
     .toLocaleString("ru-RU") + " ₽";
 }
-
-
-/* ==========================================
-   ОБНОВЛЕНИЕ ЦЕНЫ
-========================================== */
 
 function updatePrice() {
 
@@ -1670,11 +1533,6 @@ function updatePrice() {
     money(price.total);
 }
 
-
-/* ==========================================
-   НАЧАЛЬНЫЕ БУКВЫ
-========================================== */
-
 function initials(name) {
 
   const words =
@@ -1697,11 +1555,6 @@ function initials(name) {
     .substring(0, 2)
     .toUpperCase();
 }
-
-
-/* ==========================================
-   РЕНДЕР
-========================================== */
 
 function render() {
 
@@ -1764,13 +1617,11 @@ function render() {
       app.gradient
     );
 
-
     const check =
       document.createElement("div");
 
     check.className = "check";
     check.textContent = "✓";
-
 
     const icon =
       document.createElement("div");
@@ -1785,7 +1636,6 @@ function render() {
       initials(app.name);
 
     icon.appendChild(fallback);
-
 
     if (app.logo) {
 
@@ -1807,13 +1657,11 @@ function render() {
       icon.appendChild(img);
     }
 
-
     const name =
       document.createElement("div");
 
     name.className = "app-name";
     name.textContent = app.name;
-
 
     const type =
       document.createElement("div");
@@ -1821,12 +1669,10 @@ function render() {
     type.className = "app-type";
     type.textContent = app.type;
 
-
     card.appendChild(check);
     card.appendChild(icon);
     card.appendChild(name);
     card.appendChild(type);
-
 
     card.addEventListener("click", () => {
 
@@ -1841,18 +1687,12 @@ function render() {
 
     });
 
-
     grid.appendChild(card);
 
   });
 
   appList.appendChild(grid);
 }
-
-
-/* ==========================================
-   ПОИСК
-========================================== */
 
 search.addEventListener(
   "input",
@@ -1869,7 +1709,6 @@ search.addEventListener(
   }
 );
 
-
 clear.addEventListener(
   "click",
   () => {
@@ -1884,11 +1723,6 @@ clear.addEventListener(
     render();
   }
 );
-
-
-/* ==========================================
-   КАТЕГОРИИ
-========================================== */
 
 categories.addEventListener(
   "click",
@@ -1914,11 +1748,6 @@ categories.addEventListener(
   }
 );
 
-
-/* ==========================================
-   TOAST
-========================================== */
-
 let toastTimer;
 
 function showToast(message) {
@@ -1934,11 +1763,6 @@ function showToast(message) {
       toast.classList.remove("show");
     }, 3000);
 }
-
-
-/* ==========================================
-   НОМЕР ЗАКАЗА
-========================================== */
 
 function generateOrderNumber() {
 
@@ -1961,22 +1785,12 @@ function generateOrderNumber() {
   return `AC-${year}${month}${day}-${random}`;
 }
 
-
-/* ==========================================
-   НОРМАЛИЗАЦИЯ ТЕЛЕФОНА
-========================================== */
-
 function normalizePhone(value) {
 
   return value
     .replace(/[^\d+]/g, "")
     .trim();
 }
-
-
-/* ==========================================
-   ПРОВЕРКА ТЕЛЕФОНА
-========================================== */
 
 function isValidPhone(phone) {
 
@@ -1987,17 +1801,21 @@ function isValidPhone(phone) {
          digits.length <= 15;
 }
 
-
-/* ==========================================
-   ОТКРЫТИЕ ОКНА ОПЛАТЫ
-========================================== */
-
 function openPaymentModal() {
 
   if (selected.size === 0) {
 
     showToast(
       "Сначала выберите приложение"
+    );
+
+    return;
+  }
+
+  if (currentOrder) {
+
+    showToast(
+      "Заказ уже создан"
     );
 
     return;
@@ -2063,11 +1881,6 @@ function openPaymentModal() {
   }, 250);
 }
 
-
-/* ==========================================
-   ЗАКРЫТИЕ ОКНА ОПЛАТЫ
-========================================== */
-
 function closePaymentModal() {
 
   paymentOverlay.classList.remove("show");
@@ -2075,20 +1888,15 @@ function closePaymentModal() {
   document.body.style.overflow = "";
 }
 
-
 continueButton.addEventListener(
   "click",
   openPaymentModal
 );
 
-
 paymentClose.addEventListener(
   "click",
   closePaymentModal
 );
-
-
-/* Закрытие при клике по затемнению */
 
 paymentOverlay.addEventListener(
   "click",
@@ -2101,9 +1909,6 @@ paymentOverlay.addEventListener(
   }
 );
 
-
-/* Закрытие по Escape */
-
 document.addEventListener(
   "keydown",
   event => {
@@ -2114,11 +1919,6 @@ document.addEventListener(
 
   }
 );
-
-
-/* ==========================================
-   КОПИРОВАНИЕ РЕКВИЗИТОВ
-========================================== */
 
 document
   .querySelectorAll(".copy-button")
@@ -2191,10 +1991,24 @@ document
 
 
 /* ==========================================
-   СОЗДАНИЕ ЗАКАЗА В SUPABASE
+   СОЗДАНИЕ ЗАКАЗА
 ========================================== */
 
 async function createOrder() {
+
+  /* Защита от повторного создания */
+
+  if (currentOrder) {
+
+    closePaymentModal();
+
+    showToast(
+      "Этот заказ уже создан. Ожидайте проверки."
+    );
+
+    return true;
+  }
+
 
   const rawPhone =
     phoneInput.value;
@@ -2285,14 +2099,6 @@ async function createOrder() {
 
   try {
 
-    /*
-      ВАЖНО:
-      Здесь специально НЕТ .select().single()
-
-      Anon-пользователю разрешён INSERT,
-      но SELECT для orders мы ему не открываем.
-    */
-
     const { error } =
       await supabaseClient
         .from("orders")
@@ -2319,12 +2125,6 @@ async function createOrder() {
       return false;
     }
 
-
-    /*
-      Сохраняем данные заказа локально,
-      потому что Supabase не возвращает строку
-      через SELECT.
-    */
 
     currentOrder =
       orderData;
@@ -2382,6 +2182,17 @@ async function createOrder() {
 paymentDone.addEventListener(
   "click",
   async () => {
+
+    if (currentOrder) {
+
+      closePaymentModal();
+
+      showToast(
+        "Заказ уже отправлен. Ожидайте проверки."
+      );
+
+      return;
+    }
 
     await createOrder();
 
