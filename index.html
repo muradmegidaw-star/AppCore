@@ -1,0 +1,100 @@
+<header class="header">
+
+    <div class="brand-row">
+
+        <div class="brand">
+            <div class="brand-logo">A</div>
+            <div class="brand-name">AppCore</div>
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            Доступно
+        </div>
+
+    </div>
+
+    <h1>Что установить?</h1>
+
+    <div class="subtitle">
+        Выберите приложение из каталога — подготовим установку дистанционно.
+    </div>
+
+    <div class="search">
+
+        <span class="search-icon">⌕</span>
+
+        <input
+            id="search"
+            class="search-input"
+            type="search"
+            placeholder="Поиск приложения…"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+        >
+
+        <button
+            id="clearSearch"
+            class="clear-search"
+            type="button"
+            aria-label="Очистить поиск"
+        >
+            ×
+        </button>
+
+    </div>
+
+    <nav class="filters" id="filters">
+
+        <button
+            class="filter active"
+            type="button"
+            data-category="all"
+        >
+            Все
+        </button>
+
+        <button
+            class="filter"
+            type="button"
+            data-category="finance"
+        >
+            Банки и инвестиции
+        </button>
+
+        <button
+            class="filter"
+            type="button"
+            data-category="social"
+        >
+            Мессенджеры
+        </button>
+
+        <button
+            class="filter"
+            type="button"
+            data-category="useful"
+        >
+            Сервисы
+        </button>
+
+    </nav>
+
+</header>
+
+<main id="content"></main>
+
+<div id="empty" class="empty">
+
+    <div class="empty-icon">⌕</div>
+
+    <div class="empty-title">
+        Ничего не найдено
+    </div>
+
+    <div class="empty-text">
+        Попробуйте изменить запрос или категорию.
+    </div>
+
+</div>
