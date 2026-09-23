@@ -1,100 +1,992 @@
-<header class="header">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0b0d10">
+<title>AppCore</title>
 
-    <div class="brand-row">
+<style>
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
-        <div class="brand">
-            <div class="brand-logo">A</div>
-            <div class="brand-name">AppCore</div>
-        </div>
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: #0b0d10;
+  color: #f5f7fa;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+               "Segoe UI", Arial, sans-serif;
+}
 
-        <div class="status">
-            <span class="status-dot"></span>
-            Доступно
-        </div>
+body {
+  padding-bottom: 110px;
+}
+
+.app {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 18px 16px 30px;
+}
+
+/* HEADER */
+
+.header {
+  margin-bottom: 20px;
+}
+
+.top-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.brand-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(145deg, #252a31, #12151a);
+  border: 1px solid rgba(255,255,255,.09);
+  box-shadow: 0 8px 25px rgba(0,0,0,.25);
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: -.4px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border-radius: 20px;
+  background: #11151a;
+  border: 1px solid rgba(255,255,255,.07);
+  color: #aeb6c1;
+  font-size: 12px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #37d67a;
+  box-shadow: 0 0 9px rgba(55,214,122,.7);
+}
+
+h1 {
+  margin: 25px 0 7px;
+  font-size: clamp(28px, 7vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -1.2px;
+}
+
+.subtitle {
+  max-width: 600px;
+  color: #89919d;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* SEARCH */
+
+.search {
+  position: relative;
+  margin-top: 20px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #727b87;
+  font-size: 21px;
+  z-index: 2;
+}
+
+.search-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 44px 0 43px;
+  border: 1px solid rgba(255,255,255,.08);
+  outline: none;
+  border-radius: 15px;
+  background: #12151a;
+  color: #ffffff;
+  font-size: 15px;
+  transition: .2s;
+}
+
+.search-input::placeholder {
+  color: #666f7b;
+}
+
+.search-input:focus {
+  border-color: rgba(255,255,255,.18);
+  background: #15191f;
+}
+
+.clear-search {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #89919d;
+  font-size: 21px;
+  display: none;
+  cursor: pointer;
+}
+
+/* FILTERS */
+
+.filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 14px 1px 4px;
+  scrollbar-width: none;
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
+}
+
+.filter {
+  flex: 0 0 auto;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 11px;
+  border: 1px solid rgba(255,255,255,.07);
+  background: #111419;
+  color: #8d96a2;
+  font-size: 13px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.filter.active {
+  color: #ffffff;
+  background: #242931;
+  border-color: rgba(255,255,255,.13);
+}
+
+/* GRID */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 17px;
+}
+
+.card {
+  position: relative;
+  min-height: 146px;
+  padding: 14px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #15191e, #101318);
+  border: 1px solid rgba(255,255,255,.065);
+  cursor: pointer;
+  transition: transform .18s, border-color .18s, background .18s;
+  overflow: hidden;
+}
+
+.card:active {
+  transform: scale(.98);
+}
+
+.card.selected {
+  border-color: rgba(255,255,255,.34);
+  background: linear-gradient(145deg, #1b2027, #13171c);
+}
+
+.card-check {
+  position: absolute;
+  right: 11px;
+  top: 11px;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.13);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  font-size: 13px;
+  background: rgba(0,0,0,.16);
+}
+
+.card.selected .card-check {
+  background: #ffffff;
+  color: #101216;
+  border-color: #ffffff;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #20252c;
+  border: 1px solid rgba(255,255,255,.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 13px;
+}
+
+.icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.icon-fallback {
+  font-size: 17px;
+  font-weight: 800;
+  color: #dce1e7;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f1f3f5;
+  line-height: 1.25;
+  padding-right: 18px;
+}
+
+.card-category {
+  margin-top: 5px;
+  font-size: 11px;
+  color: #707985;
+}
+
+/* EMPTY */
+
+.empty {
+  display: none;
+  text-align: center;
+  padding: 70px 20px;
+}
+
+.empty.show {
+  display: block;
+}
+
+.empty-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: #15191f;
+  color: #737d89;
+  font-size: 24px;
+}
+
+.empty-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.empty-text {
+  margin-top: 6px;
+  color: #747d89;
+  font-size: 13px;
+}
+
+/* BOTTOM ACTION */
+
+.bottom {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(
+    to top,
+    rgba(11,13,16,1) 55%,
+    rgba(11,13,16,.92) 75%,
+    rgba(11,13,16,0)
+  );
+}
+
+.bottom-inner {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.continue {
+  width: 100%;
+  height: 52px;
+  border: 0;
+  border-radius: 15px;
+  background: #ffffff;
+  color: #0b0d10;
+  font-size: 15px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: .18s;
+}
+
+.continue:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+.continue:not(:disabled):active {
+  transform: scale(.985);
+}
+
+/* TOAST */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 82px;
+  transform: translate(-50%, 20px);
+  z-index: 50;
+  padding: 11px 15px;
+  border-radius: 12px;
+  background: #20252c;
+  border: 1px solid rgba(255,255,255,.09);
+  color: #ffffff;
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: .22s;
+  white-space: nowrap;
+  max-width: calc(100% - 30px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* DESKTOP */
+
+@media (min-width: 650px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .card {
+    min-height: 155px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header class="header">
+
+    <div class="top-line">
+
+      <div class="brand">
+        <div class="brand-logo">A</div>
+        <div class="brand-name">AppCore</div>
+      </div>
+
+      <div class="status">
+        <span class="status-dot"></span>
+        Доступно
+      </div>
 
     </div>
 
     <h1>Что установить?</h1>
 
     <div class="subtitle">
-        Выберите приложение из каталога — подготовим установку дистанционно.
+      Выберите приложение из каталога — подготовим установку дистанционно.
     </div>
 
     <div class="search">
 
-        <span class="search-icon">⌕</span>
+      <span class="search-icon">⌕</span>
 
-        <input
-            id="search"
-            class="search-input"
-            type="search"
-            placeholder="Поиск приложения…"
-            autocomplete="off"
-            autocorrect="off"
-            spellcheck="false"
-        >
+      <input
+        id="search"
+        class="search-input"
+        type="search"
+        placeholder="Поиск приложения…"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+      >
 
-        <button
-            id="clearSearch"
-            class="clear-search"
-            type="button"
-            aria-label="Очистить поиск"
-        >
-            ×
-        </button>
+      <button
+        id="clearSearch"
+        class="clear-search"
+        type="button"
+        aria-label="Очистить поиск"
+      >×</button>
 
     </div>
 
     <nav class="filters" id="filters">
 
-        <button
-            class="filter active"
-            type="button"
-            data-category="all"
-        >
-            Все
-        </button>
+      <button class="filter active" data-category="all">
+        Все
+      </button>
 
-        <button
-            class="filter"
-            type="button"
-            data-category="finance"
-        >
-            Банки и инвестиции
-        </button>
+      <button class="filter" data-category="finance">
+        Банки и инвестиции
+      </button>
 
-        <button
-            class="filter"
-            type="button"
-            data-category="social"
-        >
-            Мессенджеры
-        </button>
+      <button class="filter" data-category="social">
+        Мессенджеры
+      </button>
 
-        <button
-            class="filter"
-            type="button"
-            data-category="useful"
-        >
-            Сервисы
-        </button>
+      <button class="filter" data-category="useful">
+        Сервисы
+      </button>
 
     </nav>
 
-</header>
+  </header>
 
-<main id="content"></main>
+  <main id="content"></main>
 
-<div id="empty" class="empty">
+  <div id="empty" class="empty">
 
     <div class="empty-icon">⌕</div>
 
     <div class="empty-title">
-        Ничего не найдено
+      Ничего не найдено
     </div>
 
     <div class="empty-text">
-        Попробуйте изменить запрос или категорию.
+      Попробуйте изменить запрос или категорию.
     </div>
 
+  </div>
+
 </div>
+
+<div class="bottom">
+
+  <div class="bottom-inner">
+
+    <button id="continueBtn" class="continue" disabled>
+      Выберите приложение
+    </button>
+
+  </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+"use strict";
+
+/* =========================
+   APP DATA
+========================= */
+
+const apps = [
+
+  {
+    id: "sberbank",
+    name: "Сбербанк",
+    category: "finance",
+    categoryName: "Банк",
+    logo: "https://cdn.simpleicons.org/sberbank"
+  },
+
+  {
+    id: "sberinvest",
+    name: "СберИнвестиции",
+    category: "finance",
+    categoryName: "Инвестиции",
+    logo: "https://cdn.simpleicons.org/sberbank"
+  },
+
+  {
+    id: "tbank",
+    name: "Т-Банк",
+    category: "finance",
+    categoryName: "Банк",
+    logo: "https://cdn.simpleicons.org/tbank"
+  },
+
+  {
+    id: "tinvest",
+    name: "Т-Инвестиции",
+    category: "finance",
+    categoryName: "Инвестиции",
+    logo: "https://cdn.simpleicons.org/tbank"
+  },
+
+  {
+    id: "alfa",
+    name: "Альфа-Банк",
+    category: "finance",
+    categoryName: "Банк",
+    logo: "https://cdn.simpleicons.org/alfabank"
+  },
+
+  {
+    id: "alfa-invest",
+    name: "Альфа-Инвестиции",
+    category: "finance",
+    categoryName: "Инвестиции",
+    logo: "https://cdn.simpleicons.org/alfabank"
+  },
+
+  {
+    id: "vtb",
+    name: "ВТБ Банк",
+    category: "finance",
+    categoryName: "Банк",
+    logo: "https://cdn.simpleicons.org/vtb"
+  },
+
+  {
+    id: "vtb-invest",
+    name: "ВТБ Инвестиции",
+    category: "finance",
+    categoryName: "Инвестиции",
+    logo: "https://cdn.simpleicons.org/vtb"
+  },
+
+  {
+    id: "gazprom",
+    name: "Газпромбанк",
+    category: "finance",
+    categoryName: "Банк",
+    logo: "https://cdn.simpleicons.org/gazprombank"
+  },
+
+  {
+    id: "gazprom-invest",
+    name: "Газпромбанк Инвестиции",
+    category: "finance",
+    categoryName: "Инвестиции",
+    logo: "https://cdn.simpleicons.org/gazprombank"
+  },
+
+  {
+    id: "rshb",
+    name: "Россельхозбанк",
+    category: "finance",
+    categoryName: "Банк",
+    logo: "https://cdn.simpleicons.org/rosselkhozbank"
+  },
+
+  {
+    id: "psb",
+    name: "ПСБ Банк",
+    category: "finance",
+    categoryName: "Банк",
+    logo: "https://cdn.simpleicons.org/psbank"
+  },
+
+  {
+    id: "yandex-pay",
+    name: "Яндекс Пэй",
+    category: "finance",
+    categoryName: "Сервисы",
+    logo: "https://cdn.simpleicons.org/yandex"
+  },
+
+  {
+    id: "vk",
+    name: "VK",
+    category: "social",
+    categoryName: "Социальная сеть",
+    logo: "https://cdn.simpleicons.org/vk"
+  },
+
+  {
+    id: "vk-video",
+    name: "VK Видео",
+    category: "social",
+    categoryName: "Видео",
+    logo: "https://cdn.simpleicons.org/vk"
+  },
+
+  {
+    id: "vk-messenger",
+    name: "VK Мессенджер",
+    category: "social",
+    categoryName: "Мессенджер",
+    logo: "https://cdn.simpleicons.org/vk"
+  },
+
+  {
+    id: "max",
+    name: "MAX",
+    category: "social",
+    categoryName: "Мессенджер",
+    logo: "https://cdn.simpleicons.org/max"
+  },
+
+  {
+    id: "avito",
+    name: "Авито",
+    category: "social",
+    categoryName: "Сервис",
+    logo: "https://cdn.simpleicons.org/avito"
+  },
+
+  {
+    id: "rave",
+    name: "Rave",
+    category: "social",
+    categoryName: "Видео",
+    logo: "https://cdn.simpleicons.org/rave"
+  },
+
+  {
+    id: "rutube",
+    name: "RUTUBE",
+    category: "social",
+    categoryName: "Видео",
+    logo: "https://cdn.simpleicons.org/rutube"
+  },
+
+  {
+    id: "happ",
+    name: "Happ Plus",
+    category: "useful",
+    categoryName: "Сервис",
+    logo: "https://cdn.simpleicons.org/happ"
+  }
+
+];
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const content = document.getElementById("content");
+const empty = document.getElementById("empty");
+const search = document.getElementById("search");
+const clearSearch = document.getElementById("clearSearch");
+const filters = document.getElementById("filters");
+const continueBtn = document.getElementById("continueBtn");
+const toast = document.getElementById("toast");
+
+let activeCategory = "all";
+let searchText = "";
+let selectedApp = null;
+
+/* =========================
+   RENDER
+========================= */
+
+function renderApps() {
+
+  const query = searchText.trim().toLowerCase();
+
+  const filtered = apps.filter(app => {
+
+    const categoryMatch =
+      activeCategory === "all" ||
+      app.category === activeCategory;
+
+    const searchMatch =
+      !query ||
+      app.name.toLowerCase().includes(query) ||
+      app.categoryName.toLowerCase().includes(query);
+
+    return categoryMatch && searchMatch;
+
+  });
+
+  content.innerHTML = "";
+
+  if (filtered.length === 0) {
+
+    empty.classList.add("show");
+
+    return;
+
+  }
+
+  empty.classList.remove("show");
+
+  const grid = document.createElement("div");
+  grid.className = "grid";
+
+  filtered.forEach(app => {
+
+    const card = document.createElement("article");
+
+    card.className =
+      "card" +
+      (selectedApp && selectedApp.id === app.id
+        ? " selected"
+        : "");
+
+    card.dataset.id = app.id;
+
+    const icon = document.createElement("div");
+    icon.className = "icon";
+
+    const fallback = document.createElement("div");
+    fallback.className = "icon-fallback";
+    fallback.textContent = getInitials(app.name);
+
+    icon.appendChild(fallback);
+
+    if (app.logo) {
+
+      const img = document.createElement("img");
+
+      img.src = app.logo;
+      img.alt = "";
+      img.loading = "lazy";
+
+      img.onload = () => {
+        fallback.style.display = "none";
+      };
+
+      img.onerror = () => {
+        img.remove();
+        fallback.style.display = "flex";
+      };
+
+      icon.appendChild(img);
+    }
+
+    const check = document.createElement("div");
+    check.className = "card-check";
+    check.textContent = "✓";
+
+    const title = document.createElement("div");
+    title.className = "card-title";
+    title.textContent = app.name;
+
+    const category = document.createElement("div");
+    category.className = "card-category";
+    category.textContent = app.categoryName;
+
+    card.appendChild(check);
+    card.appendChild(icon);
+    card.appendChild(title);
+    card.appendChild(category);
+
+    card.addEventListener("click", () => {
+      selectApp(app);
+    });
+
+    grid.appendChild(card);
+
+  });
+
+  content.appendChild(grid);
+
+}
+
+/* =========================
+   SELECT APP
+========================= */
+
+function selectApp(app) {
+
+  selectedApp = app;
+
+  continueBtn.disabled = false;
+  continueBtn.textContent = "Продолжить";
+
+  renderApps();
+
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+search.addEventListener("input", () => {
+
+  searchText = search.value;
+
+  clearSearch.style.display =
+    searchText.length > 0 ? "block" : "none";
+
+  renderApps();
+
+});
+
+clearSearch.addEventListener("click", () => {
+
+  search.value = "";
+  searchText = "";
+
+  clearSearch.style.display = "none";
+
+  search.focus();
+
+  renderApps();
+
+});
+
+/* =========================
+   FILTERS
+========================= */
+
+filters.addEventListener("click", event => {
+
+  const button = event.target.closest(".filter");
+
+  if (!button) return;
+
+  document.querySelectorAll(".filter").forEach(item => {
+    item.classList.remove("active");
+  });
+
+  button.classList.add("active");
+
+  activeCategory = button.dataset.category;
+
+  renderApps();
+
+});
+
+/* =========================
+   CONTINUE
+========================= */
+
+continueBtn.addEventListener("click", () => {
+
+  if (!selectedApp) return;
+
+  showToast(
+    "Выбрано: " + selectedApp.name
+  );
+
+  /*
+    Здесь позже подключим реальную
+    систему подготовки установки.
+  */
+
+});
+
+/* =========================
+   TOAST
+========================= */
+
+let toastTimer = null;
+
+function showToast(message) {
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2200);
+
+}
+
+/* =========================
+   INITIALS
+========================= */
+
+function getInitials(name) {
+
+  const words = name
+    .replace(/[^а-яА-Яa-zA-Z0-9\s]/g, "")
+    .trim()
+    .split(/\s+/);
+
+  if (words.length >= 2) {
+
+    return (
+      words[0].charAt(0) +
+      words[1].charAt(0)
+    ).toUpperCase();
+
+  }
+
+  return name
+    .replace(/[^а-яА-Яa-zA-Z0-9]/g, "")
+    .slice(0, 2)
+    .toUpperCase();
+
+}
+
+/* =========================
+   TELEGRAM MINI APP
+========================= */
+
+function getTelegramWebApp() {
+
+  if (
+    window.Telegram &&
+    window.Telegram.WebApp
+  ) {
+
+    return window.Telegram.WebApp;
+
+  }
+
+  return null;
+
+}
+
+const tg = getTelegramWebApp();
+
+if (tg) {
+
+  try {
+
+    tg.ready();
+    tg.expand();
+
+  } catch (error) {
+
+    console.log("Telegram WebApp:", error);
+
+  }
+
+}
+
+/* =========================
+   START
+========================= */
+
+renderApps();
+
+</script>
+
+</body>
+</html>
