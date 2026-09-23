@@ -1,803 +1,491 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#08090d">
-<meta name="apple-mobile-web-app-capable" content="yes">
-
-<title>AppCore</title>
-
-<style>
-:root {
-  --bg: #08090d;
-  --card: #12141b;
-  --text: #ffffff;
-  --muted: #8d93a3;
-  --line: rgba(255,255,255,.08);
-}
-
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-html {
-  background: var(--bg);
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(91,70,255,.13), transparent 32%),
-    radial-gradient(circle at 100% 15%, rgba(0,200,255,.08), transparent 28%),
-    var(--bg);
-  color: var(--text);
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "SF Pro Display",
-    "Segoe UI",
-    Arial,
-    sans-serif;
-  padding-bottom: 150px;
-}
-
-button,
-input {
-  font: inherit;
-}
-
-button {
-  -webkit-appearance: none;
-}
-
-.container {
-  width: 100%;
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 18px 15px 30px;
-}
-
-.header {
-  margin-bottom: 18px;
-}
-
-.top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-}
-
-.brand-logo {
-  width: 43px;
-  height: 43px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 21px;
-  font-weight: 900;
-  color: white;
-  background: linear-gradient(135deg, #7557ff, #4b31d9);
-  box-shadow: 0 8px 28px rgba(93,65,255,.28);
-}
-
-.brand-title {
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -.5px;
-}
-
-.online {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 11px;
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.035);
-  border-radius: 20px;
-  color: #b5bac7;
-  font-size: 12px;
-}
-
-.online-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #37db7c;
-  box-shadow: 0 0 10px rgba(55,219,124,.7);
-}
-
-h1 {
-  margin: 27px 0 7px;
-  font-size: clamp(30px, 8vw, 44px);
-  line-height: 1;
-  letter-spacing: -1.7px;
-}
-
-.subtitle {
-  max-width: 650px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.discount-box {
-  margin-top: 18px;
-  padding: 15px;
-  border-radius: 18px;
-  background:
-    linear-gradient(
-      135deg,
-      rgba(118,83,255,.18),
-      rgba(0,180,255,.08)
-    );
-  border: 1px solid rgba(135,109,255,.22);
-  overflow: hidden;
-  position: relative;
-}
-
-.discount-box::after {
-  content: "";
-  position: absolute;
-  width: 130px;
-  height: 130px;
-  right: -45px;
-  top: -65px;
-  border-radius: 50%;
-  background: rgba(110,80,255,.16);
-  filter: blur(2px);
-}
-
-.discount-title {
-  position: relative;
-  z-index: 1;
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.discount-text {
-  position: relative;
-  z-index: 1;
-  margin-top: 5px;
-  color: #aeb4c4;
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.discount-highlight {
-  color: #b69cff;
-  font-weight: 800;
-}
-
-.search-wrap {
-  margin-top: 17px;
-  position: relative;
-}
-
-.search {
-  width: 100%;
-  height: 49px;
-  border: 1px solid var(--line);
-  border-radius: 15px;
-  background: rgba(18,20,27,.94);
-  color: white;
-  outline: none;
-  padding: 0 44px 0 43px;
-  font-size: 14px;
-  transition: .2s;
-}
-
-.search:focus {
-  border-color: rgba(135,109,255,.4);
-  box-shadow: 0 0 0 3px rgba(117,83,255,.07);
-}
-
-.search::placeholder {
-  color: #656b7a;
-}
-
-.search-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #858b99;
-  font-size: 20px;
-  z-index: 2;
-}
-
-.clear {
-  display: none;
-  position: absolute;
-  right: 8px;
-  top: 7px;
-  width: 35px;
-  height: 35px;
-  border: 0;
-  border-radius: 10px;
-  background: rgba(255,255,255,.06);
-  color: #aeb4c0;
-  cursor: pointer;
-}
-
-.categories {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding: 13px 1px 3px;
-}
-
-.categories::-webkit-scrollbar {
-  display: none;
-}
-
-.category {
-  flex: 0 0 auto;
-  height: 36px;
-  padding: 0 14px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: rgba(255,255,255,.035);
-  color: #9298a7;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 650;
-  transition: .2s;
-}
-
-.category.active {
-  color: #fff;
-  border-color: rgba(126,98,255,.42);
-  background: linear-gradient(
-    135deg,
-    rgba(110,77,255,.28),
-    rgba(73,52,170,.2)
-  );
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.app-card {
-  min-height: 165px;
-  padding: 14px;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,.07);
-  background: #12141a;
-  transition:
-    transform .18s ease,
-    border-color .18s ease,
-    box-shadow .18s ease;
-}
-
-.app-card::before {
-  content: "";
-  position: absolute;
-  width: 110px;
-  height: 110px;
-  right: -50px;
-  top: -50px;
-  border-radius: 50%;
-  background: var(--app-color);
-  opacity: .13;
-  filter: blur(3px);
-}
-
-.app-card:active {
-  transform: scale(.975);
-}
-
-.app-card.selected {
-  border-color: var(--app-color);
-  box-shadow:
-    0 0 0 1px var(--app-color),
-    0 12px 35px rgba(0,0,0,.25);
-}
-
-.app-icon {
-  position: relative;
-  z-index: 1;
-  width: 50px;
-  height: 50px;
-  border-radius: 15px;
-  background: var(--app-gradient);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,.22);
-}
-
-.app-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.fallback {
-  color: white;
-  font-size: 16px;
-  font-weight: 900;
-}
-
-.check {
-  position: absolute;
-  z-index: 3;
-  right: 11px;
-  top: 11px;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.22);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: transparent;
-  font-size: 13px;
-  font-weight: 900;
-}
-
-.app-card.selected .check {
-  color: #111;
-  background: white;
-  border-color: white;
-}
-
-.app-name {
-  position: relative;
-  z-index: 1;
-  margin-top: 13px;
-  padding-right: 22px;
-  font-size: 14px;
-  font-weight: 800;
-  line-height: 1.25;
-}
-
-.app-type {
-  position: relative;
-  z-index: 1;
-  margin-top: 5px;
-  color: #777e8c;
-  font-size: 11px;
-}
-
-.empty {
-  display: none;
-  padding: 65px 20px;
-  text-align: center;
-}
-
-.empty.show {
-  display: block;
-}
-
-.empty-icon {
-  width: 52px;
-  height: 52px;
-  margin: 0 auto 13px;
-  border-radius: 17px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,.05);
-  color: #737a89;
-  font-size: 22px;
-}
-
-.empty-title {
-  font-size: 16px;
-  font-weight: 800;
-}
-
-.empty-text {
-  margin-top: 6px;
-  color: #707785;
-  font-size: 13px;
-}
-
-.bottom {
-  position: fixed;
-  z-index: 20;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding:
-    10px 14px
-    calc(11px + env(safe-area-inset-bottom));
-  background:
-    linear-gradient(
-      to top,
-      rgba(8,9,13,1) 55%,
-      rgba(8,9,13,.96) 76%,
-      rgba(8,9,13,0)
-    );
-}
-
-.bottom-inner {
-  width: 100%;
-  max-width: 920px;
-  margin: 0 auto;
-}
-
-.price-panel {
-  display: none;
-  margin-bottom: 9px;
-  padding: 12px 14px;
-  border-radius: 17px;
-  background: rgba(20,22,29,.97);
-  border: 1px solid rgba(255,255,255,.08);
-  backdrop-filter: blur(20px);
-}
-
-.price-panel.visible {
-  display: block;
-}
-
-.price-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.price-label {
-  color: #858c9a;
-  font-size: 12px;
-}
-
-.price-value {
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.total-row {
-  margin-top: 7px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255,255,255,.06);
-}
-
-.total-row .price-label {
-  color: #fff;
-  font-weight: 700;
-}
-
-.total-row .price-value {
-  font-size: 17px;
-}
-
-.sale {
-  color: #55e18b !important;
-}
-
-.continue {
-  width: 100%;
-  height: 52px;
-  border: 0;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #ffffff, #e9e9ee);
-  color: #090a0e;
-  font-size: 15px;
-  font-weight: 850;
-  cursor: pointer;
-  box-shadow: 0 8px 25px rgba(0,0,0,.22);
-  transition: .18s;
-}
-
-.continue:disabled {
-  opacity: .38;
-  box-shadow: none;
-}
-
-.continue:not(:disabled):active {
-  transform: scale(.985);
-}
-
-.toast {
-  position: fixed;
-  z-index: 150;
-  left: 50%;
-  bottom: 155px;
-  transform: translate(-50%, 20px);
-  max-width: calc(100% - 30px);
-  padding: 11px 15px;
-  border-radius: 13px;
-  background: #242731;
-  border: 1px solid rgba(255,255,255,.09);
-  color: #fff;
-  font-size: 13px;
-  opacity: 0;
-  pointer-events: none;
-  transition: .22s;
-  white-space: nowrap;
-}
-
-.toast.show {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
-.payment-overlay {
-  position: fixed;
-  z-index: 100;
-  inset: 0;
-  display: none;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 15px;
-  background: rgba(0,0,0,.68);
-  backdrop-filter: blur(8px);
-}
-
-.payment-overlay.show {
-  display: flex;
-}
-
-.payment-modal {
-  width: 100%;
-  max-width: 520px;
-  max-height: 90vh;
-  overflow-y: auto;
-  border-radius: 24px;
-  padding: 20px;
-  background:
-    linear-gradient(
-      145deg,
-      #181b25,
-      #101219
-    );
-  border: 1px solid rgba(255,255,255,.1);
-  box-shadow:
-    0 25px 80px rgba(0,0,0,.55);
-  animation: modalIn .22s ease;
-}
-
-@keyframes modalIn {
-  from {
-    opacity: 0;
-    transform: translateY(25px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.payment-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.payment-title {
-  font-size: 21px;
-  font-weight: 850;
-}
-
-.payment-close {
-  width: 38px;
-  height: 38px;
-  flex: 0 0 38px;
-  border: 0;
-  border-radius: 12px;
-  background: rgba(255,255,255,.07);
-  color: #fff;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-.payment-subtitle {
-  margin-top: 7px;
-  color: #858c9a;
-  font-size: 13px;
-  line-height: 1.45;
-}
-
-.order-box {
-  margin-top: 16px;
-  padding: 14px;
-  border-radius: 17px;
-  background: rgba(255,255,255,.045);
-  border: 1px solid rgba(255,255,255,.07);
-}
-
-.order-title {
-  font-size: 12px;
-  color: #858c9a;
-  margin-bottom: 8px;
-}
-
-.selected-apps {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.selected-app {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  font-size: 13px;
-}
-
-.selected-app-name {
-  color: #fff;
-}
-
-.selected-app-price {
-  color: #858c9a;
-}
-
-.payment-total {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 11px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255,255,255,.07);
-}
-
-.payment-total span:first-child {
-  color: #858c9a;
-}
-
-.payment-total span:last-child {
-  font-size: 18px;
-  font-weight: 850;
-}
-
-.requisites-title {
-  margin-top: 20px;
-  font-size: 16px;
-  font-weight: 800;
-}
-
-.requisite {
-  margin-top: 9px;
-  padding: 13px;
-  border-radius: 15px;
-  background: rgba(255,255,255,.045);
-  border: 1px solid rgba(255,255,255,.07);
-}
-
-.requisite-label {
-  color: #777e8c;
-  font-size: 11px;
-  margin-bottom: 5px;
-}
-
-.requisite-value-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.requisite-value {
-  color: #fff;
-  font-size: 14px;
-  font-weight: 750;
-  word-break: break-word;
-}
-
-.copy-button {
-  flex: 0 0 auto;
-  border: 0;
-  border-radius: 10px;
-  padding: 8px 10px;
-  background: rgba(255,255,255,.08);
-  color: #fff;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.phone-input {
-  width: 100%;
-  height: 43px;
-  border: 0;
-  outline: none;
-  background: transparent;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 750;
-}
-
-.phone-input::placeholder {
-  color: #656b7a;
-}
-
-.payment-note {
-  margin-top: 13px;
-  padding: 12px;
-  border-radius: 14px;
-  background: rgba(255,193,7,.07);
-  border: 1px solid rgba(255,193,7,.14);
-  color: #b9bdc8;
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.payment-done {
-  width: 100%;
-  height: 48px;
-  margin-top: 15px;
-  border: 0;
-  border-radius: 14px;
-  background: linear-gradient(135deg,#ffffff,#e9e9ee);
-  color: #08090d;
-  font-size: 14px;
-  font-weight: 850;
-  cursor: pointer;
-}
-
-.payment-done:disabled {
-  opacity: .5;
-}
-
-@media (min-width: 650px) {
-
-  .grid {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
-  }
-
-  .payment-overlay {
-    align-items: center;
-  }
-}
-
-@media (max-width: 380px) {
-
-  .container {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .app-card {
-    min-height: 155px;
-    padding: 12px;
-  }
-
-  .app-icon {
-    width: 46px;
-    height: 46px;
-  }
-
-  .app-name {
-    font-size: 13px;
-  }
-
-  .payment-modal {
-    padding: 16px;
-  }
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+
+  <title>AppCore</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background: #080808;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      padding-bottom: 40px;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 18px 14px 40px;
+    }
+
+    .header {
+      text-align: center;
+      padding: 15px 0 20px;
+    }
+
+    .logo {
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      margin-top: 7px;
+      color: #888;
+      font-size: 14px;
+    }
+
+    .card {
+      background: #111;
+      border: 1px solid #252525;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .phone-label {
+      display: block;
+      color: #aaa;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .phone-input {
+      width: 100%;
+      height: 48px;
+      border: 1px solid #333;
+      border-radius: 12px;
+      background: #080808;
+      color: #fff;
+      padding: 0 14px;
+      outline: none;
+    }
+
+    .phone-input:focus {
+      border-color: #555;
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .app-item {
+      min-height: 48px;
+      border: 1px solid #292929;
+      border-radius: 12px;
+      background: #0b0b0b;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .app-item.selected {
+      border-color: #fff;
+      background: #181818;
+    }
+
+    .app-checkbox {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      accent-color: #fff;
+    }
+
+    .app-name {
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .summary {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      font-size: 14px;
+    }
+
+    .summary-row span:first-child {
+      color: #999;
+    }
+
+    .summary-row.total {
+      padding-top: 11px;
+      border-top: 1px solid #292929;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .discount {
+      color: #72e38a !important;
+    }
+
+    .main-button {
+      width: 100%;
+      height: 54px;
+      border: none;
+      border-radius: 14px;
+      background: #fff;
+      color: #000;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .main-button:active {
+      transform: scale(0.98);
+    }
+
+    .main-button:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .hint {
+      color: #777;
+      font-size: 12px;
+      line-height: 1.45;
+      margin-top: 10px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.82);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1000;
+      padding: 12px;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 520px;
+      background: #111;
+      border: 1px solid #292929;
+      border-radius: 22px;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-title {
+      font-size: 22px;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .payment-row {
+      background: #090909;
+      border: 1px solid #252525;
+      border-radius: 13px;
+      padding: 13px;
+      margin-bottom: 10px;
+    }
+
+    .payment-label {
+      color: #777;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .payment-value {
+      font-size: 16px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 9px;
+      margin-top: 16px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      height: 50px;
+      border-radius: 13px;
+      border: none;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .cancel-button {
+      background: #242424;
+      color: #fff;
+    }
+
+    .pay-button {
+      background: #fff;
+      color: #000;
+    }
+
+    .toast {
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: 20px;
+      background: #fff;
+      color: #000;
+      border-radius: 13px;
+      padding: 13px 15px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      z-index: 2000;
+      transform: translateY(120px);
+      opacity: 0;
+      transition: 0.25s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .order-created {
+      display: none;
+      text-align: center;
+      padding: 12px 0 0;
+    }
+
+    .order-created.show {
+      display: block;
+    }
+
+    .order-number {
+      font-size: 25px;
+      font-weight: 900;
+      margin: 8px 0;
+    }
+
+    .success-text {
+      color: #72e38a;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    @media (max-width: 390px) {
+      .apps-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <div class="container">
+
+    <div class="header">
+      <div class="logo">APPCORE</div>
+      <div class="subtitle">Установка и настройка приложений</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ваш телефон</div>
+
+      <label class="phone-label" for="phone">
+        Номер телефона
+      </label>
+
+      <input
+        id="phone"
+        class="phone-input"
+        type="tel"
+        inputmode="tel"
+        placeholder="+7 999 999-99-99"
+        autocomplete="tel"
+      />
+    </div>
+
+    <div class="card">
+      <div class="card-title">Выберите приложения</div>
+
+      <div id="appsGrid" class="apps-grid"></div>
+
+      <div class="hint">
+        Выберите необходимые приложения. Стоимость рассчитывается автоматически.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Стоимость</div>
+
+      <div class="summary">
+
+        <div class="summary-row">
+          <span>Приложений</span>
+          <span id="countValue">0</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Стоимость</span>
+          <span id="originalValue">0 ₽</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Скидка</span>
+          <span id="discountValue" class="discount">0 ₽</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Бесплатно</span>
+          <span id="freeValue">0</span>
+        </div>
+
+        <div class="summary-row total">
+          <span>Итого</span>
+          <span id="totalValue">0 ₽</span>
+        </div>
+
+      </div>
+
+      <button
+        id="orderButton"
+        class="main-button"
+        type="button"
+      >
+        Оформить заказ
+      </button>
+
+      <div id="orderCreated" class="order-created">
+
+        <div class="success-text">
+          Заказ успешно создан
+        </div>
+
+        <div id="createdOrderNumber" class="order-number"></div>
+
+        <div class="hint">
+          Ожидайте проверки оплаты.
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- PAYMENT MODAL -->
+
+  <div id="paymentModal" class="modal">
+
+    <div class="modal-box">
+
+      <div class="modal-title">
+        Оплата заказа
+      </div>
+
+      <div class="payment-row">
+        <div class="payment-label">
+          Получатель
+        </div>
+        <div id="paymentRecipient" class="payment-value"></div>
+      </div>
+
+      <div class="payment-row">
+        <div class="payment-label">
+          Карта / телефон
+        </div>
+        <div id="paymentCard" class="payment-value"></div>
+      </div>
+
+      <div class="payment-row">
+        <div class="payment-label">
+          Банк
+        </div>
+        <div id="paymentBank" class="payment-value"></div>
+      </div>
+
+      <div class="payment-row">
+        <div class="payment-label">
+          Сумма
+        </div>
+        <div id="paymentAmount" class="payment-value"></div>
+      </div>
+
+      <div class="modal-actions">
+
+        <button
+          id="paymentCancel"
+          class="cancel-button"
+          type="button"
+        >
+          Отмена
+        </button>
+
+        <button
+          id="paymentDone"
+          class="pay-button"
+          type="button"
+        >
+          Я оплатил
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div id="toast" class="toast"></div>
+
 
 <script>
+/* =========================================================
+   SUPABASE
+========================================================= */
+
 const SUPABASE_URL =
   "https://dkgipfotfjntlhabakns.supabase.co";
 
@@ -809,357 +497,11 @@ const supabaseClient =
     SUPABASE_URL,
     SUPABASE_KEY
   );
-</script>
 
 
-<div class="container">
-
-  <header class="header">
-
-    <div class="top">
-
-      <div class="brand">
-        <div class="brand-logo">A</div>
-        <div class="brand-title">AppCore</div>
-      </div>
-
-      <div class="online">
-        <span class="online-dot"></span>
-        Доступно
-      </div>
-
-    </div>
-
-    <h1>Что установить?</h1>
-
-    <div class="subtitle">
-      Выберите одно или несколько приложений.
-      Мы подготовим установку дистанционно.
-    </div>
-
-    <div class="discount-box">
-
-      <div class="discount-title">
-        🎁 Чем больше приложений — тем больше скидка
-      </div>
-
-      <div class="discount-text">
-        1 приложение — без скидки ·
-        2 — <span class="discount-highlight">3%</span> ·
-        3 — <span class="discount-highlight">6%</span> ·
-        4 — <span class="discount-highlight">9%</span> ·
-        5+ — <span class="discount-highlight">30%</span>
-      </div>
-
-    </div>
-
-    <div class="search-wrap">
-
-      <span class="search-icon">⌕</span>
-
-      <input
-        id="search"
-        class="search"
-        type="search"
-        placeholder="Поиск приложения…"
-        autocomplete="off"
-        autocorrect="off"
-        spellcheck="false"
-      >
-
-      <button
-        id="clear"
-        class="clear"
-        type="button"
-      >×</button>
-
-    </div>
-
-    <div class="categories" id="categories">
-
-      <button
-        class="category active"
-        data-category="all"
-      >
-        Все
-      </button>
-
-      <button
-        class="category"
-        data-category="finance"
-      >
-        Банки и инвестиции
-      </button>
-
-      <button
-        class="category"
-        data-category="social"
-      >
-        Социальные
-      </button>
-
-      <button
-        class="category"
-        data-category="useful"
-      >
-        Сервисы
-      </button>
-
-    </div>
-
-  </header>
-
-  <main id="appList"></main>
-
-  <div id="empty" class="empty">
-
-    <div class="empty-icon">⌕</div>
-
-    <div class="empty-title">
-      Ничего не найдено
-    </div>
-
-    <div class="empty-text">
-      Попробуйте изменить запрос или категорию.
-    </div>
-
-  </div>
-
-</div>
-
-
-<div class="bottom">
-
-  <div class="bottom-inner">
-
-    <div
-      id="pricePanel"
-      class="price-panel"
-    >
-
-      <div class="price-row">
-        <span class="price-label">Приложений</span>
-        <span id="count" class="price-value">0</span>
-      </div>
-
-      <div class="price-row">
-        <span class="price-label">Сумма</span>
-        <span id="original" class="price-value">0 ₽</span>
-      </div>
-
-      <div class="price-row">
-        <span class="price-label">Скидка</span>
-        <span id="discount" class="price-value sale">0%</span>
-      </div>
-
-      <div class="price-row total-row">
-        <span class="price-label">Итого</span>
-        <span id="total" class="price-value">0 ₽</span>
-      </div>
-
-    </div>
-
-    <button
-      id="continue"
-      class="continue"
-      disabled
-    >
-      Выберите приложение
-    </button>
-
-  </div>
-
-</div>
-
-
-<div id="paymentOverlay" class="payment-overlay">
-
-  <div
-    class="payment-modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="paymentTitle"
-  >
-
-    <div class="payment-header">
-
-      <div class="payment-title" id="paymentTitle">
-        Оплата заказа
-      </div>
-
-      <button
-        id="paymentClose"
-        class="payment-close"
-        type="button"
-        aria-label="Закрыть"
-      >
-        ×
-      </button>
-
-    </div>
-
-    <div class="payment-subtitle">
-      Проверьте выбранные приложения и переведите
-      указанную сумму по реквизитам ниже.
-    </div>
-
-    <div class="order-box">
-
-      <div class="order-title">
-        ВАШ ЗАКАЗ
-      </div>
-
-      <div
-        id="selectedApps"
-        class="selected-apps"
-      ></div>
-
-      <div class="payment-total">
-
-        <span>К оплате</span>
-
-        <span id="paymentTotal">
-          0 ₽
-        </span>
-
-      </div>
-
-    </div>
-
-    <div class="requisites-title">
-      Контакт для заказа
-    </div>
-
-    <div class="requisite">
-
-      <div class="requisite-label">
-        Номер телефона
-      </div>
-
-      <div class="requisite-value-row">
-
-        <input
-          id="phoneInput"
-          class="phone-input"
-          type="tel"
-          inputmode="tel"
-          autocomplete="tel"
-          placeholder="+7 900 000-00-00"
-        >
-
-      </div>
-
-    </div>
-
-    <div class="requisites-title">
-      Реквизиты для оплаты
-    </div>
-
-    <div class="requisite">
-
-      <div class="requisite-label">
-        Получатель
-      </div>
-
-      <div class="requisite-value-row">
-
-        <div
-          id="recipientValue"
-          class="requisite-value"
-        >
-          Мурат Межидов М
-        </div>
-
-        <button
-          class="copy-button"
-          type="button"
-          data-copy="Мурат Межидов М"
-        >
-          Копировать
-        </button>
-
-      </div>
-
-    </div>
-
-    <div class="requisite">
-
-      <div class="requisite-label">
-        Карта
-      </div>
-
-      <div class="requisite-value-row">
-
-        <div
-          id="cardValue"
-          class="requisite-value"
-        >
-          +79289480706
-        </div>
-
-        <button
-          class="copy-button"
-          type="button"
-          data-copy="+79289480706"
-        >
-          Копировать
-        </button>
-
-      </div>
-
-    </div>
-
-    <div class="requisite">
-
-      <div class="requisite-label">
-        Банк
-      </div>
-
-      <div class="requisite-value-row">
-
-        <div
-          id="bankValue"
-          class="requisite-value"
-        >
-          Т-Банк
-        </div>
-
-        <button
-          class="copy-button"
-          type="button"
-          data-copy="Т-Банк"
-        >
-          Копировать
-        </button>
-
-      </div>
-
-    </div>
-
-    <div class="payment-note">
-      ⚠️ После перевода сохраните чек об оплате.
-      Не закрывайте страницу, пока не убедитесь,
-      что перевод выполнен.
-    </div>
-
-    <button
-      id="paymentDone"
-      class="payment-done"
-      type="button"
-    >
-      Я оплатил
-    </button>
-
-  </div>
-
-</div>
-
-
-<div id="toast" class="toast"></div>
-
-
-<script>
-"use strict";
+/* =========================================================
+   SETTINGS
+========================================================= */
 
 const PRICE = 500;
 
@@ -1169,621 +511,340 @@ const PAYMENT_DETAILS = {
   bank: "Т-Банк"
 };
 
-const apps = [
 
+/* =========================================================
+   APPS
+========================================================= */
+
+const APPS = [
   {
     id: "sberbank",
-    name: "Сбербанк",
-    type: "Банк",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/sberbank",
-    color: "#21a366",
-    gradient: "linear-gradient(135deg,#25b86c,#08783e)"
+    name: "Сбербанк"
   },
-
   {
     id: "sber-invest",
-    name: "СберИнвестиции",
-    type: "Инвестиции",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/sberbank",
-    color: "#18a765",
-    gradient: "linear-gradient(135deg,#2ac979,#087c46)"
+    name: "СберИнвестиции"
   },
-
   {
     id: "tbank",
-    name: "Т-Банк",
-    type: "Банк",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/tbank",
-    color: "#ffd500",
-    gradient: "linear-gradient(135deg,#ffe33e,#e7b900)"
+    name: "Т-Банк"
   },
-
   {
     id: "t-invest",
-    name: "Т-Инвестиции",
-    type: "Инвестиции",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/tbank",
-    color: "#f3ca00",
-    gradient: "linear-gradient(135deg,#ffe64a,#d9a900)"
+    name: "Т-Инвестиции"
   },
-
   {
     id: "alfa",
-    name: "Альфа-Банк",
-    type: "Банк",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/alfabank",
-    color: "#ef3124",
-    gradient: "linear-gradient(135deg,#ff5145,#c70d09)"
+    name: "Альфа-Банк"
   },
-
   {
     id: "alfa-invest",
-    name: "Альфа-Инвестиции",
-    type: "Инвестиции",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/alfabank",
-    color: "#e93027",
-    gradient: "linear-gradient(135deg,#ff5b4f,#bb1009)"
+    name: "Альфа-Инвестиции"
   },
-
   {
     id: "vtb",
-    name: "ВТБ",
-    type: "Банк",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/vtb",
-    color: "#1685ff",
-    gradient: "linear-gradient(135deg,#36a4ff,#0757d9)"
+    name: "ВТБ"
   },
-
   {
     id: "vtb-invest",
-    name: "ВТБ Инвестиции",
-    type: "Инвестиции",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/vtb",
-    color: "#1a82ed",
-    gradient: "linear-gradient(135deg,#3ca8ff,#0a4fc2)"
+    name: "ВТБ Мои Инвестиции"
   },
-
   {
     id: "gazprom",
-    name: "Газпромбанк",
-    type: "Банк",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/gazprombank",
-    color: "#3b78ff",
-    gradient: "linear-gradient(135deg,#55a1ff,#154bc9)"
+    name: "Газпромбанк"
   },
-
   {
     id: "gazprom-invest",
-    name: "Газпромбанк Инвестиции",
-    type: "Инвестиции",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/gazprombank",
-    color: "#3673ff",
-    gradient: "linear-gradient(135deg,#58a9ff,#164ac8)"
+    name: "Газпром Инвестиции"
   },
-
   {
     id: "rshb",
-    name: "Россельхозбанк",
-    type: "Банк",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/rosselkhozbank",
-    color: "#48a93f",
-    gradient: "linear-gradient(135deg,#6bd35c,#1e7427)"
+    name: "Россельхозбанк"
   },
-
   {
     id: "psb",
-    name: "ПСБ Банк",
-    type: "Банк",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/psbank",
-    color: "#e1262d",
-    gradient: "linear-gradient(135deg,#ff4c50,#b90c14)"
+    name: "ПСБ"
   },
-
   {
     id: "yandex-pay",
-    name: "Яндекс Пэй",
-    type: "Сервис",
-    category: "finance",
-    logo: "https://cdn.simpleicons.org/yandex",
-    color: "#ff3d00",
-    gradient: "linear-gradient(135deg,#ff7043,#e52c00)"
+    name: "Яндекс Пэй"
   },
-
   {
     id: "vk",
-    name: "VK",
-    type: "Социальная сеть",
-    category: "social",
-    logo: "https://cdn.simpleicons.org/vk",
-    color: "#0077ff",
-    gradient: "linear-gradient(135deg,#3c9aff,#0056cf)"
+    name: "VK"
   },
-
   {
     id: "vk-video",
-    name: "VK Видео",
-    type: "Видео",
-    category: "social",
-    logo: "https://cdn.simpleicons.org/vk",
-    color: "#5d65ff",
-    gradient: "linear-gradient(135deg,#7984ff,#3b42d8)"
+    name: "VK Видео"
   },
-
   {
     id: "vk-messenger",
-    name: "VK Мессенджер",
-    type: "Мессенджер",
-    category: "social",
-    logo: "https://cdn.simpleicons.org/vk",
-    color: "#7b61ff",
-    gradient: "linear-gradient(135deg,#957cff,#5540d6)"
+    name: "VK Мессенджер"
   },
-
   {
     id: "max",
-    name: "MAX",
-    type: "Мессенджер",
-    category: "social",
-    logo: "https://cdn.simpleicons.org/max",
-    color: "#6f5cff",
-    gradient: "linear-gradient(135deg,#927cff,#4b36d8)"
+    name: "MAX"
   },
-
   {
     id: "avito",
-    name: "Авито",
-    type: "Сервис",
-    category: "social",
-    logo: "https://cdn.simpleicons.org/avito",
-    color: "#00a86b",
-    gradient: "linear-gradient(135deg,#27d18c,#00804e)"
+    name: "Авито"
   },
-
   {
     id: "rave",
-    name: "Rave",
-    type: "Видео",
-    category: "social",
-    logo: "https://cdn.simpleicons.org/rave",
-    color: "#ff4d91",
-    gradient: "linear-gradient(135deg,#ff70aa,#d3226b)"
+    name: "Rave"
   },
-
   {
     id: "rutube",
-    name: "RUTUBE",
-    type: "Видео",
-    category: "social",
-    logo: "https://cdn.simpleicons.org/rutube",
-    color: "#ff3b30",
-    gradient: "linear-gradient(135deg,#ff665e,#cf160e)"
+    name: "Rutube"
   },
-
   {
     id: "happ",
-    name: "Happ Plus",
-    type: "Сервис",
-    category: "useful",
-    logo: "https://cdn.simpleicons.org/happ",
-    color: "#815cff",
-    gradient: "linear-gradient(135deg,#a083ff,#5230d9)"
+    name: "Happ"
   },
-
   {
     id: "chatgpt",
-    name: "ChatGPT",
-    type: "Сервис",
-    category: "useful",
-    logo: "https://cdn.simpleicons.org/openai",
-    color: "#10a37f",
-    gradient: "linear-gradient(135deg,#20c997,#087c60)"
+    name: "ChatGPT"
   }
-
 ];
 
-let selected = new Set();
-let currentCategory = "all";
-let query = "";
-let currentOrder = null;
 
-const appList =
-  document.getElementById("appList");
+/* =========================================================
+   DISCOUNT
+========================================================= */
 
-const empty =
-  document.getElementById("empty");
+function getDiscountPercent(count) {
 
-const search =
-  document.getElementById("search");
+  if (count >= 5) {
+    return 30;
+  }
 
-const clear =
-  document.getElementById("clear");
+  if (count === 4) {
+    return 9;
+  }
 
-const categories =
-  document.getElementById("categories");
+  if (count === 3) {
+    return 6;
+  }
 
-const pricePanel =
-  document.getElementById("pricePanel");
-
-const countEl =
-  document.getElementById("count");
-
-const originalEl =
-  document.getElementById("original");
-
-const discountEl =
-  document.getElementById("discount");
-
-const totalEl =
-  document.getElementById("total");
-
-const continueButton =
-  document.getElementById("continue");
-
-const toast =
-  document.getElementById("toast");
-
-const paymentOverlay =
-  document.getElementById("paymentOverlay");
-
-const paymentClose =
-  document.getElementById("paymentClose");
-
-const paymentDone =
-  document.getElementById("paymentDone");
-
-const selectedApps =
-  document.getElementById("selectedApps");
-
-const paymentTotal =
-  document.getElementById("paymentTotal");
-
-const phoneInput =
-  document.getElementById("phoneInput");
-
-function getDiscount(count) {
-
-  if (count >= 5) return 30;
-  if (count === 4) return 9;
-  if (count === 3) return 6;
-  if (count === 2) return 3;
+  if (count === 2) {
+    return 3;
+  }
 
   return 0;
 }
 
-function calculatePrice(count) {
 
-  const original = count * PRICE;
+/* =========================================================
+   STATE
+========================================================= */
+
+let selectedApps = [];
+
+let currentOrder = null;
+
+let isCreatingOrder = false;
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const appsGrid =
+  document.getElementById("appsGrid");
+
+const phoneInput =
+  document.getElementById("phone");
+
+const countValue =
+  document.getElementById("countValue");
+
+const originalValue =
+  document.getElementById("originalValue");
+
+const discountValue =
+  document.getElementById("discountValue");
+
+const freeValue =
+  document.getElementById("freeValue");
+
+const totalValue =
+  document.getElementById("totalValue");
+
+const orderButton =
+  document.getElementById("orderButton");
+
+const paymentModal =
+  document.getElementById("paymentModal");
+
+const paymentCancel =
+  document.getElementById("paymentCancel");
+
+const paymentDone =
+  document.getElementById("paymentDone");
+
+const paymentRecipient =
+  document.getElementById("paymentRecipient");
+
+const paymentCard =
+  document.getElementById("paymentCard");
+
+const paymentBank =
+  document.getElementById("paymentBank");
+
+const paymentAmount =
+  document.getElementById("paymentAmount");
+
+const toast =
+  document.getElementById("toast");
+
+const orderCreated =
+  document.getElementById("orderCreated");
+
+const createdOrderNumber =
+  document.getElementById("createdOrderNumber");
+
+
+/* =========================================================
+   RENDER APPS
+========================================================= */
+
+function renderApps() {
+
+  appsGrid.innerHTML = "";
+
+  APPS.forEach(app => {
+
+    const label =
+      document.createElement("label");
+
+    label.className = "app-item";
+
+    label.dataset.id = app.id;
+
+    const checkbox =
+      document.createElement("input");
+
+    checkbox.type = "checkbox";
+
+    checkbox.className = "app-checkbox";
+
+    checkbox.value = app.id;
+
+    const name =
+      document.createElement("span");
+
+    name.className = "app-name";
+
+    name.textContent = app.name;
+
+    label.appendChild(checkbox);
+    label.appendChild(name);
+
+    checkbox.addEventListener(
+      "change",
+      () => {
+
+        if (checkbox.checked) {
+
+          if (!selectedApps.includes(app.id)) {
+            selectedApps.push(app.id);
+          }
+
+          label.classList.add("selected");
+
+        } else {
+
+          selectedApps =
+            selectedApps.filter(
+              id => id !== app.id
+            );
+
+          label.classList.remove("selected");
+        }
+
+        updateSummary();
+      }
+    );
+
+    appsGrid.appendChild(label);
+  });
+}
+
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+function calculateOrder() {
+
+  const count =
+    selectedApps.length;
+
+  const original =
+    count * PRICE;
 
   const discountPercent =
-    getDiscount(count);
+    getDiscountPercent(count);
 
-  const discountAmount =
-    original * discountPercent / 100;
+  const discount =
+    Math.round(
+      original * discountPercent / 100
+    );
+
+  const freeApps =
+    count >= 5
+      ? 1
+      : 0;
 
   const total =
-    original - discountAmount;
+    Math.max(
+      0,
+      original - discount - freeApps * PRICE
+    );
 
   return {
+    count,
     original,
+    discount,
     discountPercent,
-    discountAmount,
+    freeApps,
     total
   };
 }
 
-function money(value) {
 
-  return Math.round(value)
-    .toLocaleString("ru-RU") + " ₽";
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+function updateSummary() {
+
+  const data =
+    calculateOrder();
+
+  countValue.textContent =
+    data.count;
+
+  originalValue.textContent =
+    `${data.original} ₽`;
+
+  discountValue.textContent =
+    `−${data.discount} ₽`;
+
+  freeValue.textContent =
+    data.freeApps;
+
+  totalValue.textContent =
+    `${data.total} ₽`;
+
+  orderButton.disabled =
+    data.count === 0;
 }
 
-function updatePrice() {
 
-  const count = selected.size;
-
-  if (count === 0) {
-
-    pricePanel.classList.remove("visible");
-
-    countEl.textContent = "0";
-    originalEl.textContent = "0 ₽";
-    discountEl.textContent = "0%";
-    totalEl.textContent = "0 ₽";
-
-    continueButton.disabled = true;
-
-    continueButton.textContent =
-      "Выберите приложение";
-
-    return;
-  }
-
-  const price =
-    calculatePrice(count);
-
-  pricePanel.classList.add("visible");
-
-  countEl.textContent = count;
-
-  originalEl.textContent =
-    money(price.original);
-
-  discountEl.textContent =
-    price.discountPercent + "%";
-
-  totalEl.textContent =
-    money(price.total);
-
-  continueButton.disabled = false;
-
-  continueButton.textContent =
-    "Продолжить · " +
-    money(price.total);
-}
-
-function initials(name) {
-
-  const words =
-    name
-      .replace(/[^а-яА-Яa-zA-Z0-9\s]/g, "")
-      .trim()
-      .split(/\s+/);
-
-  if (words.length >= 2) {
-
-    return (
-      words[0][0] +
-      words[1][0]
-    ).toUpperCase();
-
-  }
-
-  return name
-    .replace(/[^а-яА-Яa-zA-Z0-9]/g, "")
-    .substring(0, 2)
-    .toUpperCase();
-}
-
-function render() {
-
-  const searchText =
-    query.trim().toLowerCase();
-
-  const filtered =
-    apps.filter(app => {
-
-      const categoryOk =
-        currentCategory === "all" ||
-        app.category === currentCategory;
-
-      const searchOk =
-        !searchText ||
-        app.name
-          .toLowerCase()
-          .includes(searchText) ||
-        app.type
-          .toLowerCase()
-          .includes(searchText);
-
-      return categoryOk && searchOk;
-    });
-
-  appList.innerHTML = "";
-
-  if (filtered.length === 0) {
-
-    empty.classList.add("show");
-
-    return;
-  }
-
-  empty.classList.remove("show");
-
-  const grid =
-    document.createElement("div");
-
-  grid.className = "grid";
-
-  filtered.forEach(app => {
-
-    const card =
-      document.createElement("div");
-
-    card.className = "app-card";
-
-    if (selected.has(app.id)) {
-      card.classList.add("selected");
-    }
-
-    card.style.setProperty(
-      "--app-color",
-      app.color
-    );
-
-    card.style.setProperty(
-      "--app-gradient",
-      app.gradient
-    );
-
-    const check =
-      document.createElement("div");
-
-    check.className = "check";
-    check.textContent = "✓";
-
-    const icon =
-      document.createElement("div");
-
-    icon.className = "app-icon";
-
-    const fallback =
-      document.createElement("span");
-
-    fallback.className = "fallback";
-    fallback.textContent =
-      initials(app.name);
-
-    icon.appendChild(fallback);
-
-    if (app.logo) {
-
-      const img =
-        document.createElement("img");
-
-      img.src = app.logo;
-      img.alt = "";
-
-      img.onload = () => {
-        fallback.style.display = "none";
-      };
-
-      img.onerror = () => {
-        img.remove();
-        fallback.style.display = "block";
-      };
-
-      icon.appendChild(img);
-    }
-
-    const name =
-      document.createElement("div");
-
-    name.className = "app-name";
-    name.textContent = app.name;
-
-    const type =
-      document.createElement("div");
-
-    type.className = "app-type";
-    type.textContent = app.type;
-
-    card.appendChild(check);
-    card.appendChild(icon);
-    card.appendChild(name);
-    card.appendChild(type);
-
-    card.addEventListener("click", () => {
-
-      if (selected.has(app.id)) {
-        selected.delete(app.id);
-      } else {
-        selected.add(app.id);
-      }
-
-      render();
-      updatePrice();
-
-    });
-
-    grid.appendChild(card);
-
-  });
-
-  appList.appendChild(grid);
-}
-
-search.addEventListener(
-  "input",
-  () => {
-
-    query = search.value;
-
-    clear.style.display =
-      query.length > 0
-        ? "block"
-        : "none";
-
-    render();
-  }
-);
-
-clear.addEventListener(
-  "click",
-  () => {
-
-    search.value = "";
-    query = "";
-
-    clear.style.display = "none";
-
-    search.focus();
-
-    render();
-  }
-);
-
-categories.addEventListener(
-  "click",
-  event => {
-
-    const button =
-      event.target.closest(".category");
-
-    if (!button) return;
-
-    document
-      .querySelectorAll(".category")
-      .forEach(item => {
-        item.classList.remove("active");
-      });
-
-    button.classList.add("active");
-
-    currentCategory =
-      button.dataset.category;
-
-    render();
-  }
-);
-
-let toastTimer;
-
-function showToast(message) {
-
-  toast.textContent = message;
-
-  toast.classList.add("show");
-
-  clearTimeout(toastTimer);
-
-  toastTimer =
-    setTimeout(() => {
-      toast.classList.remove("show");
-    }, 3000);
-}
-
-function generateOrderNumber() {
-
-  const now = new Date();
-
-  const year =
-    String(now.getFullYear()).slice(-2);
-
-  const month =
-    String(now.getMonth() + 1)
-      .padStart(2, "0");
-
-  const day =
-    String(now.getDate())
-      .padStart(2, "0");
-
-  const random =
-    Math.floor(1000 + Math.random() * 9000);
-
-  return `AC-${year}${month}${day}-${random}`;
-}
+/* =========================================================
+   PHONE
+========================================================= */
 
 function normalizePhone(value) {
 
@@ -1792,211 +853,143 @@ function normalizePhone(value) {
     .trim();
 }
 
-function isValidPhone(phone) {
 
-  const digits =
-    phone.replace(/\D/g, "");
+/* =========================================================
+   ORDER NUMBER
+========================================================= */
 
-  return digits.length >= 10 &&
-         digits.length <= 15;
+function generateOrderNumber() {
+
+  const now =
+    new Date();
+
+  const yy =
+    String(now.getFullYear()).slice(-2);
+
+  const mm =
+    String(now.getMonth() + 1)
+      .padStart(2, "0");
+
+  const dd =
+    String(now.getDate())
+      .padStart(2, "0");
+
+  const hh =
+    String(now.getHours())
+      .padStart(2, "0");
+
+  const min =
+    String(now.getMinutes())
+      .padStart(2, "0");
+
+  const sec =
+    String(now.getSeconds())
+      .padStart(2, "0");
+
+  return `AC-${yy}${mm}${dd}-${hh}${min}${sec}`;
 }
 
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer = null;
+
+function showToast(message) {
+
+  toast.textContent =
+    message;
+
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer =
+    setTimeout(() => {
+
+      toast.classList.remove("show");
+
+    }, 3000);
+}
+
+
+/* =========================================================
+   PAYMENT MODAL
+========================================================= */
+
 function openPaymentModal() {
-
-  if (selected.size === 0) {
-
-    showToast(
-      "Сначала выберите приложение"
-    );
-
-    return;
-  }
 
   if (currentOrder) {
 
     showToast(
-      "Заказ уже создан"
+      "Заказ уже создан. Ожидайте проверки."
     );
 
     return;
   }
 
-  const selectedList =
-    apps.filter(app =>
-      selected.has(app.id)
+  const data =
+    calculateOrder();
+
+  if (data.count === 0) {
+
+    showToast(
+      "Выберите хотя бы одно приложение"
     );
 
-  const price =
-    calculatePrice(
-      selectedList.length
+    return;
+  }
+
+  const phone =
+    normalizePhone(
+      phoneInput.value
     );
 
-  selectedApps.innerHTML = "";
+  if (!phone || phone.length < 5) {
 
-  selectedList.forEach(app => {
+    showToast(
+      "Введите номер телефона"
+    );
 
-    const row =
-      document.createElement("div");
+    phoneInput.focus();
 
-    row.className = "selected-app";
+    return;
+  }
 
-    const name =
-      document.createElement("span");
+  paymentRecipient.textContent =
+    PAYMENT_DETAILS.recipient;
 
-    name.className =
-      "selected-app-name";
+  paymentCard.textContent =
+    PAYMENT_DETAILS.card;
 
-    name.textContent =
-      app.name;
+  paymentBank.textContent =
+    PAYMENT_DETAILS.bank;
 
-    const appPrice =
-      document.createElement("span");
+  paymentAmount.textContent =
+    `${data.total} ₽`;
 
-    appPrice.className =
-      "selected-app-price";
-
-    appPrice.textContent =
-      money(PRICE);
-
-    row.appendChild(name);
-    row.appendChild(appPrice);
-
-    selectedApps.appendChild(row);
-  });
-
-  paymentTotal.textContent =
-    money(price.total);
-
-  paymentOverlay.classList.add("show");
-
-  document.body.style.overflow =
-    "hidden";
-
-  setTimeout(() => {
-
-    if (phoneInput) {
-      phoneInput.focus();
-    }
-
-  }, 250);
+  paymentModal.classList.add("show");
 }
+
 
 function closePaymentModal() {
 
-  paymentOverlay.classList.remove("show");
-
-  document.body.style.overflow = "";
+  paymentModal.classList.remove("show");
 }
 
-continueButton.addEventListener(
-  "click",
-  openPaymentModal
-);
 
-paymentClose.addEventListener(
-  "click",
-  closePaymentModal
-);
-
-paymentOverlay.addEventListener(
-  "click",
-  event => {
-
-    if (event.target === paymentOverlay) {
-      closePaymentModal();
-    }
-
-  }
-);
-
-document.addEventListener(
-  "keydown",
-  event => {
-
-    if (event.key === "Escape") {
-      closePaymentModal();
-    }
-
-  }
-);
-
-document
-  .querySelectorAll(".copy-button")
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      async () => {
-
-        const value =
-          button.dataset.copy;
-
-        try {
-
-          await navigator.clipboard
-            .writeText(value);
-
-          const oldText =
-            button.textContent;
-
-          button.textContent =
-            "Скопировано";
-
-          setTimeout(() => {
-            button.textContent = oldText;
-          }, 1500);
-
-        } catch (error) {
-
-          const textarea =
-            document.createElement("textarea");
-
-          textarea.value = value;
-
-          textarea.style.position = "fixed";
-          textarea.style.opacity = "0";
-
-          document.body.appendChild(
-            textarea
-          );
-
-          textarea.select();
-
-          try {
-            document.execCommand("copy");
-          } catch (e) {
-            console.log(
-              "Copy error:",
-              e
-            );
-          }
-
-          textarea.remove();
-
-          const oldText =
-            button.textContent;
-
-          button.textContent =
-            "Скопировано";
-
-          setTimeout(() => {
-            button.textContent = oldText;
-          }, 1500);
-        }
-
-      }
-    );
-
-  });
-
-
-/* ==========================================
-   СОЗДАНИЕ ЗАКАЗА
-========================================== */
+/* =========================================================
+   CREATE ORDER
+========================================================= */
 
 async function createOrder() {
 
-  /* Защита от повторного создания */
+  /*
+    Защита №1:
+    нельзя создать второй заказ в рамках
+    текущего открытия страницы.
+  */
 
   if (currentOrder) {
 
@@ -2010,16 +1003,32 @@ async function createOrder() {
   }
 
 
-  const rawPhone =
-    phoneInput.value;
+  /*
+    Защита №2:
+    нельзя отправить два INSERT одновременно,
+    если пользователь быстро нажал кнопку несколько раз.
+  */
 
-  const phone =
-    normalizePhone(rawPhone);
-
-  if (!isValidPhone(phone)) {
+  if (isCreatingOrder) {
 
     showToast(
-      "Введите корректный номер телефона"
+      "Заказ уже отправляется..."
+    );
+
+    return false;
+  }
+
+
+  const phone =
+    normalizePhone(
+      phoneInput.value
+    );
+
+
+  if (!phone || phone.length < 5) {
+
+    showToast(
+      "Введите номер телефона"
     );
 
     phoneInput.focus();
@@ -2028,30 +1037,33 @@ async function createOrder() {
   }
 
 
-  if (selected.size === 0) {
+  if (selectedApps.length === 0) {
 
     showToast(
-      "Сначала выберите приложение"
+      "Выберите хотя бы одно приложение"
     );
 
     return false;
   }
 
 
-  const selectedList =
-    apps.filter(app =>
-      selected.has(app.id)
-    );
-
-
-  const price =
-    calculatePrice(
-      selectedList.length
-    );
+  const data =
+    calculateOrder();
 
 
   const orderNumber =
     generateOrderNumber();
+
+
+  const apps =
+    APPS
+      .filter(app =>
+        selectedApps.includes(app.id)
+      )
+      .map(app => ({
+        id: app.id,
+        name: app.name
+      }));
 
 
   const orderData = {
@@ -2063,43 +1075,53 @@ async function createOrder() {
       phone,
 
     app_ids:
-      selectedList.map(app =>
-        app.id
-      ),
+      selectedApps,
 
     apps:
-      selectedList.map(app => ({
-        id: app.id,
-        name: app.name,
-        type: app.type
-      })),
+      apps,
 
     original:
-      Math.round(price.original),
+      data.original,
 
     discount:
-      Math.round(price.discountAmount),
+      data.discount,
 
     free_apps:
-      0,
+      data.freeApps,
 
     total:
-      Math.round(price.total),
+      data.total,
 
     status:
       "awaiting_review"
   };
 
 
+  isCreatingOrder = true;
+
   paymentDone.disabled = true;
 
   paymentDone.textContent =
-    "Сохраняем заказ…";
+    "Отправка...";
 
 
   try {
 
-    const { error } =
+    /*
+      ВАЖНО:
+      здесь только INSERT.
+
+      Мы НЕ делаем:
+      .select()
+      .single()
+
+      потому что публичный клиент
+      не имеет права читать orders.
+    */
+
+    const {
+      error
+    } =
       await supabaseClient
         .from("orders")
         .insert([orderData]);
@@ -2108,23 +1130,25 @@ async function createOrder() {
     if (error) {
 
       console.error(
-        "Supabase order error:",
+        "Supabase INSERT error:",
         error
       );
 
       showToast(
         "Ошибка Supabase: " +
-        (error.message || "неизвестная ошибка")
+        error.message
       );
-
-      paymentDone.disabled = false;
-
-      paymentDone.textContent =
-        "Я оплатил";
 
       return false;
     }
 
+
+    /*
+      Сохраняем заказ локально.
+      После этого повторное нажатие
+      "Я оплатил" больше ничего
+      не отправит в Supabase.
+    */
 
     currentOrder =
       orderData;
@@ -2133,23 +1157,22 @@ async function createOrder() {
     closePaymentModal();
 
 
+    createdOrderNumber.textContent =
+      orderNumber;
+
+    orderCreated.classList.add("show");
+
+
+    orderButton.disabled =
+      true;
+
+    orderButton.textContent =
+      "Заказ создан";
+
+
     showToast(
-      "Заказ " +
-      orderNumber +
-      " создан"
+      `Заказ ${orderNumber} создан`
     );
-
-
-    console.log(
-      "AppCore order created:",
-      orderData
-    );
-
-
-    paymentDone.disabled = false;
-
-    paymentDone.textContent =
-      "Я оплатил";
 
 
     return true;
@@ -2162,22 +1185,42 @@ async function createOrder() {
     );
 
     showToast(
-      "Ошибка соединения с сервером"
+      "Не удалось создать заказ"
     );
+
+    return false;
+
+  } finally {
+
+    isCreatingOrder = false;
 
     paymentDone.disabled = false;
 
     paymentDone.textContent =
       "Я оплатил";
-
-    return false;
   }
 }
 
 
-/* ==========================================
-   КНОПКА "Я ОПЛАТИЛ"
-========================================== */
+/* =========================================================
+   EVENTS
+========================================================= */
+
+orderButton.addEventListener(
+  "click",
+  () => {
+    openPaymentModal();
+  }
+);
+
+
+paymentCancel.addEventListener(
+  "click",
+  () => {
+    closePaymentModal();
+  }
+);
+
 
 paymentDone.addEventListener(
   "click",
@@ -2195,66 +1238,40 @@ paymentDone.addEventListener(
     }
 
     await createOrder();
-
   }
 );
 
 
-/* ==========================================
-   TELEGRAM MINI APP
-========================================== */
+paymentModal.addEventListener(
+  "click",
+  event => {
 
-function initTelegram() {
-
-  if (
-    window.Telegram &&
-    window.Telegram.WebApp
-  ) {
-
-    try {
-
-      const tg =
-        window.Telegram.WebApp;
-
-      tg.ready();
-      tg.expand();
-
-      if (tg.setHeaderColor) {
-
-        tg.setHeaderColor(
-          "#08090d"
-        );
-
-      }
-
-      if (tg.setBackgroundColor) {
-
-        tg.setBackgroundColor(
-          "#08090d"
-        );
-
-      }
-
-    } catch (error) {
-
-      console.log(
-        "Telegram WebApp:",
-        error
-      );
-
+    if (
+      event.target === paymentModal
+    ) {
+      closePaymentModal();
     }
-
   }
-}
+);
 
 
-/* ==========================================
-   ЗАПУСК
-========================================== */
+/* =========================================================
+   INITIALIZE
+========================================================= */
 
-render();
-updatePrice();
-initTelegram();
+paymentRecipient.textContent =
+  PAYMENT_DETAILS.recipient;
+
+paymentCard.textContent =
+  PAYMENT_DETAILS.card;
+
+paymentBank.textContent =
+  PAYMENT_DETAILS.bank;
+
+
+renderApps();
+
+updateSummary();
 
 </script>
 
