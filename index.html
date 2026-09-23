@@ -323,7 +323,7 @@ h1 {
     0 12px 35px rgba(0,0,0,.25);
 }
 
-/* APP ICON (ИСПРАВЛЕНО ЦЕНТРИРОВАНИЕ) */
+/* APP ICON */
 
 .app-icon {
   position: relative;
@@ -332,28 +332,17 @@ h1 {
   height: 50px;
   border-radius: 15px;
   background: var(--app-gradient);
-  
-  /* Идеальное флекс-выравнивание */
   display: flex;
   align-items: center;
   justify-content: center;
-  
-  /* Внутренний отступ, чтобы логотип не лип к краям формы */
-  padding: 6px; 
-  
   overflow: hidden;
   box-shadow: 0 8px 20px rgba(0,0,0,.22);
 }
 
 .app-icon img {
-  max-width: 100%;
-  max-height: 100%;
-  
-  /* contain сохраняет пропорции без обрезки сторон */
-  object-fit: contain; 
-  
-  margin: auto;
-  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .fallback {
@@ -408,6 +397,42 @@ h1 {
   font-size: 11px;
 }
 
+/* EMPTY */
+
+.empty {
+  display: none;
+  padding: 65px 20px;
+  text-align: center;
+}
+
+.empty.show {
+  display: block;
+}
+
+.empty-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 13px;
+  border-radius: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.05);
+  color: #737a89;
+  font-size: 22px;
+}
+
+.empty-title {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.empty-text {
+  margin-top: 6px;
+  color: #707785;
+  font-size: 13px;
+}
+
 /* BOTTOM PANEL */
 
 .bottom {
@@ -434,6 +459,59 @@ h1 {
   margin: 0 auto;
 }
 
+/* PRICE */
+
+.price-panel {
+  display: none;
+  margin-bottom: 9px;
+  padding: 12px 14px;
+  border-radius: 17px;
+  background: rgba(20,22,29,.97);
+  border: 1px solid rgba(255,255,255,.08);
+  backdrop-filter: blur(20px);
+}
+
+.price-panel.visible {
+  display: block;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.price-label {
+  color: #858c9a;
+  font-size: 12px;
+}
+
+.price-value {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.total-row {
+  margin-top: 7px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.total-row .price-label {
+  color: #fff;
+  font-weight: 700;
+}
+
+.total-row .price-value {
+  font-size: 17px;
+}
+
+.sale {
+  color: #55e18b !important;
+}
+
 /* BUTTON */
 
 .continue {
@@ -441,86 +519,1018 @@ h1 {
   height: 52px;
   border: 0;
   border-radius: 16px;
-  background: linear-gradient(135deg, #7557ff, #4b31d9);
-  color: #fff;
-  font-weight: 700;
+  background: linear-gradient(135deg, #ffffff, #e9e9ee);
+  color: #090a0e;
+  font-size: 15px;
+  font-weight: 850;
   cursor: pointer;
+  box-shadow: 0 8px 25px rgba(0,0,0,.22);
+  transition: .18s;
+}
+
+.continue:disabled {
+  opacity: .38;
+  box-shadow: none;
+}
+
+.continue:not(:disabled):active {
+  transform: scale(.985);
+}
+
+/* TOAST */
+
+.toast {
+  position: fixed;
+  z-index: 50;
+  left: 50%;
+  bottom: 155px;
+  transform: translate(-50%, 20px);
+  max-width: calc(100% - 30px);
+  padding: 11px 15px;
+  border-radius: 13px;
+  background: #242731;
+  border: 1px solid rgba(255,255,255,.09);
+  color: #fff;
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: .22s;
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* DESKTOP */
+
+@media (min-width: 650px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 380px) {
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .app-card {
+    min-height: 155px;
+    padding: 12px;
+  }
+
+  .app-icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .app-name {
+    font-size: 13px;
+  }
 }
 </style>
 </head>
+
 <body>
 
 <div class="container">
-  
-  <!-- HEADER -->
-  <div class="header">
+
+  <header class="header">
+
     <div class="top">
+
       <div class="brand">
         <div class="brand-logo">A</div>
         <div class="brand-title">AppCore</div>
       </div>
+
       <div class="online">
-        <div class="online-dot"></div>
+        <span class="online-dot"></span>
         Доступно
       </div>
+
     </div>
+
     <h1>Что установить?</h1>
-    <div class="subtitle">Выберите одно или несколько приложений. Мы подготовим установку дистанционно.</div>
-  </div>
 
-  <!-- DISCOUNT BOX -->
-  <div class="discount-box">
-    <div class="discount-title">🎁 Чем больше приложений — тем больше скидка</div>
-    <div class="discount-text">1 приложение — без скидки · 2 — <span class="discount-highlight">3%</span> · 3 — <span class="discount-highlight">6%</span> · 4 — <span class="discount-highlight">9%</span> · 5+ — <span class="discount-highlight">30%</span></div>
-  </div>
-
-  <!-- SEARCH -->
-  <div class="search-wrap">
-    <input type="text" class="search" placeholder="Поиск приложения...">
-  </div>
-
-  <!-- CATEGORIES -->
-  <div class="categories">
-    <button class="category active">Все</button>
-    <button class="category">Банки и инвестиции</button>
-    <button class="category">Социальные</button>
-    <button class="category">Сервисы</button>
-  </div>
-
-  <!-- GRID WITH APPS -->
-  <div class="grid">
-    
-    <!-- Сбербанк -->
-    <div class="app-card" style="--app-color: #21a038;">
-      <div class="check">✓</div>
-      <div class="app-icon" style="--app-gradient: linear-gradient(135deg, #1cc44e, #0c7526);">
-        <img src="path_to_sber_logo.png" alt="Сбербанк">
-      </div>
-      <div class="app-name">Сбербанк</div>
-      <div class="app-type">Банк</div>
+    <div class="subtitle">
+      Выберите одно или несколько приложений.
+      Мы подготовим установку дистанционно.
     </div>
 
-    <!-- Т-Банк -->
-    <div class="app-card" style="--app-color: #ffdd2d;">
-      <div class="check">✓</div>
-      <div class="app-icon" style="--app-gradient: linear-gradient(135deg, #fff275, #ffcc00);">
-        <img src="path_to_tbank_logo.png" alt="Т-Банк">
+    <div class="discount-box">
+
+      <div class="discount-title">
+        🎁 Чем больше приложений — тем больше скидка
       </div>
-      <div class="app-name">Т-Банк</div>
-      <div class="app-type">Банк</div>
+
+      <div class="discount-text">
+        1 приложение — без скидки ·
+        2 — <span class="discount-highlight">3%</span> ·
+        3 — <span class="discount-highlight">6%</span> ·
+        4 — <span class="discount-highlight">9%</span> ·
+        5+ — <span class="discount-highlight">30%</span>
+      </div>
+
     </div>
 
-    <!-- Альфа-Банк -->
-    <div class="app-card" style="--app-color: #ef3124;">
-      <div class="check">✓</div>
-      <div class="app-icon" style="--app-gradient: linear-gradient(135deg, #ff5c4e, #cf160a);">
-        <img src="path_to_alfa_logo.png" alt="Альфа-Банк">
-      </div>
-      <div class="app-name">Альфа-Банк</div>
-      <div class="app-type">Банк</div>
+    <div class="search-wrap">
+
+      <span class="search-icon">⌕</span>
+
+      <input
+        id="search"
+        class="search"
+        type="search"
+        placeholder="Поиск приложения…"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+      >
+
+      <button
+        id="clear"
+        class="clear"
+        type="button"
+      >×</button>
+
     </div>
 
-    <!-- ВТБ -->
-    <div class="app-card" style="--app-color: #00aaff;">
-      <div class="check">✓</div>
-      <div class="app-icon" style="--app-gradient: linear-gradient(135deg, #33bfff, #0055a5);">
+    <div class="categories" id="categories">
+
+      <button
+        class="category active"
+        data-category="all"
+      >
+        Все
+      </button>
+
+      <button
+        class="category"
+        data-category="finance"
+      >
+        Банки и инвестиции
+      </button>
+
+      <button
+        class="category"
+        data-category="social"
+      >
+        Социальные
+      </button>
+
+      <button
+        class="category"
+        data-category="useful"
+      >
+        Сервисы
+      </button>
+
+    </div>
+
+  </header>
+
+  <main id="appList"></main>
+
+  <div id="empty" class="empty">
+
+    <div class="empty-icon">⌕</div>
+
+    <div class="empty-title">
+      Ничего не найдено
+    </div>
+
+    <div class="empty-text">
+      Попробуйте изменить запрос или категорию.
+    </div>
+
+  </div>
+
+</div>
+
+<!-- BOTTOM -->
+
+<div class="bottom">
+
+  <div class="bottom-inner">
+
+    <div
+      id="pricePanel"
+      class="price-panel"
+    >
+
+      <div class="price-row">
+        <span class="price-label">Приложений</span>
+        <span
+          id="count"
+          class="price-value"
+        >0</span>
+      </div>
+
+      <div class="price-row">
+        <span class="price-label">Сумма</span>
+        <span
+          id="original"
+          class="price-value"
+        >0 ₽</span>
+      </div>
+
+      <div class="price-row">
+        <span class="price-label">Скидка</span>
+        <span
+          id="discount"
+          class="price-value sale"
+        >0%</span>
+      </div>
+
+      <div class="price-row total-row">
+        <span class="price-label">Итого</span>
+        <span
+          id="total"
+          class="price-value"
+        >0 ₽</span>
+      </div>
+
+    </div>
+
+    <button
+      id="continue"
+      class="continue"
+      disabled
+    >
+      Выберите приложение
+    </button>
+
+  </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+
+<script>
+"use strict";
+
+/* ==========================================
+   НАСТРОЙКИ
+========================================== */
+
+const PRICE = 500;
+
+
+/* ==========================================
+   ПРИЛОЖЕНИЯ
+========================================== */
+
+const apps = [
+
+  {
+    id: "sberbank",
+    name: "Сбербанк",
+    type: "Банк",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/sberbank",
+    color: "#21a366",
+    gradient: "linear-gradient(135deg,#25b86c,#08783e)"
+  },
+
+  {
+    id: "sber-invest",
+    name: "СберИнвестиции",
+    type: "Инвестиции",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/sberbank",
+    color: "#18a765",
+    gradient: "linear-gradient(135deg,#2ac979,#087c46)"
+  },
+
+  {
+    id: "tbank",
+    name: "Т-Банк",
+    type: "Банк",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/tbank",
+    color: "#ffd500",
+    gradient: "linear-gradient(135deg,#ffe33e,#e7b900)"
+  },
+
+  {
+    id: "t-invest",
+    name: "Т-Инвестиции",
+    type: "Инвестиции",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/tbank",
+    color: "#f3ca00",
+    gradient: "linear-gradient(135deg,#ffe64a,#d9a900)"
+  },
+
+  {
+    id: "alfa",
+    name: "Альфа-Банк",
+    type: "Банк",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/alfabank",
+    color: "#ef3124",
+    gradient: "linear-gradient(135deg,#ff5145,#c70d09)"
+  },
+
+  {
+    id: "alfa-invest",
+    name: "Альфа-Инвестиции",
+    type: "Инвестиции",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/alfabank",
+    color: "#e93027",
+    gradient: "linear-gradient(135deg,#ff5b4f,#bb1009)"
+  },
+
+  {
+    id: "vtb",
+    name: "ВТБ",
+    type: "Банк",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/vtb",
+    color: "#1685ff",
+    gradient: "linear-gradient(135deg,#36a4ff,#0757d9)"
+  },
+
+  {
+    id: "vtb-invest",
+    name: "ВТБ Инвестиции",
+    type: "Инвестиции",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/vtb",
+    color: "#1a82ed",
+    gradient: "linear-gradient(135deg,#3ca8ff,#0a4fc2)"
+  },
+
+  {
+    id: "gazprom",
+    name: "Газпромбанк",
+    type: "Банк",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/gazprombank",
+    color: "#3b78ff",
+    gradient: "linear-gradient(135deg,#55a1ff,#154bc9)"
+  },
+
+  {
+    id: "gazprom-invest",
+    name: "Газпромбанк Инвестиции",
+    type: "Инвестиции",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/gazprombank",
+    color: "#3673ff",
+    gradient: "linear-gradient(135deg,#58a9ff,#164ac8)"
+  },
+
+  {
+    id: "rshb",
+    name: "Россельхозбанк",
+    type: "Банк",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/rosselkhozbank",
+    color: "#48a93f",
+    gradient: "linear-gradient(135deg,#6bd35c,#1e7427)"
+  },
+
+  {
+    id: "psb",
+    name: "ПСБ Банк",
+    type: "Банк",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/psbank",
+    color: "#e1262d",
+    gradient: "linear-gradient(135deg,#ff4c50,#b90c14)"
+  },
+
+  {
+    id: "yandex-pay",
+    name: "Яндекс Пэй",
+    type: "Сервис",
+    category: "finance",
+    logo: "https://cdn.simpleicons.org/yandex",
+    color: "#ff3d00",
+    gradient: "linear-gradient(135deg,#ff7043,#e52c00)"
+  },
+
+  {
+    id: "vk",
+    name: "VK",
+    type: "Социальная сеть",
+    category: "social",
+    logo: "https://cdn.simpleicons.org/vk",
+    color: "#0077ff",
+    gradient: "linear-gradient(135deg,#3c9aff,#0056cf)"
+  },
+
+  {
+    id: "vk-video",
+    name: "VK Видео",
+    type: "Видео",
+    category: "social",
+    logo: "https://cdn.simpleicons.org/vk",
+    color: "#5d65ff",
+    gradient: "linear-gradient(135deg,#7984ff,#3b42d8)"
+  },
+
+  {
+    id: "vk-messenger",
+    name: "VK Мессенджер",
+    type: "Мессенджер",
+    category: "social",
+    logo: "https://cdn.simpleicons.org/vk",
+    color: "#7b61ff",
+    gradient: "linear-gradient(135deg,#957cff,#5540d6)"
+  },
+
+  {
+    id: "max",
+    name: "MAX",
+    type: "Мессенджер",
+    category: "social",
+    logo: "https://cdn.simpleicons.org/max",
+    color: "#6f5cff",
+    gradient: "linear-gradient(135deg,#927cff,#4b36d8)"
+  },
+
+  {
+    id: "avito",
+    name: "Авито",
+    type: "Сервис",
+    category: "social",
+    logo: "https://cdn.simpleicons.org/avito",
+    color: "#00a86b",
+    gradient: "linear-gradient(135deg,#27d18c,#00804e)"
+  },
+
+  {
+    id: "rave",
+    name: "Rave",
+    type: "Видео",
+    category: "social",
+    logo: "https://cdn.simpleicons.org/rave",
+    color: "#ff4d91",
+    gradient: "linear-gradient(135deg,#ff70aa,#d3226b)"
+  },
+
+  {
+    id: "rutube",
+    name: "RUTUBE",
+    type: "Видео",
+    category: "social",
+    logo: "https://cdn.simpleicons.org/rutube",
+    color: "#ff3b30",
+    gradient: "linear-gradient(135deg,#ff665e,#cf160e)"
+  },
+
+  {
+    id: "happ",
+    name: "Happ Plus",
+    type: "Сервис",
+    category: "useful",
+    logo: "https://cdn.simpleicons.org/happ",
+    color: "#815cff",
+    gradient: "linear-gradient(135deg,#a083ff,#5230d9)"
+  },
+
+  {
+    id: "chatgpt",
+    name: "ChatGPT",
+    type: "Сервис",
+    category: "useful",
+    logo: "https://cdn.simpleicons.org/openai",
+    color: "#10a37f",
+    gradient: "linear-gradient(135deg,#20c997,#087c60)"
+  }
+
+];
+
+
+/* ==========================================
+   СОСТОЯНИЕ
+========================================== */
+
+let selected = new Set();
+let currentCategory = "all";
+let query = "";
+
+
+/* ==========================================
+   ЭЛЕМЕНТЫ
+========================================== */
+
+const appList = document.getElementById("appList");
+const empty = document.getElementById("empty");
+
+const search = document.getElementById("search");
+const clear = document.getElementById("clear");
+
+const categories = document.getElementById("categories");
+
+const pricePanel = document.getElementById("pricePanel");
+
+const countEl = document.getElementById("count");
+const originalEl = document.getElementById("original");
+const discountEl = document.getElementById("discount");
+const totalEl = document.getElementById("total");
+
+const continueButton =
+  document.getElementById("continue");
+
+const toast =
+  document.getElementById("toast");
+
+
+/* ==========================================
+   СКИДКА
+========================================== */
+
+function getDiscount(count) {
+
+  if (count >= 5) {
+    return 30;
+  }
+
+  if (count === 4) {
+    return 9;
+  }
+
+  if (count === 3) {
+    return 6;
+  }
+
+  if (count === 2) {
+    return 3;
+  }
+
+  return 0;
+
+}
+
+
+/* ==========================================
+   ЦЕНА
+========================================== */
+
+function calculatePrice(count) {
+
+  const original = count * PRICE;
+
+  const discountPercent =
+    getDiscount(count);
+
+  const discountAmount =
+    original * discountPercent / 100;
+
+  const total =
+    original - discountAmount;
+
+  return {
+    original,
+    discountPercent,
+    discountAmount,
+    total
+  };
+
+}
+
+
+/* ==========================================
+   ФОРМАТ ЦЕНЫ
+========================================== */
+
+function money(value) {
+
+  return Math.round(value)
+    .toLocaleString("ru-RU") + " ₽";
+
+}
+
+
+/* ==========================================
+   ОБНОВЛЕНИЕ ЦЕНЫ
+========================================== */
+
+function updatePrice() {
+
+  const count = selected.size;
+
+  if (count === 0) {
+
+    pricePanel.classList.remove("visible");
+
+    countEl.textContent = "0";
+    originalEl.textContent = "0 ₽";
+    discountEl.textContent = "0%";
+    totalEl.textContent = "0 ₽";
+
+    continueButton.disabled = true;
+    continueButton.textContent =
+      "Выберите приложение";
+
+    return;
+  }
+
+  const price =
+    calculatePrice(count);
+
+  pricePanel.classList.add("visible");
+
+  countEl.textContent = count;
+
+  originalEl.textContent =
+    money(price.original);
+
+  discountEl.textContent =
+    price.discountPercent + "%";
+
+  totalEl.textContent =
+    money(price.total);
+
+  continueButton.disabled = false;
+
+  continueButton.textContent =
+    "Продолжить · " + money(price.total);
+
+}
+
+
+/* ==========================================
+   НАЧАЛЬНЫЕ БУКВЫ
+========================================== */
+
+function initials(name) {
+
+  const words =
+    name
+      .replace(/[^а-яА-Яa-zA-Z0-9\s]/g, "")
+      .trim()
+      .split(/\s+/);
+
+  if (words.length >= 2) {
+
+    return (
+      words[0][0] +
+      words[1][0]
+    ).toUpperCase();
+
+  }
+
+  return name
+    .replace(/[^а-яА-Яa-zA-Z0-9]/g, "")
+    .substring(0, 2)
+    .toUpperCase();
+
+}
+
+
+/* ==========================================
+   РЕНДЕР
+========================================== */
+
+function render() {
+
+  const searchText =
+    query.trim().toLowerCase();
+
+  const filtered =
+    apps.filter(app => {
+
+      const categoryOk =
+        currentCategory === "all" ||
+        app.category === currentCategory;
+
+      const searchOk =
+        !searchText ||
+        app.name
+          .toLowerCase()
+          .includes(searchText) ||
+        app.type
+          .toLowerCase()
+          .includes(searchText);
+
+      return categoryOk && searchOk;
+
+    });
+
+  appList.innerHTML = "";
+
+  if (filtered.length === 0) {
+
+    empty.classList.add("show");
+
+    return;
+
+  }
+
+  empty.classList.remove("show");
+
+  const grid =
+    document.createElement("div");
+
+  grid.className = "grid";
+
+  filtered.forEach(app => {
+
+    const card =
+      document.createElement("div");
+
+    card.className = "app-card";
+
+    if (selected.has(app.id)) {
+      card.classList.add("selected");
+    }
+
+    card.style.setProperty(
+      "--app-color",
+      app.color
+    );
+
+    card.style.setProperty(
+      "--app-gradient",
+      app.gradient
+    );
+
+
+    /* CHECK */
+
+    const check =
+      document.createElement("div");
+
+    check.className = "check";
+    check.textContent = "✓";
+
+
+    /* ICON */
+
+    const icon =
+      document.createElement("div");
+
+    icon.className = "app-icon";
+
+    const fallback =
+      document.createElement("span");
+
+    fallback.className = "fallback";
+    fallback.textContent =
+      initials(app.name);
+
+    icon.appendChild(fallback);
+
+
+    if (app.logo) {
+
+      const img =
+        document.createElement("img");
+
+      img.src = app.logo;
+      img.alt = "";
+
+      img.onload = () => {
+        fallback.style.display = "none";
+      };
+
+      img.onerror = () => {
+        img.remove();
+        fallback.style.display = "block";
+      };
+
+      icon.appendChild(img);
+
+    }
+
+
+    /* NAME */
+
+    const name =
+      document.createElement("div");
+
+    name.className = "app-name";
+    name.textContent = app.name;
+
+
+    /* TYPE */
+
+    const type =
+      document.createElement("div");
+
+    type.className = "app-type";
+    type.textContent = app.type;
+
+
+    card.appendChild(check);
+    card.appendChild(icon);
+    card.appendChild(name);
+    card.appendChild(type);
+
+
+    card.addEventListener("click", () => {
+
+      if (selected.has(app.id)) {
+
+        selected.delete(app.id);
+
+      } else {
+
+        selected.add(app.id);
+
+      }
+
+      render();
+      updatePrice();
+
+    });
+
+
+    grid.appendChild(card);
+
+  });
+
+  appList.appendChild(grid);
+
+}
+
+
+/* ==========================================
+   ПОИСК
+========================================== */
+
+search.addEventListener(
+  "input",
+  () => {
+
+    query = search.value;
+
+    clear.style.display =
+      query.length > 0
+        ? "block"
+        : "none";
+
+    render();
+
+  }
+);
+
+
+clear.addEventListener(
+  "click",
+  () => {
+
+    search.value = "";
+    query = "";
+
+    clear.style.display = "none";
+
+    search.focus();
+
+    render();
+
+  }
+);
+
+
+/* ==========================================
+   КАТЕГОРИИ
+========================================== */
+
+categories.addEventListener(
+  "click",
+  event => {
+
+    const button =
+      event.target.closest(".category");
+
+    if (!button) return;
+
+    document
+      .querySelectorAll(".category")
+      .forEach(item => {
+        item.classList.remove("active");
+      });
+
+    button.classList.add("active");
+
+    currentCategory =
+      button.dataset.category;
+
+    render();
+
+  }
+);
+
+
+/* ==========================================
+   TOAST
+========================================== */
+
+let toastTimer;
+
+function showToast(message) {
+
+  toast.textContent = message;
+
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer =
+    setTimeout(() => {
+
+      toast.classList.remove("show");
+
+    }, 2500);
+
+}
+
+
+/* ==========================================
+   ПРОДОЛЖИТЬ
+========================================== */
+
+continueButton.addEventListener(
+  "click",
+  () => {
+
+    if (selected.size === 0) {
+      return;
+    }
+
+    const count = selected.size;
+
+    const price =
+      calculatePrice(count);
+
+    showToast(
+      "Выбрано приложений: " +
+      count +
+      " · Итого: " +
+      money(price.total)
+    );
+
+    /*
+      Следующим этапом сюда можно
+      подключить реальную отправку
+      заказа в Telegram-бот.
+    */
+
+  }
+);
+
+
+/* ==========================================
+   TELEGRAM MINI APP
+========================================== */
+
+function initTelegram() {
+
+  if (
+    window.Telegram &&
+    window.Telegram.WebApp
+  ) {
+
+    try {
+
+      const tg =
+        window.Telegram.WebApp;
+
+      tg.ready();
+      tg.expand();
+
+      if (tg.setHeaderColor) {
+        tg.setHeaderColor("#08090d");
+      }
+
+      if (tg.setBackgroundColor) {
+        tg.setBackgroundColor("#08090d");
+      }
+
+    } catch (error) {
+
+      console.log(
+        "Telegram WebApp:",
+        error
+      );
+
+    }
+
+  }
+
+}
+
+
+/* ==========================================
+   ЗАПУСК
+========================================== */
+
+render();
+updatePrice();
+initTelegram();
+
+</script>
+
+</body>
+</html>
