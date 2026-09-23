@@ -3,47 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0b0d10">
+<meta name="theme-color" content="#0b0b12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
 <title>AppCore</title>
 
 <style>
+:root {
+  --bg: #08090d;
+  --card: #12141b;
+  --text: #ffffff;
+  --muted: #8d93a3;
+  --line: rgba(255,255,255,.08);
+  --accent: #ffffff;
+}
+
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100%;
-  background: #0b0d10;
-  color: #f5f7fa;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-               "Segoe UI", Arial, sans-serif;
+html {
+  background: var(--bg);
 }
 
 body {
-  padding-bottom: 110px;
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(91,70,255,.13), transparent 32%),
+    radial-gradient(circle at 100% 15%, rgba(0,200,255,.08), transparent 28%),
+    var(--bg);
+  color: var(--text);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Segoe UI",
+    Arial,
+    sans-serif;
+  padding-bottom: 150px;
 }
 
-.app {
+button,
+input {
+  font: inherit;
+}
+
+button {
+  -webkit-appearance: none;
+}
+
+.container {
   width: 100%;
-  max-width: 900px;
+  max-width: 920px;
   margin: 0 auto;
-  padding: 18px 16px 30px;
+  padding: 18px 15px 30px;
 }
 
 /* HEADER */
 
 .header {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
-.top-line {
+.top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
 }
 
 .brand {
@@ -53,65 +80,135 @@ body {
 }
 
 .brand-logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 13px;
+  width: 43px;
+  height: 43px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 21px;
+  font-weight: 900;
+  color: white;
+  background:
+    linear-gradient(135deg, #7557ff, #4b31d9);
+  box-shadow: 0 8px 28px rgba(93,65,255,.28);
+}
+
+.brand-title {
   font-size: 20px;
   font-weight: 800;
-  color: #ffffff;
-  background: linear-gradient(145deg, #252a31, #12151a);
-  border: 1px solid rgba(255,255,255,.09);
-  box-shadow: 0 8px 25px rgba(0,0,0,.25);
+  letter-spacing: -.5px;
 }
 
-.brand-name {
-  font-size: 20px;
-  font-weight: 750;
-  letter-spacing: -.4px;
-}
-
-.status {
+.online {
   display: flex;
   align-items: center;
   gap: 7px;
   padding: 7px 11px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.035);
   border-radius: 20px;
-  background: #11151a;
-  border: 1px solid rgba(255,255,255,.07);
-  color: #aeb6c1;
+  color: #b5bac7;
   font-size: 12px;
 }
 
-.status-dot {
+.online-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #37d67a;
-  box-shadow: 0 0 9px rgba(55,214,122,.7);
+  background: #37db7c;
+  box-shadow: 0 0 10px rgba(55,219,124,.7);
 }
 
 h1 {
-  margin: 25px 0 7px;
-  font-size: clamp(28px, 7vw, 40px);
-  line-height: 1.05;
-  letter-spacing: -1.2px;
+  margin: 27px 0 7px;
+  font-size: clamp(30px, 8vw, 44px);
+  line-height: 1;
+  letter-spacing: -1.7px;
 }
 
 .subtitle {
-  max-width: 600px;
-  color: #89919d;
+  max-width: 650px;
+  color: var(--muted);
   font-size: 14px;
   line-height: 1.5;
 }
 
+/* DISCOUNT */
+
+.discount-box {
+  margin-top: 18px;
+  padding: 15px;
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg,
+      rgba(118,83,255,.18),
+      rgba(0,180,255,.08));
+  border: 1px solid rgba(135,109,255,.22);
+  overflow: hidden;
+  position: relative;
+}
+
+.discount-box::after {
+  content: "";
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  right: -45px;
+  top: -65px;
+  border-radius: 50%;
+  background: rgba(110,80,255,.16);
+  filter: blur(2px);
+}
+
+.discount-title {
+  position: relative;
+  z-index: 1;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.discount-text {
+  position: relative;
+  z-index: 1;
+  margin-top: 5px;
+  color: #aeb4c4;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.discount-highlight {
+  color: #b69cff;
+  font-weight: 800;
+}
+
 /* SEARCH */
 
-.search {
+.search-wrap {
+  margin-top: 17px;
   position: relative;
-  margin-top: 20px;
+}
+
+.search {
+  width: 100%;
+  height: 49px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: rgba(18,20,27,.94);
+  color: white;
+  outline: none;
+  padding: 0 44px 0 43px;
+  font-size: 14px;
+  transition: .2s;
+}
+
+.search:focus {
+  border-color: rgba(135,109,255,.4);
+  box-shadow: 0 0 0 3px rgba(117,83,255,.07);
+}
+
+.search::placeholder {
+  color: #656b7a;
 }
 
 .search-icon {
@@ -119,79 +216,61 @@ h1 {
   left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  color: #727b87;
-  font-size: 21px;
+  color: #858b99;
+  font-size: 20px;
   z-index: 2;
 }
 
-.search-input {
-  width: 100%;
-  height: 48px;
-  padding: 0 44px 0 43px;
-  border: 1px solid rgba(255,255,255,.08);
-  outline: none;
-  border-radius: 15px;
-  background: #12151a;
-  color: #ffffff;
-  font-size: 15px;
-  transition: .2s;
-}
-
-.search-input::placeholder {
-  color: #666f7b;
-}
-
-.search-input:focus {
-  border-color: rgba(255,255,255,.18);
-  background: #15191f;
-}
-
-.clear-search {
+.clear {
+  display: none;
   position: absolute;
-  right: 7px;
+  right: 8px;
   top: 7px;
-  width: 34px;
-  height: 34px;
+  width: 35px;
+  height: 35px;
   border: 0;
   border-radius: 10px;
-  background: transparent;
-  color: #89919d;
-  font-size: 21px;
-  display: none;
+  background: rgba(255,255,255,.06);
+  color: #aeb4c0;
   cursor: pointer;
 }
 
-/* FILTERS */
+/* CATEGORIES */
 
-.filters {
+.categories {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 14px 1px 4px;
   scrollbar-width: none;
+  padding: 13px 1px 3px;
 }
 
-.filters::-webkit-scrollbar {
+.categories::-webkit-scrollbar {
   display: none;
 }
 
-.filter {
+.category {
   flex: 0 0 auto;
   height: 36px;
   padding: 0 14px;
-  border-radius: 11px;
-  border: 1px solid rgba(255,255,255,.07);
-  background: #111419;
-  color: #8d96a2;
-  font-size: 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,.035);
+  color: #9298a7;
   cursor: pointer;
+  font-size: 12px;
+  font-weight: 650;
   transition: .2s;
 }
 
-.filter.active {
-  color: #ffffff;
-  background: #242931;
-  border-color: rgba(255,255,255,.13);
+.category.active {
+  color: #fff;
+  border-color: rgba(126,98,255,.42);
+  background: linear-gradient(
+    135deg,
+    rgba(110,77,255,.28),
+    rgba(73,52,170,.2)
+  );
 }
 
 /* GRID */
@@ -200,97 +279,130 @@ h1 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin-top: 17px;
+  margin-top: 16px;
 }
 
-.card {
-  position: relative;
-  min-height: 146px;
+/* APP CARD */
+
+.app-card {
+  min-height: 165px;
   padding: 14px;
-  border-radius: 18px;
-  background: linear-gradient(145deg, #15191e, #101318);
-  border: 1px solid rgba(255,255,255,.065);
+  position: relative;
+  overflow: hidden;
   cursor: pointer;
-  transition: transform .18s, border-color .18s, background .18s;
-  overflow: hidden;
-}
-
-.card:active {
-  transform: scale(.98);
-}
-
-.card.selected {
-  border-color: rgba(255,255,255,.34);
-  background: linear-gradient(145deg, #1b2027, #13171c);
-}
-
-.card-check {
-  position: absolute;
-  right: 11px;
-  top: 11px;
-  width: 23px;
-  height: 23px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.13);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: transparent;
-  font-size: 13px;
-  background: rgba(0,0,0,.16);
-}
-
-.card.selected .card-check {
-  background: #ffffff;
-  color: #101216;
-  border-color: #ffffff;
-}
-
-.icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: #20252c;
+  border-radius: 20px;
   border: 1px solid rgba(255,255,255,.07);
+  background: #12141a;
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease;
+}
+
+.app-card::before {
+  content: "";
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  right: -50px;
+  top: -50px;
+  border-radius: 50%;
+  background: var(--app-color);
+  opacity: .13;
+  filter: blur(3px);
+}
+
+.app-card:active {
+  transform: scale(.975);
+}
+
+.app-card.selected {
+  border-color: var(--app-color);
+  box-shadow:
+    0 0 0 1px var(--app-color),
+    0 12px 35px rgba(0,0,0,.25);
+}
+
+/* APP ICON */
+
+.app-icon {
+  position: relative;
+  z-index: 1;
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
+  background: var(--app-gradient);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  margin-bottom: 13px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.22);
 }
 
-.icon img {
+.app-icon img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.icon-fallback {
-  font-size: 17px;
-  font-weight: 800;
-  color: #dce1e7;
+.fallback {
+  color: white;
+  font-size: 16px;
+  font-weight: 900;
 }
 
-.card-title {
+/* CHECK */
+
+.check {
+  position: absolute;
+  z-index: 3;
+  right: 11px;
+  top: 11px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.app-card.selected .check {
+  color: #111;
+  background: white;
+  border-color: white;
+}
+
+/* APP INFO */
+
+.app-name {
+  position: relative;
+  z-index: 1;
+  margin-top: 13px;
+  padding-right: 22px;
   font-size: 14px;
-  font-weight: 700;
-  color: #f1f3f5;
+  font-weight: 800;
   line-height: 1.25;
-  padding-right: 18px;
 }
 
-.card-category {
+.app-type {
+  position: relative;
+  z-index: 1;
   margin-top: 5px;
+  color: #777e8c;
   font-size: 11px;
-  color: #707985;
 }
 
 /* EMPTY */
 
 .empty {
   display: none;
+  padding: 65px 20px;
   text-align: center;
-  padding: 70px 20px;
 }
 
 .empty.show {
@@ -300,66 +412,125 @@ h1 {
 .empty-icon {
   width: 52px;
   height: 52px;
-  margin: 0 auto 14px;
+  margin: 0 auto 13px;
+  border-radius: 17px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 16px;
-  background: #15191f;
-  color: #737d89;
-  font-size: 24px;
+  background: rgba(255,255,255,.05);
+  color: #737a89;
+  font-size: 22px;
 }
 
 .empty-title {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .empty-text {
   margin-top: 6px;
-  color: #747d89;
+  color: #707785;
   font-size: 13px;
 }
 
-/* BOTTOM ACTION */
+/* BOTTOM PANEL */
 
 .bottom {
   position: fixed;
+  z-index: 20;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 20;
-  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-  background: linear-gradient(
-    to top,
-    rgba(11,13,16,1) 55%,
-    rgba(11,13,16,.92) 75%,
-    rgba(11,13,16,0)
-  );
+  padding:
+    10px 14px
+    calc(11px + env(safe-area-inset-bottom));
+  background:
+    linear-gradient(
+      to top,
+      rgba(8,9,13,1) 55%,
+      rgba(8,9,13,.96) 76%,
+      rgba(8,9,13,0)
+    );
 }
 
 .bottom-inner {
   width: 100%;
-  max-width: 900px;
+  max-width: 920px;
   margin: 0 auto;
 }
+
+/* PRICE */
+
+.price-panel {
+  display: none;
+  margin-bottom: 9px;
+  padding: 12px 14px;
+  border-radius: 17px;
+  background: rgba(20,22,29,.97);
+  border: 1px solid rgba(255,255,255,.08);
+  backdrop-filter: blur(20px);
+}
+
+.price-panel.visible {
+  display: block;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.price-label {
+  color: #858c9a;
+  font-size: 12px;
+}
+
+.price-value {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.total-row {
+  margin-top: 7px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.total-row .price-label {
+  color: #fff;
+  font-weight: 700;
+}
+
+.total-row .price-value {
+  font-size: 17px;
+}
+
+.sale {
+  color: #55e18b !important;
+}
+
+/* BUTTON */
 
 .continue {
   width: 100%;
   height: 52px;
   border: 0;
-  border-radius: 15px;
-  background: #ffffff;
-  color: #0b0d10;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffffff, #e9e9ee);
+  color: #090a0e;
   font-size: 15px;
-  font-weight: 750;
+  font-weight: 850;
   cursor: pointer;
+  box-shadow: 0 8px 25px rgba(0,0,0,.22);
   transition: .18s;
 }
 
 .continue:disabled {
-  opacity: .35;
-  cursor: default;
+  opacity: .38;
+  box-shadow: none;
 }
 
 .continue:not(:disabled):active {
@@ -370,23 +541,21 @@ h1 {
 
 .toast {
   position: fixed;
-  left: 50%;
-  bottom: 82px;
-  transform: translate(-50%, 20px);
   z-index: 50;
+  left: 50%;
+  bottom: 155px;
+  transform: translate(-50%, 20px);
+  max-width: calc(100% - 30px);
   padding: 11px 15px;
-  border-radius: 12px;
-  background: #20252c;
+  border-radius: 13px;
+  background: #242731;
   border: 1px solid rgba(255,255,255,.09);
-  color: #ffffff;
+  color: #fff;
   font-size: 13px;
   opacity: 0;
   pointer-events: none;
   transition: .22s;
   white-space: nowrap;
-  max-width: calc(100% - 30px);
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .toast.show {
@@ -400,9 +569,26 @@ h1 {
   .grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
 
-  .card {
+@media (max-width: 380px) {
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .app-card {
     min-height: 155px;
+    padding: 12px;
+  }
+
+  .app-icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .app-name {
+    font-size: 13px;
   }
 }
 </style>
@@ -410,19 +596,19 @@ h1 {
 
 <body>
 
-<div class="app">
+<div class="container">
 
   <header class="header">
 
-    <div class="top-line">
+    <div class="top">
 
       <div class="brand">
         <div class="brand-logo">A</div>
-        <div class="brand-name">AppCore</div>
+        <div class="brand-title">AppCore</div>
       </div>
 
-      <div class="status">
-        <span class="status-dot"></span>
+      <div class="online">
+        <span class="online-dot"></span>
         Доступно
       </div>
 
@@ -431,16 +617,33 @@ h1 {
     <h1>Что установить?</h1>
 
     <div class="subtitle">
-      Выберите приложение из каталога — подготовим установку дистанционно.
+      Выберите одно или несколько приложений.
+      Мы подготовим установку дистанционно.
     </div>
 
-    <div class="search">
+    <div class="discount-box">
+
+      <div class="discount-title">
+        🎁 Чем больше приложений — тем больше скидка
+      </div>
+
+      <div class="discount-text">
+        1 приложение — без скидки ·
+        2 — <span class="discount-highlight">3%</span> ·
+        3 — <span class="discount-highlight">6%</span> ·
+        4 — <span class="discount-highlight">9%</span> ·
+        5+ — <span class="discount-highlight">30%</span>
+      </div>
+
+    </div>
+
+    <div class="search-wrap">
 
       <span class="search-icon">⌕</span>
 
       <input
         id="search"
-        class="search-input"
+        class="search"
         type="search"
         placeholder="Поиск приложения…"
         autocomplete="off"
@@ -449,37 +652,48 @@ h1 {
       >
 
       <button
-        id="clearSearch"
-        class="clear-search"
+        id="clear"
+        class="clear"
         type="button"
-        aria-label="Очистить поиск"
       >×</button>
 
     </div>
 
-    <nav class="filters" id="filters">
+    <div class="categories" id="categories">
 
-      <button class="filter active" data-category="all">
+      <button
+        class="category active"
+        data-category="all"
+      >
         Все
       </button>
 
-      <button class="filter" data-category="finance">
+      <button
+        class="category"
+        data-category="finance"
+      >
         Банки и инвестиции
       </button>
 
-      <button class="filter" data-category="social">
-        Мессенджеры
+      <button
+        class="category"
+        data-category="social"
+      >
+        Социальные
       </button>
 
-      <button class="filter" data-category="useful">
+      <button
+        class="category"
+        data-category="useful"
+      >
         Сервисы
       </button>
 
-    </nav>
+    </div>
 
   </header>
 
-  <main id="content"></main>
+  <main id="appList"></main>
 
   <div id="empty" class="empty">
 
@@ -497,11 +711,56 @@ h1 {
 
 </div>
 
+<!-- BOTTOM -->
+
 <div class="bottom">
 
   <div class="bottom-inner">
 
-    <button id="continueBtn" class="continue" disabled>
+    <div
+      id="pricePanel"
+      class="price-panel"
+    >
+
+      <div class="price-row">
+        <span class="price-label">Приложений</span>
+        <span
+          id="count"
+          class="price-value"
+        >0</span>
+      </div>
+
+      <div class="price-row">
+        <span class="price-label">Сумма</span>
+        <span
+          id="original"
+          class="price-value"
+        >0 ₽</span>
+      </div>
+
+      <div class="price-row">
+        <span class="price-label">Скидка</span>
+        <span
+          id="discount"
+          class="price-value sale"
+        >0%</span>
+      </div>
+
+      <div class="price-row total-row">
+        <span class="price-label">Итого</span>
+        <span
+          id="total"
+          class="price-value"
+        >0 ₽</span>
+      </div>
+
+    </div>
+
+    <button
+      id="continue"
+      class="continue"
+      disabled
+    >
       Выберите приложение
     </button>
 
@@ -511,225 +770,454 @@ h1 {
 
 <div id="toast" class="toast"></div>
 
+
 <script>
 "use strict";
 
-/* =========================
-   APP DATA
-========================= */
+/* ==========================================
+   НАСТРОЙКИ
+========================================== */
+
+const PRICE = 500;
+
+
+/* ==========================================
+   ПРИЛОЖЕНИЯ
+========================================== */
 
 const apps = [
 
   {
     id: "sberbank",
     name: "Сбербанк",
+    type: "Банк",
     category: "finance",
-    categoryName: "Банк",
-    logo: "https://cdn.simpleicons.org/sberbank"
+    logo: "https://cdn.simpleicons.org/sberbank",
+    color: "#21a366",
+    gradient: "linear-gradient(135deg,#25b86c,#08783e)"
   },
 
   {
-    id: "sberinvest",
+    id: "sber-invest",
     name: "СберИнвестиции",
+    type: "Инвестиции",
     category: "finance",
-    categoryName: "Инвестиции",
-    logo: "https://cdn.simpleicons.org/sberbank"
+    logo: "https://cdn.simpleicons.org/sberbank",
+    color: "#18a765",
+    gradient: "linear-gradient(135deg,#2ac979,#087c46)"
   },
 
   {
     id: "tbank",
     name: "Т-Банк",
+    type: "Банк",
     category: "finance",
-    categoryName: "Банк",
-    logo: "https://cdn.simpleicons.org/tbank"
+    logo: "https://cdn.simpleicons.org/tbank",
+    color: "#ffd500",
+    gradient: "linear-gradient(135deg,#ffe33e,#e7b900)"
   },
 
   {
-    id: "tinvest",
+    id: "t-invest",
     name: "Т-Инвестиции",
+    type: "Инвестиции",
     category: "finance",
-    categoryName: "Инвестиции",
-    logo: "https://cdn.simpleicons.org/tbank"
+    logo: "https://cdn.simpleicons.org/tbank",
+    color: "#f3ca00",
+    gradient: "linear-gradient(135deg,#ffe64a,#d9a900)"
   },
 
   {
     id: "alfa",
     name: "Альфа-Банк",
+    type: "Банк",
     category: "finance",
-    categoryName: "Банк",
-    logo: "https://cdn.simpleicons.org/alfabank"
+    logo: "https://cdn.simpleicons.org/alfabank",
+    color: "#ef3124",
+    gradient: "linear-gradient(135deg,#ff5145,#c70d09)"
   },
 
   {
     id: "alfa-invest",
     name: "Альфа-Инвестиции",
+    type: "Инвестиции",
     category: "finance",
-    categoryName: "Инвестиции",
-    logo: "https://cdn.simpleicons.org/alfabank"
+    logo: "https://cdn.simpleicons.org/alfabank",
+    color: "#e93027",
+    gradient: "linear-gradient(135deg,#ff5b4f,#bb1009)"
   },
 
   {
     id: "vtb",
-    name: "ВТБ Банк",
+    name: "ВТБ",
+    type: "Банк",
     category: "finance",
-    categoryName: "Банк",
-    logo: "https://cdn.simpleicons.org/vtb"
+    logo: "https://cdn.simpleicons.org/vtb",
+    color: "#1685ff",
+    gradient: "linear-gradient(135deg,#36a4ff,#0757d9)"
   },
 
   {
     id: "vtb-invest",
     name: "ВТБ Инвестиции",
+    type: "Инвестиции",
     category: "finance",
-    categoryName: "Инвестиции",
-    logo: "https://cdn.simpleicons.org/vtb"
+    logo: "https://cdn.simpleicons.org/vtb",
+    color: "#1a82ed",
+    gradient: "linear-gradient(135deg,#3ca8ff,#0a4fc2)"
   },
 
   {
     id: "gazprom",
     name: "Газпромбанк",
+    type: "Банк",
     category: "finance",
-    categoryName: "Банк",
-    logo: "https://cdn.simpleicons.org/gazprombank"
+    logo: "https://cdn.simpleicons.org/gazprombank",
+    color: "#3b78ff",
+    gradient: "linear-gradient(135deg,#55a1ff,#154bc9)"
   },
 
   {
     id: "gazprom-invest",
     name: "Газпромбанк Инвестиции",
+    type: "Инвестиции",
     category: "finance",
-    categoryName: "Инвестиции",
-    logo: "https://cdn.simpleicons.org/gazprombank"
+    logo: "https://cdn.simpleicons.org/gazprombank",
+    color: "#3673ff",
+    gradient: "linear-gradient(135deg,#58a9ff,#164ac8)"
   },
 
   {
     id: "rshb",
     name: "Россельхозбанк",
+    type: "Банк",
     category: "finance",
-    categoryName: "Банк",
-    logo: "https://cdn.simpleicons.org/rosselkhozbank"
+    logo: "https://cdn.simpleicons.org/rosselkhozbank",
+    color: "#48a93f",
+    gradient: "linear-gradient(135deg,#6bd35c,#1e7427)"
   },
 
   {
     id: "psb",
     name: "ПСБ Банк",
+    type: "Банк",
     category: "finance",
-    categoryName: "Банк",
-    logo: "https://cdn.simpleicons.org/psbank"
+    logo: "https://cdn.simpleicons.org/psbank",
+    color: "#e1262d",
+    gradient: "linear-gradient(135deg,#ff4c50,#b90c14)"
   },
 
   {
     id: "yandex-pay",
     name: "Яндекс Пэй",
+    type: "Сервис",
     category: "finance",
-    categoryName: "Сервисы",
-    logo: "https://cdn.simpleicons.org/yandex"
+    logo: "https://cdn.simpleicons.org/yandex",
+    color: "#ff3d00",
+    gradient: "linear-gradient(135deg,#ff7043,#e52c00)"
   },
 
   {
     id: "vk",
     name: "VK",
+    type: "Социальная сеть",
     category: "social",
-    categoryName: "Социальная сеть",
-    logo: "https://cdn.simpleicons.org/vk"
+    logo: "https://cdn.simpleicons.org/vk",
+    color: "#0077ff",
+    gradient: "linear-gradient(135deg,#3c9aff,#0056cf)"
   },
 
   {
     id: "vk-video",
     name: "VK Видео",
+    type: "Видео",
     category: "social",
-    categoryName: "Видео",
-    logo: "https://cdn.simpleicons.org/vk"
+    logo: "https://cdn.simpleicons.org/vk",
+    color: "#5d65ff",
+    gradient: "linear-gradient(135deg,#7984ff,#3b42d8)"
   },
 
   {
     id: "vk-messenger",
     name: "VK Мессенджер",
+    type: "Мессенджер",
     category: "social",
-    categoryName: "Мессенджер",
-    logo: "https://cdn.simpleicons.org/vk"
+    logo: "https://cdn.simpleicons.org/vk",
+    color: "#7b61ff",
+    gradient: "linear-gradient(135deg,#957cff,#5540d6)"
   },
 
   {
     id: "max",
     name: "MAX",
+    type: "Мессенджер",
     category: "social",
-    categoryName: "Мессенджер",
-    logo: "https://cdn.simpleicons.org/max"
+    logo: "https://cdn.simpleicons.org/max",
+    color: "#6f5cff",
+    gradient: "linear-gradient(135deg,#927cff,#4b36d8)"
   },
 
   {
     id: "avito",
     name: "Авито",
+    type: "Сервис",
     category: "social",
-    categoryName: "Сервис",
-    logo: "https://cdn.simpleicons.org/avito"
+    logo: "https://cdn.simpleicons.org/avito",
+    color: "#00a86b",
+    gradient: "linear-gradient(135deg,#27d18c,#00804e)"
   },
 
   {
     id: "rave",
     name: "Rave",
+    type: "Видео",
     category: "social",
-    categoryName: "Видео",
-    logo: "https://cdn.simpleicons.org/rave"
+    logo: "https://cdn.simpleicons.org/rave",
+    color: "#ff4d91",
+    gradient: "linear-gradient(135deg,#ff70aa,#d3226b)"
   },
 
   {
     id: "rutube",
     name: "RUTUBE",
+    type: "Видео",
     category: "social",
-    categoryName: "Видео",
-    logo: "https://cdn.simpleicons.org/rutube"
+    logo: "https://cdn.simpleicons.org/rutube",
+    color: "#ff3b30",
+    gradient: "linear-gradient(135deg,#ff665e,#cf160e)"
   },
 
   {
     id: "happ",
     name: "Happ Plus",
+    type: "Сервис",
     category: "useful",
-    categoryName: "Сервис",
-    logo: "https://cdn.simpleicons.org/happ"
+    logo: "https://cdn.simpleicons.org/happ",
+    color: "#815cff",
+    gradient: "linear-gradient(135deg,#a083ff,#5230d9)"
+  },
+
+  {
+    id: "chatgpt",
+    name: "ChatGPT",
+    type: "Сервис",
+    category: "useful",
+    logo: "https://cdn.simpleicons.org/openai",
+    color: "#10a37f",
+    gradient: "linear-gradient(135deg,#20c997,#087c60)"
   }
 
 ];
 
-/* =========================
-   ELEMENTS
-========================= */
 
-const content = document.getElementById("content");
+/* ==========================================
+   СОСТОЯНИЕ
+========================================== */
+
+let selected = new Set();
+let currentCategory = "all";
+let query = "";
+
+
+/* ==========================================
+   ЭЛЕМЕНТЫ
+========================================== */
+
+const appList = document.getElementById("appList");
 const empty = document.getElementById("empty");
+
 const search = document.getElementById("search");
-const clearSearch = document.getElementById("clearSearch");
-const filters = document.getElementById("filters");
-const continueBtn = document.getElementById("continueBtn");
-const toast = document.getElementById("toast");
+const clear = document.getElementById("clear");
 
-let activeCategory = "all";
-let searchText = "";
-let selectedApp = null;
+const categories = document.getElementById("categories");
 
-/* =========================
-   RENDER
-========================= */
+const pricePanel = document.getElementById("pricePanel");
 
-function renderApps() {
+const countEl = document.getElementById("count");
+const originalEl = document.getElementById("original");
+const discountEl = document.getElementById("discount");
+const totalEl = document.getElementById("total");
 
-  const query = searchText.trim().toLowerCase();
+const continueButton =
+  document.getElementById("continue");
 
-  const filtered = apps.filter(app => {
+const toast =
+  document.getElementById("toast");
 
-    const categoryMatch =
-      activeCategory === "all" ||
-      app.category === activeCategory;
 
-    const searchMatch =
-      !query ||
-      app.name.toLowerCase().includes(query) ||
-      app.categoryName.toLowerCase().includes(query);
+/* ==========================================
+   СКИДКА
+========================================== */
 
-    return categoryMatch && searchMatch;
+function getDiscount(count) {
 
-  });
+  if (count >= 5) {
+    return 30;
+  }
 
-  content.innerHTML = "";
+  if (count === 4) {
+    return 9;
+  }
+
+  if (count === 3) {
+    return 6;
+  }
+
+  if (count === 2) {
+    return 3;
+  }
+
+  return 0;
+
+}
+
+
+/* ==========================================
+   ЦЕНА
+========================================== */
+
+function calculatePrice(count) {
+
+  const original = count * PRICE;
+
+  const discountPercent =
+    getDiscount(count);
+
+  const discountAmount =
+    original * discountPercent / 100;
+
+  const total =
+    original - discountAmount;
+
+  return {
+    original,
+    discountPercent,
+    discountAmount,
+    total
+  };
+
+}
+
+
+/* ==========================================
+   ФОРМАТ ЦЕНЫ
+========================================== */
+
+function money(value) {
+
+  return Math.round(value)
+    .toLocaleString("ru-RU") + " ₽";
+
+}
+
+
+/* ==========================================
+   ОБНОВЛЕНИЕ ЦЕНЫ
+========================================== */
+
+function updatePrice() {
+
+  const count = selected.size;
+
+  if (count === 0) {
+
+    pricePanel.classList.remove("visible");
+
+    countEl.textContent = "0";
+    originalEl.textContent = "0 ₽";
+    discountEl.textContent = "0%";
+    totalEl.textContent = "0 ₽";
+
+    continueButton.disabled = true;
+    continueButton.textContent =
+      "Выберите приложение";
+
+    return;
+  }
+
+  const price =
+    calculatePrice(count);
+
+  pricePanel.classList.add("visible");
+
+  countEl.textContent = count;
+
+  originalEl.textContent =
+    money(price.original);
+
+  discountEl.textContent =
+    price.discountPercent + "%";
+
+  totalEl.textContent =
+    money(price.total);
+
+  continueButton.disabled = false;
+
+  continueButton.textContent =
+    "Продолжить · " + money(price.total);
+
+}
+
+
+/* ==========================================
+   НАЧАЛЬНЫЕ БУКВЫ
+========================================== */
+
+function initials(name) {
+
+  const words =
+    name
+      .replace(/[^а-яА-Яa-zA-Z0-9\s]/g, "")
+      .trim()
+      .split(/\s+/);
+
+  if (words.length >= 2) {
+
+    return (
+      words[0][0] +
+      words[1][0]
+    ).toUpperCase();
+
+  }
+
+  return name
+    .replace(/[^а-яА-Яa-zA-Z0-9]/g, "")
+    .substring(0, 2)
+    .toUpperCase();
+
+}
+
+
+/* ==========================================
+   РЕНДЕР
+========================================== */
+
+function render() {
+
+  const searchText =
+    query.trim().toLowerCase();
+
+  const filtered =
+    apps.filter(app => {
+
+      const categoryOk =
+        currentCategory === "all" ||
+        app.category === currentCategory;
+
+      const searchOk =
+        !searchText ||
+        app.name
+          .toLowerCase()
+          .includes(searchText) ||
+        app.type
+          .toLowerCase()
+          .includes(searchText);
+
+      return categoryOk && searchOk;
+
+    });
+
+  appList.innerHTML = "";
 
   if (filtered.length === 0) {
 
@@ -741,37 +1229,66 @@ function renderApps() {
 
   empty.classList.remove("show");
 
-  const grid = document.createElement("div");
+  const grid =
+    document.createElement("div");
+
   grid.className = "grid";
 
   filtered.forEach(app => {
 
-    const card = document.createElement("article");
+    const card =
+      document.createElement("div");
 
-    card.className =
-      "card" +
-      (selectedApp && selectedApp.id === app.id
-        ? " selected"
-        : "");
+    card.className = "app-card";
 
-    card.dataset.id = app.id;
+    if (selected.has(app.id)) {
+      card.classList.add("selected");
+    }
 
-    const icon = document.createElement("div");
-    icon.className = "icon";
+    card.style.setProperty(
+      "--app-color",
+      app.color
+    );
 
-    const fallback = document.createElement("div");
-    fallback.className = "icon-fallback";
-    fallback.textContent = getInitials(app.name);
+    card.style.setProperty(
+      "--app-gradient",
+      app.gradient
+    );
+
+
+    /* CHECK */
+
+    const check =
+      document.createElement("div");
+
+    check.className = "check";
+    check.textContent = "✓";
+
+
+    /* ICON */
+
+    const icon =
+      document.createElement("div");
+
+    icon.className = "app-icon";
+
+    const fallback =
+      document.createElement("span");
+
+    fallback.className = "fallback";
+    fallback.textContent =
+      initials(app.name);
 
     icon.appendChild(fallback);
 
+
     if (app.logo) {
 
-      const img = document.createElement("img");
+      const img =
+        document.createElement("img");
 
       img.src = app.logo;
       img.alt = "";
-      img.loading = "lazy";
 
       img.onload = () => {
         fallback.style.display = "none";
@@ -779,212 +1296,239 @@ function renderApps() {
 
       img.onerror = () => {
         img.remove();
-        fallback.style.display = "flex";
+        fallback.style.display = "block";
       };
 
       icon.appendChild(img);
+
     }
 
-    const check = document.createElement("div");
-    check.className = "card-check";
-    check.textContent = "✓";
 
-    const title = document.createElement("div");
-    title.className = "card-title";
-    title.textContent = app.name;
+    /* NAME */
 
-    const category = document.createElement("div");
-    category.className = "card-category";
-    category.textContent = app.categoryName;
+    const name =
+      document.createElement("div");
+
+    name.className = "app-name";
+    name.textContent = app.name;
+
+
+    /* TYPE */
+
+    const type =
+      document.createElement("div");
+
+    type.className = "app-type";
+    type.textContent = app.type;
+
 
     card.appendChild(check);
     card.appendChild(icon);
-    card.appendChild(title);
-    card.appendChild(category);
+    card.appendChild(name);
+    card.appendChild(type);
+
 
     card.addEventListener("click", () => {
-      selectApp(app);
+
+      if (selected.has(app.id)) {
+
+        selected.delete(app.id);
+
+      } else {
+
+        selected.add(app.id);
+
+      }
+
+      render();
+      updatePrice();
+
     });
+
 
     grid.appendChild(card);
 
   });
 
-  content.appendChild(grid);
+  appList.appendChild(grid);
 
 }
 
-/* =========================
-   SELECT APP
-========================= */
 
-function selectApp(app) {
+/* ==========================================
+   ПОИСК
+========================================== */
 
-  selectedApp = app;
+search.addEventListener(
+  "input",
+  () => {
 
-  continueBtn.disabled = false;
-  continueBtn.textContent = "Продолжить";
+    query = search.value;
 
-  renderApps();
+    clear.style.display =
+      query.length > 0
+        ? "block"
+        : "none";
 
-}
+    render();
 
-/* =========================
-   SEARCH
-========================= */
+  }
+);
 
-search.addEventListener("input", () => {
 
-  searchText = search.value;
+clear.addEventListener(
+  "click",
+  () => {
 
-  clearSearch.style.display =
-    searchText.length > 0 ? "block" : "none";
+    search.value = "";
+    query = "";
 
-  renderApps();
+    clear.style.display = "none";
 
-});
+    search.focus();
 
-clearSearch.addEventListener("click", () => {
+    render();
 
-  search.value = "";
-  searchText = "";
+  }
+);
 
-  clearSearch.style.display = "none";
 
-  search.focus();
+/* ==========================================
+   КАТЕГОРИИ
+========================================== */
 
-  renderApps();
+categories.addEventListener(
+  "click",
+  event => {
 
-});
+    const button =
+      event.target.closest(".category");
 
-/* =========================
-   FILTERS
-========================= */
+    if (!button) return;
 
-filters.addEventListener("click", event => {
+    document
+      .querySelectorAll(".category")
+      .forEach(item => {
+        item.classList.remove("active");
+      });
 
-  const button = event.target.closest(".filter");
+    button.classList.add("active");
 
-  if (!button) return;
+    currentCategory =
+      button.dataset.category;
 
-  document.querySelectorAll(".filter").forEach(item => {
-    item.classList.remove("active");
-  });
+    render();
 
-  button.classList.add("active");
+  }
+);
 
-  activeCategory = button.dataset.category;
 
-  renderApps();
-
-});
-
-/* =========================
-   CONTINUE
-========================= */
-
-continueBtn.addEventListener("click", () => {
-
-  if (!selectedApp) return;
-
-  showToast(
-    "Выбрано: " + selectedApp.name
-  );
-
-  /*
-    Здесь позже подключим реальную
-    систему подготовки установки.
-  */
-
-});
-
-/* =========================
+/* ==========================================
    TOAST
-========================= */
+========================================== */
 
-let toastTimer = null;
+let toastTimer;
 
 function showToast(message) {
 
   toast.textContent = message;
+
   toast.classList.add("show");
 
   clearTimeout(toastTimer);
 
-  toastTimer = setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2200);
+  toastTimer =
+    setTimeout(() => {
+
+      toast.classList.remove("show");
+
+    }, 2500);
 
 }
 
-/* =========================
-   INITIALS
-========================= */
 
-function getInitials(name) {
+/* ==========================================
+   ПРОДОЛЖИТЬ
+========================================== */
 
-  const words = name
-    .replace(/[^а-яА-Яa-zA-Z0-9\s]/g, "")
-    .trim()
-    .split(/\s+/);
+continueButton.addEventListener(
+  "click",
+  () => {
 
-  if (words.length >= 2) {
+    if (selected.size === 0) {
+      return;
+    }
 
-    return (
-      words[0].charAt(0) +
-      words[1].charAt(0)
-    ).toUpperCase();
+    const count = selected.size;
+
+    const price =
+      calculatePrice(count);
+
+    showToast(
+      "Выбрано приложений: " +
+      count +
+      " · Итого: " +
+      money(price.total)
+    );
+
+    /*
+      Следующим этапом сюда можно
+      подключить реальную отправку
+      заказа в Telegram-бот.
+    */
 
   }
+);
 
-  return name
-    .replace(/[^а-яА-Яa-zA-Z0-9]/g, "")
-    .slice(0, 2)
-    .toUpperCase();
 
-}
-
-/* =========================
+/* ==========================================
    TELEGRAM MINI APP
-========================= */
+========================================== */
 
-function getTelegramWebApp() {
+function initTelegram() {
 
   if (
     window.Telegram &&
     window.Telegram.WebApp
   ) {
 
-    return window.Telegram.WebApp;
+    try {
+
+      const tg =
+        window.Telegram.WebApp;
+
+      tg.ready();
+      tg.expand();
+
+      if (tg.setHeaderColor) {
+        tg.setHeaderColor("#08090d");
+      }
+
+      if (tg.setBackgroundColor) {
+        tg.setBackgroundColor("#08090d");
+      }
+
+    } catch (error) {
+
+      console.log(
+        "Telegram WebApp:",
+        error
+      );
+
+    }
 
   }
 
-  return null;
-
 }
 
-const tg = getTelegramWebApp();
 
-if (tg) {
+/* ==========================================
+   ЗАПУСК
+========================================== */
 
-  try {
-
-    tg.ready();
-    tg.expand();
-
-  } catch (error) {
-
-    console.log("Telegram WebApp:", error);
-
-  }
-
-}
-
-/* =========================
-   START
-========================= */
-
-renderApps();
+render();
+updatePrice();
+initTelegram();
 
 </script>
 
