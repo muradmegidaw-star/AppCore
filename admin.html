@@ -1,343 +1,134 @@
 /* =========================
    NOTIFICATIONS
-   AppCore — новые заказы
 ========================= */
 
-function createNotificationAudio(){
-
-  if(notificationAudio){
-    return notificationAudio;
-  }
+function unlockNotificationSound(){
 
   try{
 
-    const AudioContextClass =
+    const AudioContext =
       window.AudioContext ||
       window.webkitAudioContext;
 
-    if(!AudioContextClass){
-      return null;
-    }
-
-    notificationAudio =
-      new AudioContextClass();
-
-    return notificationAudio;
-
-  }catch(error){
-
-    console.error(
-      "Notification audio init error:",
-      error
-    );
-
-    return null;
-  }
-}
-
-
-/* =========================
-   UNLOCK SOUND
-========================= */
-
-async function unlockNotificationSound(){
-
-  const audio =
-    createNotificationAudio();
-
-  if(!audio){
-    return false;
-  }
-
-  try{
-
-    if(audio.state === "suspended"){
-      await audio.resume();
-    }
-
-    notificationAudioUnlocked =
-      audio.state === "running";
-
-    return notificationAudioUnlocked;
-
-  }catch(error){
-
-    console.error(
-      "Notification audio unlock error:",
-      error
-    );
-
-    return false;
-  }
-}
-
-
-/* =========================
-   PLAY SOUND
-========================= */
-
-async function playNewOrderSound(){
-
-  const audio =
-    createNotificationAudio();
-
-  if(!audio){
-    return;
-  }
-
-  try{
-
-    if(audio.state === "suspended"){
-      await audio.resume();
-    }
-
-    if(audio.state !== "running"){
+    if(!AudioContext){
       return;
     }
 
-    const now =
-      audio.currentTime;
+    if(!notificationAudioContext){
 
-    /*
-      Два коротких сигнала.
-      Второй немного выше первого.
-    */
+      notificationAudioContext =
+        new AudioContext();
 
-    const oscillator1 =
-      audio.createOscillator();
+    }
 
-    const gain1 =
-      audio.createGain();
+    if(
+      notificationAudioContext.state ===
+      "suspended"
+    ){
 
-    oscillator1.type =
-      "sine";
+      notificationAudioContext.resume();
 
-    oscillator1.frequency.setValueAtTime(
-      880,
-      now
-    );
-
-    gain1.gain.setValueAtTime(
-      0.0001,
-      now
-    );
-
-    gain1.gain.exponentialRampToValueAtTime(
-      0.22,
-      now + 0.015
-    );
-
-    gain1.gain.exponentialRampToValueAtTime(
-      0.0001,
-      now + 0.18
-    );
-
-    oscillator1.connect(gain1);
-    gain1.connect(audio.destination);
-
-    oscillator1.start(now);
-    oscillator1.stop(now + 0.2);
-
-
-    const oscillator2 =
-      audio.createOscillator();
-
-    const gain2 =
-      audio.createGain();
-
-    oscillator2.type =
-      "sine";
-
-    oscillator2.frequency.setValueAtTime(
-      1175,
-      now + 0.22
-    );
-
-    gain2.gain.setValueAtTime(
-      0.0001,
-      now + 0.22
-    );
-
-    gain2.gain.exponentialRampToValueAtTime(
-      0.25,
-      now + 0.235
-    );
-
-    gain2.gain.exponentialRampToValueAtTime(
-      0.0001,
-      now + 0.42
-    );
-
-    oscillator2.connect(gain2);
-    gain2.connect(audio.destination);
-
-    oscillator2.start(now + 0.22);
-    oscillator2.stop(now + 0.44);
+    }
 
   }catch(error){
 
-    console.error(
+    console.log(
+      "Audio unlock error:",
+      error
+    );
+
+  }
+
+}
+
+
+function playNotificationSound(){
+
+  try{
+
+    if(!notificationAudioContext){
+      return;
+    }
+
+    if(
+      notificationAudioContext.state ===
+      "suspended"
+    ){
+
+      notificationAudioContext.resume();
+
+    }
+
+    const ctx =
+      notificationAudioContext;
+
+    const oscillator =
+      ctx.createOscillator();
+
+    const gain =
+      ctx.createGain();
+
+    oscillator.type =
+      "sine";
+
+    oscillator.frequency.setValueAtTime(
+      880,
+      ctx.currentTime
+    );
+
+    oscillator.frequency.exponentialRampToValueAtTime(
+      1320,
+      ctx.currentTime + 0.12
+    );
+
+    gain.gain.setValueAtTime(
+      0.0001,
+      ctx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.35,
+      ctx.currentTime + 0.02
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      ctx.currentTime + 0.45
+    );
+
+    oscillator.connect(
+      gain
+    );
+
+    gain.connect(
+      ctx.destination
+    );
+
+    oscillator.start();
+
+    oscillator.stop(
+      ctx.currentTime + 0.45
+    );
+
+  }catch(error){
+
+    console.log(
       "Notification sound error:",
       error
     );
+
   }
+
 }
 
 
-/* =========================
-   VISUAL ALERT
-========================= */
-
-function removeNewOrderAlert(){
-
-  const oldAlert =
-    document.getElementById(
-      "appcoreNewOrderAlert"
-    );
-
-  if(oldAlert){
-    oldAlert.remove();
-  }
-
-  document.body.classList.remove(
-    "appcore-order-alert-active"
-  );
-
-  clearTimeout(
-    notificationAlertTimer
-  );
-
-  notificationAlertTimer = null;
-}
-
-
-function showNewOrderAlert(
+function notifyNewOrders(
   newOrders
 ){
 
-  removeNewOrderAlert();
-
-  notificationAlertCount =
-    newOrders.length;
-
-  const firstOrder =
-    newOrders[0];
-
-  const orderNumber =
-    firstOrder &&
-    firstOrder.order_number
-      ? firstOrder.order_number
-      : "Новый заказ";
-
-  const total =
-    firstOrder
-      ? money(firstOrder.total)
-      : "";
-
-  const alert =
-    document.createElement("div");
-
-  alert.id =
-    "appcoreNewOrderAlert";
-
-  alert.innerHTML = `
-    <div class="appcore-alert-box">
-
-      <div class="appcore-alert-icon">
-        🔔
-      </div>
-
-      <div class="appcore-alert-content">
-
-        <div class="appcore-alert-title">
-          НОВАЯ ЗАЯВКА
-        </div>
-
-        <div class="appcore-alert-order">
-          ${escapeHtml(orderNumber)}
-        </div>
-
-        <div class="appcore-alert-total">
-          ${escapeHtml(total)}
-        </div>
-
-        ${
-          newOrders.length > 1
-            ? `
-              <div class="appcore-alert-more">
-                Ещё новых заявок: ${newOrders.length - 1}
-              </div>
-            `
-            : ""
-        }
-
-      </div>
-
-      <button
-        type="button"
-        class="appcore-alert-close"
-        id="appcoreNewOrderAlertClose"
-      >
-        ×
-      </button>
-
-    </div>
-  `;
-
-  document.body.appendChild(alert);
-
-  document.body.classList.add(
-    "appcore-order-alert-active"
-  );
-
-  const closeButton =
-    document.getElementById(
-      "appcoreNewOrderAlertClose"
-    );
-
-  if(closeButton){
-
-    closeButton.addEventListener(
-      "click",
-      removeNewOrderAlert
-    );
-
+  if(!notificationsEnabled){
+    return;
   }
-
-  alert.addEventListener(
-    "click",
-    event=>{
-
-      if(
-        event.target === alert
-      ){
-
-        removeNewOrderAlert();
-
-      }
-
-    }
-  );
-
-  /*
-    Alert остаётся на экране 30 секунд.
-  */
-
-  notificationAlertTimer =
-    setTimeout(
-      removeNewOrderAlert,
-      30000
-    );
-}
-
-
-/* =========================
-   BROWSER NOTIFICATION
-========================= */
-
-function sendBrowserNotification(
-  order
-){
 
   if(
     !("Notification" in window)
@@ -352,196 +143,71 @@ function sendBrowserNotification(
     return;
   }
 
-  try{
-
-    const notification =
-      new Notification(
-        "AppCore — НОВАЯ ЗАЯВКА",
-        {
-          body:
-            `${order.order_number || "Новый заказ"} · ${money(order.total)}`,
-          tag:
-            `appcore-order-${order.id}`,
-          requireInteraction:true
-        }
-      );
-
-    notification.onclick =
-      function(){
-
-        window.focus();
-
-        currentTab =
-          "active";
-
-        document
-          .querySelectorAll(".tab")
-          .forEach(tab=>{
-            tab.classList.toggle(
-              "active",
-              tab.dataset.tab === "active"
-            );
-          });
-
-        sectionActive.classList.remove(
-          "hidden"
-        );
-
-        sectionCompleted.classList.add(
-          "hidden"
-        );
-
-        sectionCancelled.classList.add(
-          "hidden"
-        );
-
-        sectionDraft.classList.add(
-          "hidden"
-        );
-
-        render();
-
-        notification.close();
-      };
-
-  }catch(error){
-
-    console.error(
-      "Browser notification error:",
-      error
-    );
-  }
-}
-
-
-/* =========================
-   NEW ORDER
-========================= */
-
-async function notifyNewOrders(
-  newOrders
-){
-
   if(
-    !Array.isArray(newOrders) ||
-    !newOrders.length
+    !newOrders ||
+    newOrders.length === 0
   ){
     return;
   }
 
-  /*
-    Всегда показываем визуальный alert.
-    Он не зависит от разрешения Browser Notification.
-  */
 
-  showNewOrderAlert(
-    newOrders
-  );
+  /* ЗВУК НОВОЙ ЗАЯВКИ */
+
+  playNotificationSound();
 
 
-  /*
-    Звук.
-  */
+  /* БРАУЗЕРНЫЕ УВЕДОМЛЕНИЯ */
 
-  await playNewOrderSound();
+  newOrders.forEach(
+    order=>{
 
+      try{
 
-  /*
-    Системные уведомления браузера.
-  */
-
-  if(
-    notificationsEnabled &&
-    "Notification" in window &&
-    Notification.permission === "granted"
-  ){
-
-    newOrders.forEach(
-      order=>{
-        sendBrowserNotification(
-          order
+        new Notification(
+          "AppCore — новая заявка",
+          {
+            body:
+              `${order.order_number} · ${money(order.total)}`,
+            tag:
+              `appcore-order-${order.id}`,
+            requireInteraction:
+              true
+          }
         );
+
+      }catch(error){
+
+        console.log(
+          "Notification error:",
+          error
+        );
+
       }
-    );
 
-  }
-
-
-  /*
-    Переходим на вкладку "Новые",
-    чтобы заказ сразу был перед глазами.
-  */
-
-  currentTab =
-    "active";
-
-  document
-    .querySelectorAll(".tab")
-    .forEach(tab=>{
-
-      tab.classList.toggle(
-        "active",
-        tab.dataset.tab === "active"
-      );
-
-    });
-
-  sectionActive.classList.remove(
-    "hidden"
+    }
   );
 
-  sectionCompleted.classList.add(
-    "hidden"
-  );
-
-  sectionCancelled.classList.add(
-    "hidden"
-  );
-
-  sectionDraft.classList.add(
-    "hidden"
-  );
-
-  render();
 }
 
-
-/* =========================
-   NOTIFICATION BUTTON
-========================= */
 
 notificationButton.addEventListener(
   "click",
   async()=>{
 
     /*
-      Самое важное:
-      пользователь нажал кнопку,
-      поэтому браузер разрешает
-      разблокировать AudioContext.
+      Пользователь нажал кнопку —
+      браузер разрешает разблокировать звук.
     */
 
-    const soundReady =
-      await unlockNotificationSound();
+    unlockNotificationSound();
 
-
-    /*
-      Разрешение системных уведомлений.
-    */
 
     if(
       !("Notification" in window)
     ){
 
-      notificationButton.textContent =
-        soundReady
-          ? "🔔 Звук включён"
-          : "🔔 Уведомления";
-
       showToast(
-        soundReady
-          ? "Звук новых заказов включён"
-          : "Браузер не поддерживает уведомления"
+        "Браузер не поддерживает уведомления"
       );
 
       return;
@@ -559,362 +225,31 @@ notificationButton.addEventListener(
       notificationsEnabled =
         true;
 
-      notificationButton.textContent =
-        soundReady
-          ? "🔔 Уведомления включены"
-          : "🔔 Уведомления включены";
-
-      showToast(
-        soundReady
-          ? "Уведомления и звук включены"
-          : "Уведомления включены"
-      );
 
       /*
-        Тестовый короткий сигнал
-        только после явного клика пользователя.
+        Дополнительно проверяем,
+        что AudioContext разблокирован.
       */
 
-      if(soundReady){
+      unlockNotificationSound();
 
-        await playNewOrderSound();
 
-      }
+      notificationButton.textContent =
+        "🔔 Уведомления включены";
+
+
+      showToast(
+        "Уведомления и звук включены"
+      );
+
 
     }else{
 
-      notificationsEnabled =
-        false;
-
-      notificationButton.textContent =
-        soundReady
-          ? "🔔 Звук включён"
-          : "🔔 Уведомления";
-
       showToast(
-        soundReady
-          ? "Звук включён, но браузерные уведомления запрещены"
-          : "Разрешение на уведомления не получено"
+        "Разрешение на уведомления не получено"
       );
 
     }
 
   }
 );
-
-
-/* =========================
-   NOTIFICATION CSS
-========================= */
-
-(function(){
-
-  if(
-    document.getElementById(
-      "appcoreNotificationStyles"
-    )
-  ){
-    return;
-  }
-
-  const style =
-    document.createElement("style");
-
-  style.id =
-    "appcoreNotificationStyles";
-
-  style.textContent = `
-
-    @keyframes appcoreAlertIn{
-
-      0%{
-        opacity:0;
-        transform:
-          translate(-50%,-30px)
-          scale(.94);
-      }
-
-      100%{
-        opacity:1;
-        transform:
-          translate(-50%,0)
-          scale(1);
-      }
-
-    }
-
-
-    @keyframes appcoreAlertPulse{
-
-      0%,100%{
-        box-shadow:
-          0 0 0 0
-          rgba(255,200,87,.18),
-          0 25px 90px
-          rgba(0,0,0,.65);
-      }
-
-      50%{
-        box-shadow:
-          0 0 0 14px
-          rgba(255,200,87,.04),
-          0 25px 90px
-          rgba(0,0,0,.65);
-      }
-
-    }
-
-
-    @keyframes appcorePageFlash{
-
-      0%,100%{
-        box-shadow:
-          inset 0 0 0
-          rgba(255,200,87,0);
-      }
-
-      50%{
-        box-shadow:
-          inset 0 0 80px
-          rgba(255,200,87,.07);
-      }
-
-    }
-
-
-    #appcoreNewOrderAlert{
-
-      position:fixed;
-
-      top:20px;
-      left:50%;
-
-      transform:
-        translateX(-50%);
-
-      width:
-        min(520px,calc(100% - 24px));
-
-      z-index:999999;
-
-      animation:
-        appcoreAlertIn .3s ease-out;
-
-      cursor:pointer;
-
-    }
-
-
-    .appcore-alert-box{
-
-      position:relative;
-
-      display:flex;
-
-      align-items:center;
-
-      gap:15px;
-
-      padding:17px 18px;
-
-      border:
-        1px solid
-        rgba(255,200,87,.65);
-
-      border-radius:20px;
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(62,48,12,.98),
-          rgba(24,22,15,.98)
-        );
-
-      backdrop-filter:
-        blur(18px);
-
-      animation:
-        appcoreAlertPulse 1.5s
-        ease-in-out infinite;
-
-    }
-
-
-    .appcore-alert-icon{
-
-      flex:0 0 auto;
-
-      width:52px;
-      height:52px;
-
-      display:flex;
-
-      align-items:center;
-      justify-content:center;
-
-      border-radius:16px;
-
-      background:
-        rgba(255,200,87,.16);
-
-      border:
-        1px solid
-        rgba(255,200,87,.35);
-
-      font-size:27px;
-
-    }
-
-
-    .appcore-alert-content{
-
-      min-width:0;
-      flex:1;
-
-    }
-
-
-    .appcore-alert-title{
-
-      color:#ffd96d;
-
-      font-size:11px;
-
-      font-weight:950;
-
-      letter-spacing:.8px;
-
-    }
-
-
-    .appcore-alert-order{
-
-      margin-top:3px;
-
-      color:#fff;
-
-      font-size:17px;
-
-      font-weight:950;
-
-      word-break:break-word;
-
-    }
-
-
-    .appcore-alert-total{
-
-      margin-top:2px;
-
-      color:#ffd96d;
-
-      font-size:13px;
-
-      font-weight:850;
-
-    }
-
-
-    .appcore-alert-more{
-
-      margin-top:4px;
-
-      color:#c8b982;
-
-      font-size:10px;
-
-      font-weight:750;
-
-    }
-
-
-    .appcore-alert-close{
-
-      flex:0 0 auto;
-
-      width:32px;
-      height:32px;
-
-      border:0;
-
-      border-radius:10px;
-
-      background:
-        rgba(255,255,255,.07);
-
-      color:#fff;
-
-      font-size:22px;
-
-      line-height:1;
-
-      cursor:pointer;
-
-    }
-
-
-    .appcore-alert-close:hover{
-
-      background:
-        rgba(255,255,255,.13);
-
-    }
-
-
-    body.appcore-order-alert-active{
-
-      animation:
-        appcorePageFlash .7s
-        ease-in-out 3;
-
-    }
-
-
-    @media(max-width:600px){
-
-      #appcoreNewOrderAlert{
-
-        top:10px;
-
-        width:
-          calc(100% - 14px);
-
-      }
-
-
-      .appcore-alert-box{
-
-        padding:14px;
-
-        gap:11px;
-
-        border-radius:17px;
-
-      }
-
-
-      .appcore-alert-icon{
-
-        width:45px;
-        height:45px;
-
-        font-size:23px;
-
-      }
-
-
-      .appcore-alert-order{
-
-        font-size:15px;
-
-      }
-
-    }
-
-  `;
-
-  document.head.appendChild(
-    style
-  );
-
-})();
