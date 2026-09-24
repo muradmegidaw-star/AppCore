@@ -1,6 +1,12 @@
 /* =========================================================
    APPCORE — НОВЫЕ ЗАКАЗЫ / ЗВУК / УВЕДОМЛЕНИЯ
+   ВЕРСИЯ БЕЗ БЛОКИРОВКИ КНОПОК
    ========================================================= */
+
+
+/* ---------------------------------------------------------
+   СОЗДАНИЕ AUDIO CONTEXT
+   --------------------------------------------------------- */
 
 function createNotificationAudio(){
 
@@ -36,7 +42,7 @@ function createNotificationAudio(){
 
 
 /* ---------------------------------------------------------
-   Разблокировка звука браузером
+   РАЗБЛОКИРОВКА ЗВУКА
    --------------------------------------------------------- */
 
 async function unlockNotificationSound(){
@@ -54,39 +60,11 @@ async function unlockNotificationSound(){
       await ctx.resume();
     }
 
-    /*
-      Короткий практически неслышный стартовый звук.
-      Он нужен только для разблокировки AudioContext.
-    */
-
-    const oscillator =
-      ctx.createOscillator();
-
-    const gain =
-      ctx.createGain();
-
-    oscillator.type = "sine";
-
-    oscillator.frequency.value = 440;
-
-    gain.gain.setValueAtTime(
-      0.0001,
-      ctx.currentTime
-    );
-
-    oscillator.connect(gain);
-    gain.connect(ctx.destination);
-
-    oscillator.start();
-
-    gain.gain.exponentialRampToValueAtTime(
-      0.00001,
-      ctx.currentTime + 0.05
-    );
-
-    oscillator.stop(
-      ctx.currentTime + 0.05
-    );
+    if(ctx.state !== "running"){
+      notificationAudioUnlocked = false;
+      updateSoundButton();
+      return false;
+    }
 
     notificationAudioUnlocked = true;
 
@@ -97,7 +75,7 @@ async function unlockNotificationSound(){
   }catch(error){
 
     console.log(
-      "Не удалось разблокировать звук:",
+      "Не удалось включить звук:",
       error
     );
 
@@ -111,7 +89,7 @@ async function unlockNotificationSound(){
 
 
 /* ---------------------------------------------------------
-   Громкий сигнал новой заявки
+   ЗВУК НОВОЙ ЗАЯВКИ
    --------------------------------------------------------- */
 
 async function playNewOrderSound(){
@@ -130,68 +108,79 @@ async function playNewOrderSound(){
     }
 
     if(ctx.state !== "running"){
+
+      notificationAudioUnlocked =
+        false;
+
       updateSoundButton();
+
       return;
     }
 
-    /*
-      Три серии сигналов.
-      Это заметнее обычного одного beep.
-    */
 
-    const playTone =
-      (
+    const playTone = (
+      frequency,
+      start,
+      duration,
+      volume
+    )=>{
+
+      const oscillator =
+        ctx.createOscillator();
+
+      const gain =
+        ctx.createGain();
+
+
+      oscillator.type =
+        "sine";
+
+
+      oscillator.frequency.setValueAtTime(
         frequency,
-        start,
-        duration,
-        volume
-      )=>{
+        start
+      );
 
-        const oscillator =
-          ctx.createOscillator();
 
-        const gain =
-          ctx.createGain();
+      gain.gain.setValueAtTime(
+        0.0001,
+        start
+      );
 
-        oscillator.type =
-          "sine";
 
-        oscillator.frequency.setValueAtTime(
-          frequency,
-          start
-        );
+      gain.gain.exponentialRampToValueAtTime(
+        volume,
+        start + 0.025
+      );
 
-        gain.gain.setValueAtTime(
-          0.0001,
-          start
-        );
 
-        gain.gain.exponentialRampToValueAtTime(
-          volume,
-          start + 0.02
-        );
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        start + duration
+      );
 
-        gain.gain.exponentialRampToValueAtTime(
-          0.0001,
-          start + duration
-        );
 
-        oscillator.connect(gain);
-        gain.connect(ctx.destination);
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
 
-        oscillator.start(start);
 
-        oscillator.stop(
-          start + duration + 0.02
-        );
-      };
+      oscillator.start(start);
+
+
+      oscillator.stop(
+        start + duration + 0.03
+      );
+
+    };
 
 
     const start =
       ctx.currentTime + 0.05;
 
 
-    /* Первый сигнал */
+    /*
+      Сигнал №1
+    */
 
     playTone(
       880,
@@ -208,7 +197,9 @@ async function playNewOrderSound(){
     );
 
 
-    /* Второй сигнал */
+    /*
+      Сигнал №2
+    */
 
     playTone(
       880,
@@ -225,7 +216,9 @@ async function playNewOrderSound(){
     );
 
 
-    /* Третий сигнал */
+    /*
+      Сигнал №3
+    */
 
     playTone(
       880,
@@ -241,7 +234,9 @@ async function playNewOrderSound(){
       0.35
     );
 
-    notificationAudioUnlocked = true;
+
+    notificationAudioUnlocked =
+      true;
 
     updateSoundButton();
 
@@ -252,7 +247,8 @@ async function playNewOrderSound(){
       error
     );
 
-    notificationAudioUnlocked = false;
+    notificationAudioUnlocked =
+      false;
 
     updateSoundButton();
   }
@@ -260,7 +256,7 @@ async function playNewOrderSound(){
 
 
 /* ---------------------------------------------------------
-   Кнопка состояния звука
+   СОСТОЯНИЕ КНОПКИ УВЕДОМЛЕНИЙ
    --------------------------------------------------------- */
 
 function updateSoundButton(){
@@ -268,6 +264,7 @@ function updateSoundButton(){
   if(!notificationButton){
     return;
   }
+
 
   if(
     "Notification" in window &&
@@ -278,12 +275,9 @@ function updateSoundButton(){
     notificationButton.textContent =
       "🔊 Уведомления + звук ВКЛ";
 
-    notificationButton.classList.add(
-      "btn-yellow"
-    );
-
     return;
   }
+
 
   if(
     "Notification" in window &&
@@ -296,13 +290,14 @@ function updateSoundButton(){
     return;
   }
 
+
   notificationButton.textContent =
     "🔔 Включить уведомления";
 }
 
 
 /* ---------------------------------------------------------
-   Разрешение уведомлений + звук
+   ВКЛЮЧЕНИЕ УВЕДОМЛЕНИЙ
    --------------------------------------------------------- */
 
 async function enableNotifications(){
@@ -325,33 +320,39 @@ async function enableNotifications(){
 
     if(permission === "granted"){
 
-      notificationsEnabled = true;
+      notificationsEnabled =
+        true;
 
-      await unlockNotificationSound();
+
+      const unlocked =
+        await unlockNotificationSound();
+
 
       updateSoundButton();
 
-      showToast(
-        "🔔 Уведомления включены"
-      );
 
-      /*
-        Дополнительный небольшой тестовый сигнал,
-        чтобы пользователь сразу понял, что звук работает.
-      */
+      if(unlocked){
 
-      setTimeout(
-        ()=>{
-          playNewOrderSound();
-        },
-        150
-      );
+        showToast(
+          "🔊 Уведомления и звук включены"
+        );
+
+      }else{
+
+        showToast(
+          "🔔 Уведомления включены. Нажмите кнопку ещё раз для звука."
+        );
+
+      }
 
     }else{
 
-      notificationsEnabled = false;
+      notificationsEnabled =
+        false;
+
 
       updateSoundButton();
+
 
       showToast(
         "⚠️ Разрешение на уведомления не получено"
@@ -373,20 +374,25 @@ async function enableNotifications(){
 
 
 /* ---------------------------------------------------------
-   Большое визуальное предупреждение
+   БЕЗОПАСНЫЙ HTML
    --------------------------------------------------------- */
 
-function showNewOrderAlert(newOrders){
+function escapeHtml(value){
 
-  if(!newOrders || !newOrders.length){
-    return;
-  }
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 
-  /*
-    Удаляем старое предупреждение,
-    если оно осталось от предыдущего заказа.
-  */
+/* ---------------------------------------------------------
+   УДАЛЕНИЕ ПРЕДЫДУЩЕГО БАННЕРА
+   --------------------------------------------------------- */
+
+function removeNewOrderAlert(){
 
   const oldAlert =
     document.getElementById(
@@ -397,49 +403,72 @@ function showNewOrderAlert(newOrders){
     oldAlert.remove();
   }
 
+  clearTimeout(
+    notificationAlertTimer
+  );
+}
+
+
+/* ---------------------------------------------------------
+   БОЛЬШОЕ УВЕДОМЛЕНИЕ О НОВОЙ ЗАЯВКЕ
+   ---------------------------------------------------------
+
+   ВАЖНО:
+   НЕТ полноэкранного overlay.
+
+   Поэтому кнопки AppCore под ним НЕ блокируются.
+   --------------------------------------------------------- */
+
+function showNewOrderAlert(newOrders){
+
+  if(
+    !newOrders ||
+    !newOrders.length
+  ){
+    return;
+  }
+
+
+  removeNewOrderAlert();
+
 
   const alert =
     document.createElement("div");
+
 
   alert.id =
     "appcoreNewOrderAlert";
 
 
+  /*
+    Список заказов
+  */
+
   const ordersText =
     newOrders
-      .map(order=>{
+      .map(order => {
 
         return `
-          <div style="
-            padding:12px 0;
-            border-bottom:1px solid rgba(255,255,255,.12);
-          ">
-            <div style="
-              font-size:22px;
-              font-weight:800;
-            ">
+          <div class="appcore-order-alert-item">
+
+            <div class="appcore-order-alert-number">
               ${escapeHtml(
-                order.order_number || "Новая заявка"
+                order.order_number ||
+                "Новая заявка"
               )}
             </div>
 
-            <div style="
-              margin-top:5px;
-              font-size:16px;
-              opacity:.9;
-            ">
+            <div class="appcore-order-alert-info">
               📞 ${escapeHtml(
-                order.client_phone || "—"
+                order.client_phone ||
+                "—"
               )}
             </div>
 
-            <div style="
-              margin-top:5px;
-              font-size:18px;
-              font-weight:700;
-            ">
+            <div class="appcore-order-alert-total">
               💰 ${money(order.total)}
             </div>
+
           </div>
         `;
 
@@ -449,114 +478,80 @@ function showNewOrderAlert(newOrders){
 
   alert.innerHTML = `
 
-    <div style="
-      position:fixed;
-      z-index:999999;
-      inset:0;
-      background:rgba(0,0,0,.72);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-      animation:appcoreAlertFade .18s ease;
-    ">
+    <div class="appcore-alert-inner">
 
-      <div style="
-        width:min(560px,100%);
-        background:#151a24;
-        border:2px solid #ff6672;
-        border-radius:20px;
-        padding:24px;
-        box-shadow:
-          0 0 0 6px rgba(255,102,114,.12),
-          0 25px 80px rgba(0,0,0,.6);
-        animation:appcoreAlertPulse 1s infinite;
-      ">
+      <div class="appcore-alert-title">
+        🚨 НОВАЯ ЗАЯВКА
+      </div>
 
-        <div style="
-          color:#ff6672;
-          font-size:30px;
-          font-weight:900;
-          text-align:center;
-        ">
-          🚨 НОВАЯ ЗАЯВКА
-        </div>
+      <div class="appcore-alert-subtitle">
+        Новая заявка поступила в AppCore
+      </div>
 
-        <div style="
-          margin-top:8px;
-          text-align:center;
-          color:#fff;
-          font-size:15px;
-          opacity:.8;
-        ">
-          Не пропустите заказ
-        </div>
+      <div class="appcore-alert-orders">
+        ${ordersText}
+      </div>
 
-        <div style="
-          margin-top:18px;
-        ">
-          ${ordersText}
-        </div>
+      <div class="appcore-alert-buttons">
 
         <button
+          type="button"
           id="appcoreNewOrderOpen"
-          style="
-            width:100%;
-            margin-top:20px;
-            padding:15px;
-            border:0;
-            border-radius:12px;
-            background:#ff6672;
-            color:#fff;
-            font-size:17px;
-            font-weight:800;
-            cursor:pointer;
-          "
+          class="appcore-alert-open"
         >
-          🚨 Открыть активные заявки
+          🚨 Открыть активные
         </button>
 
         <button
+          type="button"
           id="appcoreNewOrderClose"
-          style="
-            width:100%;
-            margin-top:10px;
-            padding:13px;
-            border:1px solid rgba(255,255,255,.15);
-            border-radius:12px;
-            background:transparent;
-            color:#fff;
-            font-size:15px;
-            cursor:pointer;
-          "
+          class="appcore-alert-close"
         >
-          Закрыть предупреждение
+          Закрыть
         </button>
 
       </div>
 
     </div>
+
   `;
 
 
-  document.body.appendChild(alert);
+  document.body.appendChild(
+    alert
+  );
 
 
-  document
-    .getElementById(
+  /* -------------------------------------------------------
+     КНОПКА "ОТКРЫТЬ АКТИВНЫЕ"
+     ------------------------------------------------------- */
+
+  const openButton =
+    document.getElementById(
       "appcoreNewOrderOpen"
-    )
-    ?.addEventListener(
-      "click",
-      ()=>{
+    );
 
-        currentTab = "active";
+
+  if(openButton){
+
+    openButton.addEventListener(
+      "click",
+      function(event){
+
+        event.preventDefault();
+        event.stopPropagation();
+
+
+        removeNewOrderAlert();
+
+
+        currentTab =
+          "active";
+
 
         document
-          .querySelectorAll(
-            ".tab"
-          )
-          .forEach(tab=>{
+          .querySelectorAll(".tab")
+          .forEach(tab => {
 
             tab.classList.remove(
               "active"
@@ -570,6 +565,7 @@ function showNewOrderAlert(newOrders){
             '[data-tab="active"]'
           );
 
+
         if(activeTab){
 
           activeTab.classList.add(
@@ -581,43 +577,49 @@ function showNewOrderAlert(newOrders){
 
         render();
 
-        alert.remove();
-
       }
     );
 
+  }
 
-  document
-    .getElementById(
+
+  /* -------------------------------------------------------
+     КНОПКА "ЗАКРЫТЬ"
+     ------------------------------------------------------- */
+
+  const closeButton =
+    document.getElementById(
       "appcoreNewOrderClose"
-    )
-    ?.addEventListener(
-      "click",
-      ()=>{
+    );
 
-        alert.remove();
+
+  if(closeButton){
+
+    closeButton.addEventListener(
+      "click",
+      function(event){
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        removeNewOrderAlert();
 
       }
     );
+
+  }
 
 
   /*
-    Предупреждение не исчезает само сразу.
-    Но через 60 секунд убираем его,
-    если оператор ничего не сделал.
+    Автоматически НЕ убираем слишком быстро.
+    Оставляем предупреждение на 60 секунд.
   */
-
-  clearTimeout(
-    notificationAlertTimer
-  );
 
   notificationAlertTimer =
     setTimeout(
-      ()=>{
+      function(){
 
-        if(alert){
-          alert.remove();
-        }
+        removeNewOrderAlert();
 
       },
       60000
@@ -626,7 +628,7 @@ function showNewOrderAlert(newOrders){
 
 
 /* ---------------------------------------------------------
-   Новая заявка
+   НОВАЯ ЗАЯВКА
    --------------------------------------------------------- */
 
 async function notifyNewOrders(newOrders){
@@ -640,17 +642,16 @@ async function notifyNewOrders(newOrders){
 
 
   /*
-    Переходим на активные заявки.
+    Переключаемся на активные заявки.
   */
 
-  currentTab = "active";
+  currentTab =
+    "active";
 
 
   document
-    .querySelectorAll(
-      ".tab"
-    )
-    .forEach(tab=>{
+    .querySelectorAll(".tab")
+    .forEach(tab => {
 
       tab.classList.remove(
         "active"
@@ -664,6 +665,7 @@ async function notifyNewOrders(newOrders){
       '[data-tab="active"]'
     );
 
+
   if(activeTab){
 
     activeTab.classList.add(
@@ -673,11 +675,15 @@ async function notifyNewOrders(newOrders){
   }
 
 
+  /*
+    Обновляем таблицу.
+  */
+
   render();
 
 
   /*
-    Визуальное предупреждение.
+    Показываем красный баннер.
   */
 
   showNewOrderAlert(
@@ -693,7 +699,7 @@ async function notifyNewOrders(newOrders){
 
 
   /*
-    Браузерное уведомление.
+    Системное уведомление браузера.
   */
 
   if(
@@ -711,11 +717,12 @@ async function notifyNewOrders(newOrders){
   }
 
 
-  notificationsEnabled = true;
+  notificationsEnabled =
+    true;
 
 
   newOrders.forEach(
-    order=>{
+    order => {
 
       try{
 
@@ -748,14 +755,17 @@ async function notifyNewOrders(newOrders){
 
 
         notification.onclick =
-          ()=>{
-            
+          function(){
+
             window.focus();
+
 
             currentTab =
               "active";
 
+
             render();
+
 
             notification.close();
 
@@ -776,7 +786,7 @@ async function notifyNewOrders(newOrders){
 
 
   /*
-    Дополнительный toast.
+    Toast
   */
 
   showToast(
@@ -786,53 +796,20 @@ async function notifyNewOrders(newOrders){
 
 
 /* ---------------------------------------------------------
-   Безопасный вывод текста
-   --------------------------------------------------------- */
-
-function escapeHtml(value){
-
-  return String(value ?? "")
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-}
-
-
-/* ---------------------------------------------------------
-   Кнопка уведомлений
+   КНОПКА УВЕДОМЛЕНИЙ
    --------------------------------------------------------- */
 
 notificationButton.addEventListener(
   "click",
-  async()=>{
+  async function(event){
 
-    /*
-      Сначала разблокируем звук.
-    */
-
-    await unlockNotificationSound();
+    event.preventDefault();
+    event.stopPropagation();
 
 
     /*
       Если разрешение уже есть —
-      просто включаем звук.
+      включаем звук.
     */
 
     if(
@@ -841,23 +818,41 @@ notificationButton.addEventListener(
       "granted"
     ){
 
-      notificationsEnabled = true;
+      notificationsEnabled =
+        true;
 
-      updateSoundButton();
 
-      await playNewOrderSound();
+      const unlocked =
+        await unlockNotificationSound();
 
-      showToast(
-        "🔊 Звук заявок включён"
-      );
+
+      if(unlocked){
+
+        updateSoundButton();
+
+
+        await playNewOrderSound();
+
+
+        showToast(
+          "🔊 Звук заявок включён"
+        );
+
+      }else{
+
+        showToast(
+          "⚠️ Браузер заблокировал звук. Нажмите кнопку ещё раз."
+        );
+
+      }
+
 
       return;
     }
 
 
     /*
-      Если разрешения ещё нет —
-      запрашиваем его.
+      Разрешения ещё нет.
     */
 
     await enableNotifications();
@@ -867,32 +862,7 @@ notificationButton.addEventListener(
 
 
 /* ---------------------------------------------------------
-   Любой первый клик внутри панели
-   пытается разблокировать звук.
-   --------------------------------------------------------- */
-
-document.addEventListener(
-  "click",
-  async()=>{
-    
-    if(
-      !notificationAudioUnlocked
-    ){
-
-      await unlockNotificationSound();
-
-    }
-
-  },
-  {
-    once:false,
-    passive:true
-  }
-);
-
-
-/* ---------------------------------------------------------
-   Автоматическая инициализация после загрузки
+   ИНИЦИАЛИЗАЦИЯ
    --------------------------------------------------------- */
 
 async function initializeNotificationSystem(){
@@ -912,20 +882,24 @@ async function initializeNotificationSystem(){
     "granted"
   ){
 
-    notificationsEnabled = true;
+    notificationsEnabled =
+      true;
+
 
     /*
-      Пытаемся автоматически восстановить AudioContext.
-      Браузер может не разрешить это до первого клика.
+      Пытаемся автоматически
+      восстановить звук.
     */
 
     const unlocked =
       await unlockNotificationSound();
 
+
     if(!unlocked){
 
       notificationAudioUnlocked =
         false;
+
     }
 
   }else{
@@ -941,7 +915,7 @@ async function initializeNotificationSystem(){
 
 
 /* ---------------------------------------------------------
-   CSS для большого предупреждения
+   СТИЛИ БАННЕРА
    --------------------------------------------------------- */
 
 (function(){
@@ -956,7 +930,10 @@ async function initializeNotificationSystem(){
 
 
   const style =
-    document.createElement("style");
+    document.createElement(
+      "style"
+    );
+
 
   style.id =
     "appcoreNotificationStyles";
@@ -964,32 +941,307 @@ async function initializeNotificationSystem(){
 
   style.textContent = `
 
-    @keyframes appcoreAlertPulse{
+    #appcoreNewOrderAlert{
 
-      0%,100%{
-        transform:scale(1);
-      }
+      position:fixed;
 
-      50%{
-        transform:scale(1.015);
-      }
+      top:20px;
+      left:50%;
+
+      transform:translateX(-50%);
+
+      width:min(
+        620px,
+        calc(100vw - 30px)
+      );
+
+      z-index:999999;
+
+      pointer-events:none;
+
+      font-family:inherit;
+
+      animation:
+        appcoreAlertIn
+        .25s
+        ease-out;
 
     }
 
-    @keyframes appcoreAlertFade{
+
+    .appcore-alert-inner{
+
+      pointer-events:auto;
+
+      background:#151a24;
+
+      border:
+        2px solid
+        #ff6672;
+
+      border-radius:18px;
+
+      padding:20px;
+
+      box-shadow:
+        0 0 0 5px
+        rgba(255,102,114,.12),
+
+        0 20px 70px
+        rgba(0,0,0,.55);
+
+      animation:
+        appcoreAlertPulse
+        1.2s
+        infinite;
+
+    }
+
+
+    .appcore-alert-title{
+
+      color:#ff6672;
+
+      font-size:26px;
+
+      font-weight:900;
+
+      text-align:center;
+
+      letter-spacing:.3px;
+
+    }
+
+
+    .appcore-alert-subtitle{
+
+      margin-top:5px;
+
+      text-align:center;
+
+      color:#fff;
+
+      font-size:14px;
+
+      opacity:.75;
+
+    }
+
+
+    .appcore-alert-orders{
+
+      margin-top:12px;
+
+      max-height:260px;
+
+      overflow:auto;
+
+    }
+
+
+    .appcore-order-alert-item{
+
+      padding:11px 0;
+
+      border-bottom:
+        1px solid
+        rgba(255,255,255,.10);
+
+    }
+
+
+    .appcore-order-alert-number{
+
+      color:#fff;
+
+      font-size:19px;
+
+      font-weight:800;
+
+    }
+
+
+    .appcore-order-alert-info{
+
+      margin-top:4px;
+
+      color:#fff;
+
+      font-size:14px;
+
+      opacity:.85;
+
+    }
+
+
+    .appcore-order-alert-total{
+
+      margin-top:4px;
+
+      color:#fff;
+
+      font-size:17px;
+
+      font-weight:800;
+
+    }
+
+
+    .appcore-alert-buttons{
+
+      display:flex;
+
+      gap:10px;
+
+      margin-top:15px;
+
+    }
+
+
+    .appcore-alert-buttons button{
+
+      flex:1;
+
+      min-height:46px;
+
+      border-radius:11px;
+
+      cursor:pointer;
+
+      font-family:inherit;
+
+    }
+
+
+    .appcore-alert-open{
+
+      border:0;
+
+      background:#ff6672;
+
+      color:#fff;
+
+      font-size:15px;
+
+      font-weight:800;
+
+    }
+
+
+    .appcore-alert-close{
+
+      border:
+        1px solid
+        rgba(255,255,255,.15);
+
+      background:transparent;
+
+      color:#fff;
+
+      font-size:14px;
+
+    }
+
+
+    .appcore-alert-open:hover{
+
+      filter:brightness(1.08);
+
+    }
+
+
+    .appcore-alert-close:hover{
+
+      background:
+        rgba(255,255,255,.06);
+
+    }
+
+
+    @keyframes appcoreAlertIn{
 
       from{
+
         opacity:0;
+
+        transform:
+          translateX(-50%)
+          translateY(-20px);
+
       }
 
       to{
+
         opacity:1;
+
+        transform:
+          translateX(-50%)
+          translateY(0);
+
       }
 
     }
 
-    #appcoreNewOrderAlert{
-      font-family:inherit;
+
+    @keyframes appcoreAlertPulse{
+
+      0%,100%{
+
+        box-shadow:
+          0 0 0 5px
+          rgba(255,102,114,.12),
+
+          0 20px 70px
+          rgba(0,0,0,.55);
+
+      }
+
+      50%{
+
+        box-shadow:
+          0 0 0 9px
+          rgba(255,102,114,.20),
+
+          0 20px 80px
+          rgba(0,0,0,.65);
+
+      }
+
+    }
+
+
+    @media(max-width:600px){
+
+      #appcoreNewOrderAlert{
+
+        top:10px;
+
+        width:
+          calc(100vw - 20px);
+
+      }
+
+
+      .appcore-alert-inner{
+
+        padding:16px;
+
+      }
+
+
+      .appcore-alert-title{
+
+        font-size:22px;
+
+      }
+
+
+      .appcore-alert-buttons{
+
+        flex-direction:column;
+
+      }
+
     }
 
   `;
@@ -1000,3 +1252,10 @@ async function initializeNotificationSystem(){
   );
 
 })();
+
+
+/* ---------------------------------------------------------
+   ЗАПУСК СИСТЕМЫ
+   --------------------------------------------------------- */
+
+initializeNotificationSystem();
