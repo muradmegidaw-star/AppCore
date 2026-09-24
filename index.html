@@ -15,252 +15,859 @@
   --muted:#8d93a3;
   --line:rgba(255,255,255,.08);
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{background:var(--bg)}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent
+}
+
+html{
+  background:var(--bg)
+}
+
 body{
-  margin:0;min-height:100vh;background:
-  radial-gradient(circle at 20% 0%,rgba(91,70,255,.13),transparent 32%),
-  radial-gradient(circle at 100% 15%,rgba(0,200,255,.08),transparent 28%),var(--bg);
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 20% 0%,rgba(91,70,255,.13),transparent 32%),
+    radial-gradient(circle at 100% 15%,rgba(0,200,255,.08),transparent 28%),
+    var(--bg);
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
   padding-bottom:150px
 }
-button,input{font:inherit}
-button{-webkit-appearance:none}
-.container{width:100%;max-width:920px;margin:auto;padding:18px 15px 30px}
-.header{margin-bottom:18px}
-.top{display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:11px}
+
+button,input{
+  font:inherit
+}
+
+button{
+  -webkit-appearance:none
+}
+
+.container{
+  width:100%;
+  max-width:920px;
+  margin:auto;
+  padding:18px 15px 30px
+}
+
+.header{
+  margin-bottom:18px
+}
+
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px
+}
+
 .brand-logo{
-  width:43px;height:43px;border-radius:14px;display:flex;align-items:center;justify-content:center;
-  font-size:21px;font-weight:900;background:linear-gradient(135deg,#7557ff,#4b31d9);
+  width:43px;
+  height:43px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+  font-weight:900;
+  background:linear-gradient(135deg,#7557ff,#4b31d9);
   box-shadow:0 8px 28px rgba(93,65,255,.28)
 }
-.brand-title{font-size:20px;font-weight:800;letter-spacing:-.5px}
-.online{
-  display:flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid var(--line);
-  background:rgba(255,255,255,.035);border-radius:20px;color:#b5bac7;font-size:12px
+
+.brand-title{
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.5px
 }
-.online-dot{width:7px;height:7px;border-radius:50%;background:#37db7c;box-shadow:0 0 10px rgba(55,219,124,.7)}
-h1{margin:27px 0 7px;font-size:clamp(30px,8vw,44px);line-height:1;letter-spacing:-1.7px}
-.subtitle{max-width:650px;color:var(--muted);font-size:14px;line-height:1.5}
+
+.online{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 11px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.035);
+  border-radius:20px;
+  color:#b5bac7;
+  font-size:12px
+}
+
+.online-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#37db7c;
+  box-shadow:0 0 10px rgba(55,219,124,.7)
+}
+
+h1{
+  margin:27px 0 7px;
+  font-size:clamp(30px,8vw,44px);
+  line-height:1;
+  letter-spacing:-1.7px
+}
+
+.subtitle{
+  max-width:650px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5
+}
 
 .support-top{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  margin-top:16px;padding:13px 14px;border-radius:17px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:16px;
+  padding:13px 14px;
+  border-radius:17px;
   background:linear-gradient(135deg,rgba(118,83,255,.14),rgba(0,180,255,.06));
   border:1px solid rgba(135,109,255,.2)
 }
-.support-top-text{font-size:13px;font-weight:750}
-.support-top-sub{margin-top:3px;color:#858c9a;font-size:11px}
+
+.support-top-text{
+  font-size:13px;
+  font-weight:750
+}
+
+.support-top-sub{
+  margin-top:3px;
+  color:#858c9a;
+  font-size:11px
+}
+
 .support-button{
-  flex:0 0 auto;border:0;border-radius:12px;padding:10px 13px;
-  background:linear-gradient(135deg,#fff,#e9e9ee);color:#08090d;
-  font-size:11px;font-weight:850;text-decoration:none
+  flex:0 0 auto;
+  border:0;
+  border-radius:12px;
+  padding:10px 13px;
+  background:linear-gradient(135deg,#fff,#e9e9ee);
+  color:#08090d;
+  font-size:11px;
+  font-weight:850;
+  text-decoration:none
 }
 
 .discount-box{
-  margin-top:18px;padding:15px;border-radius:18px;
+  margin-top:18px;
+  padding:15px;
+  border-radius:18px;
   background:linear-gradient(135deg,rgba(118,83,255,.18),rgba(0,180,255,.08));
-  border:1px solid rgba(135,109,255,.22);overflow:hidden;position:relative
+  border:1px solid rgba(135,109,255,.22);
+  overflow:hidden;
+  position:relative
 }
-.discount-box:after{
-  content:"";position:absolute;width:130px;height:130px;right:-45px;top:-65px;border-radius:50%;
-  background:rgba(110,80,255,.16);filter:blur(2px)
-}
-.discount-title,.discount-text{position:relative;z-index:1}
-.discount-title{font-size:14px;font-weight:800}
-.discount-text{margin-top:5px;color:#aeb4c4;font-size:12px;line-height:1.45}
-.discount-highlight{color:#b69cff;font-weight:800}
 
-.search-wrap{margin-top:17px;position:relative}
+.discount-box:after{
+  content:"";
+  position:absolute;
+  width:130px;
+  height:130px;
+  right:-45px;
+  top:-65px;
+  border-radius:50%;
+  background:rgba(110,80,255,.16);
+  filter:blur(2px)
+}
+
+.discount-title,
+.discount-text{
+  position:relative;
+  z-index:1
+}
+
+.discount-title{
+  font-size:14px;
+  font-weight:800
+}
+
+.discount-text{
+  margin-top:5px;
+  color:#aeb4c4;
+  font-size:12px;
+  line-height:1.45
+}
+
+.discount-highlight{
+  color:#b69cff;
+  font-weight:800
+}
+
+.search-wrap{
+  margin-top:17px;
+  position:relative
+}
+
 .search{
-  width:100%;height:49px;border:1px solid var(--line);border-radius:15px;
-  background:rgba(18,20,27,.94);color:#fff;outline:none;padding:0 44px;
+  width:100%;
+  height:49px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:rgba(18,20,27,.94);
+  color:#fff;
+  outline:none;
+  padding:0 44px;
   font-size:14px
 }
-.search:focus{border-color:rgba(135,109,255,.4);box-shadow:0 0 0 3px rgba(117,83,255,.07)}
-.search::placeholder{color:#656b7a}
-.search-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#858b99;font-size:20px;z-index:2}
-.clear{
-  display:none;position:absolute;right:8px;top:7px;width:35px;height:35px;border:0;border-radius:10px;
-  background:rgba(255,255,255,.06);color:#aeb4c0;cursor:pointer
-}
-.categories{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:13px 1px 3px}
-.categories::-webkit-scrollbar{display:none}
-.category{
-  flex:0 0 auto;height:36px;padding:0 14px;border:1px solid var(--line);border-radius:12px;
-  background:rgba(255,255,255,.035);color:#9298a7;cursor:pointer;font-size:12px;font-weight:650
-}
-.category.active{color:#fff;border-color:rgba(126,98,255,.42);background:linear-gradient(135deg,rgba(110,77,255,.28),rgba(73,52,170,.2))}
 
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+.search:focus{
+  border-color:rgba(135,109,255,.4);
+  box-shadow:0 0 0 3px rgba(117,83,255,.07)
+}
+
+.search::placeholder{
+  color:#656b7a
+}
+
+.search-icon{
+  position:absolute;
+  left:15px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#858b99;
+  font-size:20px;
+  z-index:2
+}
+
+.clear{
+  display:none;
+  position:absolute;
+  right:8px;
+  top:7px;
+  width:35px;
+  height:35px;
+  border:0;
+  border-radius:10px;
+  background:rgba(255,255,255,.06);
+  color:#aeb4c0;
+  cursor:pointer
+}
+
+.categories{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding:13px 1px 3px
+}
+
+.categories::-webkit-scrollbar{
+  display:none
+}
+
+.category{
+  flex:0 0 auto;
+  height:36px;
+  padding:0 14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:rgba(255,255,255,.035);
+  color:#9298a7;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:650
+}
+
+.category.active{
+  color:#fff;
+  border-color:rgba(126,98,255,.42);
+  background:linear-gradient(135deg,rgba(110,77,255,.28),rgba(73,52,170,.2))
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-top:16px
+}
+
 .app-card{
-  min-height:165px;padding:14px;position:relative;overflow:hidden;cursor:pointer;border-radius:20px;
-  border:1px solid rgba(255,255,255,.07);background:#12141a;
+  min-height:165px;
+  padding:14px;
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.07);
+  background:#12141a;
   transition:transform .18s,border-color .18s,box-shadow .18s
 }
+
 .app-card:before{
-  content:"";position:absolute;width:110px;height:110px;right:-50px;top:-50px;border-radius:50%;
-  background:var(--app-color);opacity:.13;filter:blur(3px)
+  content:"";
+  position:absolute;
+  width:110px;
+  height:110px;
+  right:-50px;
+  top:-50px;
+  border-radius:50%;
+  background:var(--app-color);
+  opacity:.13;
+  filter:blur(3px)
 }
-.app-card:active{transform:scale(.975)}
-.app-card.selected{border-color:var(--app-color);box-shadow:0 0 0 1px var(--app-color),0 12px 35px rgba(0,0,0,.25)}
+
+.app-card:active{
+  transform:scale(.975)
+}
+
+.app-card.selected{
+  border-color:var(--app-color);
+  box-shadow:0 0 0 1px var(--app-color),0 12px 35px rgba(0,0,0,.25)
+}
+
 .app-icon{
-  position:relative;z-index:1;width:50px;height:50px;border-radius:15px;background:var(--app-gradient);
-  display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.22)
+  position:relative;
+  z-index:1;
+  width:50px;
+  height:50px;
+  border-radius:15px;
+  background:var(--app-gradient);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  box-shadow:0 8px 20px rgba(0,0,0,.22)
 }
-.app-icon img{width:100%;height:100%;object-fit:cover}
-.fallback{color:#fff;font-size:16px;font-weight:900}
+
+.app-icon img{
+  width:100%;
+  height:100%;
+  object-fit:cover
+}
+
+.fallback{
+  color:#fff;
+  font-size:16px;
+  font-weight:900
+}
+
 .check{
-  position:absolute;z-index:3;right:11px;top:11px;width:25px;height:25px;border-radius:50%;
-  border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.22);
-  display:flex;align-items:center;justify-content:center;color:transparent;font-size:13px;font-weight:900
+  position:absolute;
+  z-index:3;
+  right:11px;
+  top:11px;
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.22);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:transparent;
+  font-size:13px;
+  font-weight:900
 }
-.app-card.selected .check{color:#111;background:#fff;border-color:#fff}
-.app-name{position:relative;z-index:1;margin-top:13px;padding-right:22px;font-size:14px;font-weight:800;line-height:1.25}
-.app-type{position:relative;z-index:1;margin-top:5px;color:#777e8c;font-size:11px}
-.empty{display:none;padding:65px 20px;text-align:center}
-.empty.show{display:block}
-.empty-icon{width:52px;height:52px;margin:auto auto 13px;border-radius:17px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);color:#737a89;font-size:22px}
-.empty-title{font-size:16px;font-weight:800}
-.empty-text{margin-top:6px;color:#707785;font-size:13px}
+
+.app-card.selected .check{
+  color:#111;
+  background:#fff;
+  border-color:#fff
+}
+
+.app-name{
+  position:relative;
+  z-index:1;
+  margin-top:13px;
+  padding-right:22px;
+  font-size:14px;
+  font-weight:800;
+  line-height:1.25
+}
+
+.app-type{
+  position:relative;
+  z-index:1;
+  margin-top:5px;
+  color:#777e8c;
+  font-size:11px
+}
+
+.empty{
+  display:none;
+  padding:65px 20px;
+  text-align:center
+}
+
+.empty.show{
+  display:block
+}
+
+.empty-icon{
+  width:52px;
+  height:52px;
+  margin:auto auto 13px;
+  border-radius:17px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.05);
+  color:#737a89;
+  font-size:22px
+}
+
+.empty-title{
+  font-size:16px;
+  font-weight:800
+}
+
+.empty-text{
+  margin-top:6px;
+  color:#707785;
+  font-size:13px
+}
 
 .bottom{
-  position:fixed;z-index:20;left:0;right:0;bottom:0;padding:10px 14px calc(11px + env(safe-area-inset-bottom));
+  position:fixed;
+  z-index:20;
+  left:0;
+  right:0;
+  bottom:0;
+  padding:10px 14px calc(11px + env(safe-area-inset-bottom));
   background:linear-gradient(to top,rgba(8,9,13,1) 55%,rgba(8,9,13,.96) 76%,rgba(8,9,13,0))
 }
-.bottom-inner{width:100%;max-width:920px;margin:auto}
+
+.bottom-inner{
+  width:100%;
+  max-width:920px;
+  margin:auto
+}
+
 .price-panel{
-  display:none;margin-bottom:9px;padding:12px 14px;border-radius:17px;background:rgba(20,22,29,.97);
-  border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(20px)
+  display:none;
+  margin-bottom:9px;
+  padding:12px 14px;
+  border-radius:17px;
+  background:rgba(20,22,29,.97);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(20px)
 }
-.price-panel.visible{display:block}
-.price-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.price-label{color:#858c9a;font-size:12px}
-.price-value{color:#fff;font-size:13px;font-weight:700}
-.total-row{margin-top:7px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)}
-.total-row .price-label{color:#fff;font-weight:700}
-.total-row .price-value{font-size:17px}
-.sale{color:#55e18b!important}
+
+.price-panel.visible{
+  display:block
+}
+
+.price-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px
+}
+
+.price-label{
+  color:#858c9a;
+  font-size:12px
+}
+
+.price-value{
+  color:#fff;
+  font-size:13px;
+  font-weight:700
+}
+
+.total-row{
+  margin-top:7px;
+  padding-top:8px;
+  border-top:1px solid rgba(255,255,255,.06)
+}
+
+.total-row .price-label{
+  color:#fff;
+  font-weight:700
+}
+
+.total-row .price-value{
+  font-size:17px
+}
+
+.sale{
+  color:#55e18b!important
+}
+
 .continue{
-  width:100%;height:52px;border:0;border-radius:16px;background:linear-gradient(135deg,#fff,#e9e9ee);
-  color:#090a0e;font-size:15px;font-weight:850;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,.22)
+  width:100%;
+  height:52px;
+  border:0;
+  border-radius:16px;
+  background:linear-gradient(135deg,#fff,#e9e9ee);
+  color:#090a0e;
+  font-size:15px;
+  font-weight:850;
+  cursor:pointer;
+  box-shadow:0 8px 25px rgba(0,0,0,.22)
 }
-.continue:disabled{opacity:.38;box-shadow:none}
+
+.continue:disabled{
+  opacity:.38;
+  box-shadow:none
+}
 
 .toast{
-  position:fixed;z-index:150;left:50%;bottom:155px;transform:translate(-50%,20px);max-width:calc(100% - 30px);
-  padding:11px 15px;border-radius:13px;background:#242731;border:1px solid rgba(255,255,255,.09);
-  color:#fff;font-size:13px;opacity:0;pointer-events:none;transition:.22s;white-space:nowrap
+  position:fixed;
+  z-index:150;
+  left:50%;
+  bottom:155px;
+  transform:translate(-50%,20px);
+  max-width:calc(100% - 30px);
+  padding:11px 15px;
+  border-radius:13px;
+  background:#242731;
+  border:1px solid rgba(255,255,255,.09);
+  color:#fff;
+  font-size:13px;
+  opacity:0;
+  pointer-events:none;
+  transition:.22s;
+  white-space:nowrap
 }
-.toast.show{opacity:1;transform:translate(-50%,0)}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0)
+}
 
 .payment-overlay,
 .confirm-overlay{
-  position:fixed;z-index:100;inset:0;display:none;align-items:flex-end;justify-content:center;padding:15px;
-  background:rgba(0,0,0,.68);backdrop-filter:blur(8px)
+  position:fixed;
+  z-index:100;
+  inset:0;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:15px;
+  background:rgba(0,0,0,.68);
+  backdrop-filter:blur(8px)
 }
+
 .payment-overlay.show,
-.confirm-overlay.show{display:flex}
+.confirm-overlay.show{
+  display:flex
+}
 
 .payment-modal,
 .confirm-modal{
-  width:100%;max-width:520px;max-height:90vh;overflow-y:auto;border-radius:24px;padding:20px;
-  background:linear-gradient(145deg,#181b25,#101219);border:1px solid rgba(255,255,255,.1);
+  width:100%;
+  max-width:520px;
+  max-height:90vh;
+  overflow-y:auto;
+  border-radius:24px;
+  padding:20px;
+  background:linear-gradient(145deg,#181b25,#101219);
+  border:1px solid rgba(255,255,255,.1);
   box-shadow:0 25px 80px rgba(0,0,0,.55)
 }
 
 .payment-header,
 .confirm-header{
-  display:flex;align-items:center;justify-content:space-between;gap:12px
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px
 }
+
 .payment-title,
-.confirm-title{font-size:21px;font-weight:850}
+.confirm-title{
+  font-size:21px;
+  font-weight:850
+}
+
 .payment-close,
 .confirm-close{
-  width:38px;height:38px;border:0;border-radius:12px;background:rgba(255,255,255,.07);
-  color:#fff;font-size:24px
+  width:38px;
+  height:38px;
+  border:0;
+  border-radius:12px;
+  background:rgba(255,255,255,.07);
+  color:#fff;
+  font-size:24px
 }
+
 .payment-subtitle,
 .confirm-text{
-  margin-top:7px;color:#858c9a;font-size:13px;line-height:1.45
+  margin-top:7px;
+  color:#858c9a;
+  font-size:13px;
+  line-height:1.45
 }
 
 .confirm-icon{
-  width:54px;height:54px;margin:2px 0 15px;border-radius:17px;
-  display:flex;align-items:center;justify-content:center;
+  width:54px;
+  height:54px;
+  margin:2px 0 15px;
+  border-radius:17px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   background:rgba(255,193,7,.1);
   border:1px solid rgba(255,193,7,.16);
   font-size:25px
 }
+
 .confirm-buttons{
-  display:flex;gap:9px;margin-top:18px
+  display:flex;
+  gap:9px;
+  margin-top:18px
 }
+
 .confirm-cancel,
 .confirm-yes{
-  flex:1;height:48px;border:0;border-radius:14px;font-size:13px;font-weight:850
+  flex:1;
+  height:48px;
+  border:0;
+  border-radius:14px;
+  font-size:13px;
+  font-weight:850
 }
+
 .confirm-cancel{
-  background:rgba(255,255,255,.07);color:#fff
+  background:rgba(255,255,255,.07);
+  color:#fff
 }
+
 .confirm-yes{
-  background:linear-gradient(135deg,#fff,#e9e9ee);color:#08090d
+  background:linear-gradient(135deg,#fff,#e9e9ee);
+  color:#08090d
 }
 
-.order-box,.requisite{
-  margin-top:16px;padding:14px;border-radius:17px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07)
+.order-box,
+.requisite{
+  margin-top:16px;
+  padding:14px;
+  border-radius:17px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.07)
 }
-.order-title,.requisite-label{font-size:11px;color:#858c9a;margin-bottom:8px}
-.selected-apps{display:flex;flex-direction:column;gap:7px}
-.selected-app{display:flex;justify-content:space-between;gap:10px;font-size:13px}
-.selected-app-name{color:#fff}.selected-app-price{color:#858c9a}
-.payment-total{display:flex;justify-content:space-between;margin-top:11px;padding-top:10px;border-top:1px solid rgba(255,255,255,.07)}
-.payment-total span:first-child{color:#858c9a}.payment-total span:last-child{font-size:18px;font-weight:850}
-.requisites-title{margin-top:20px;font-size:16px;font-weight:800}
-.requisite-value-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.requisite-value{color:#fff;font-size:14px;font-weight:750;word-break:break-word}
-.copy-button{border:0;border-radius:10px;padding:8px 10px;background:rgba(255,255,255,.08);color:#fff;font-size:11px}
-.phone-input{width:100%;height:43px;border:0;outline:none;background:transparent;color:#fff;font-size:14px;font-weight:750}
-.phone-input::placeholder{color:#656b7a}
+
+.order-title,
+.requisite-label{
+  font-size:11px;
+  color:#858c9a;
+  margin-bottom:8px
+}
+
+.selected-apps{
+  display:flex;
+  flex-direction:column;
+  gap:7px
+}
+
+.selected-app{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:13px
+}
+
+.selected-app-name{
+  color:#fff
+}
+
+.selected-app-price{
+  color:#858c9a
+}
+
+.payment-total{
+  display:flex;
+  justify-content:space-between;
+  margin-top:11px;
+  padding-top:10px;
+  border-top:1px solid rgba(255,255,255,.07)
+}
+
+.payment-total span:first-child{
+  color:#858c9a
+}
+
+.payment-total span:last-child{
+  font-size:18px;
+  font-weight:850
+}
+
+.requisites-title{
+  margin-top:20px;
+  font-size:16px;
+  font-weight:800
+}
+
+.requisite-value-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px
+}
+
+.requisite-value{
+  color:#fff;
+  font-size:14px;
+  font-weight:750;
+  word-break:break-word
+}
+
+.copy-button{
+  border:0;
+  border-radius:10px;
+  padding:8px 10px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  font-size:11px
+}
+
+.phone-input{
+  width:100%;
+  height:43px;
+  border:0;
+  outline:none;
+  background:transparent;
+  color:#fff;
+  font-size:14px;
+  font-weight:750
+}
+
+.phone-input::placeholder{
+  color:#656b7a
+}
+
 .payment-note{
-  margin-top:13px;padding:12px;border-radius:14px;background:rgba(255,193,7,.07);
-  border:1px solid rgba(255,193,7,.14);color:#b9bdc8;font-size:12px;line-height:1.45
+  margin-top:13px;
+  padding:12px;
+  border-radius:14px;
+  background:rgba(255,193,7,.07);
+  border:1px solid rgba(255,193,7,.14);
+  color:#b9bdc8;
+  font-size:12px;
+  line-height:1.45
 }
-.payment-done{
-  width:100%;height:48px;margin-top:15px;border:0;border-radius:14px;background:linear-gradient(135deg,#fff,#e9e9ee);
-  color:#08090d;font-size:14px;font-weight:850
-}
-.payment-done:disabled{opacity:.5}
 
-.status-panel,.cancelled-panel,.install-panel{
-  display:none;margin:18px 0;padding:17px;border-radius:19px;background:rgba(20,22,29,.97);
+.payment-done{
+  width:100%;
+  height:48px;
+  margin-top:15px;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#fff,#e9e9ee);
+  color:#08090d;
+  font-size:14px;
+  font-weight:850
+}
+
+.payment-done:disabled{
+  opacity:.5
+}
+
+.status-panel,
+.cancelled-panel,
+.install-panel{
+  display:none;
+  margin:18px 0;
+  padding:17px;
+  border-radius:19px;
+  background:rgba(20,22,29,.97);
   border:1px solid rgba(255,255,255,.08)
 }
-.status-panel.show,.cancelled-panel.show,.install-panel.show{display:block}
-.status-title,.install-title{font-size:18px;font-weight:850}
-.status-text,.install-subtitle{margin-top:7px;color:#858c9a;font-size:13px;line-height:1.5}
+
+.status-panel.show,
+.cancelled-panel.show,
+.install-panel.show{
+  display:block
+}
+
+.status-title,
+.install-title{
+  font-size:18px;
+  font-weight:850
+}
+
+.status-text,
+.install-subtitle{
+  margin-top:7px;
+  color:#858c9a;
+  font-size:13px;
+  line-height:1.5
+}
+
 .order-number-display{
-  margin-top:12px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.05);
-  color:#bdaeff;font-size:13px;font-weight:800;word-break:break-word
+  margin-top:12px;
+  padding:11px 12px;
+  border-radius:12px;
+  background:rgba(255,255,255,.05);
+  color:#bdaeff;
+  font-size:13px;
+  font-weight:800;
+  word-break:break-word
+}
+
+/* НОВОЕ: визуальный акцент после "Я оплатил" */
+
+.status-panel.focused{
+  animation:statusFocus 2.2s ease;
+  border-color:rgba(118,83,255,.75);
+  box-shadow:
+    0 0 0 2px rgba(118,83,255,.18),
+    0 18px 55px rgba(91,70,255,.22)
+}
+
+@keyframes statusFocus{
+  0%{
+    transform:scale(.98);
+    box-shadow:0 0 0 0 rgba(118,83,255,.55)
+  }
+
+  35%{
+    transform:scale(1.015);
+    box-shadow:
+      0 0 0 6px rgba(118,83,255,.12),
+      0 18px 55px rgba(91,70,255,.28)
+  }
+
+  100%{
+    transform:scale(1);
+    box-shadow:
+      0 0 0 0 rgba(118,83,255,0),
+      0 18px 45px rgba(0,0,0,.18)
+  }
 }
 
 .status-support{
-  margin-top:14px;padding:14px;border-radius:16px;
+  margin-top:14px;
+  padding:14px;
+  border-radius:16px;
   background:rgba(118,83,255,.07);
   border:1px solid rgba(135,109,255,.14)
 }
+
 .status-support-title{
-  font-size:13px;font-weight:850
+  font-size:13px;
+  font-weight:850
 }
+
 .status-support-text{
-  margin-top:5px;color:#858c9a;font-size:11px;line-height:1.45
+  margin-top:5px;
+  color:#858c9a;
+  font-size:11px;
+  line-height:1.45
 }
+
 .status-support-button{
-  display:flex;width:100%;height:44px;margin-top:11px;
-  align-items:center;justify-content:center;
-  border-radius:12px;background:linear-gradient(135deg,#55e18b,#25b86c);
-  color:#07110b;text-decoration:none;font-size:12px;font-weight:850
+  display:flex;
+  width:100%;
+  height:44px;
+  margin-top:11px;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  background:linear-gradient(135deg,#55e18b,#25b86c);
+  color:#07110b;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:850
 }
 
 .new-order-button{
@@ -275,8 +882,16 @@ h1{margin:27px 0 7px;font-size:clamp(30px,8vw,44px);line-height:1;letter-spacing
   font-weight:850;
   cursor:pointer
 }
-.new-order-button:active{transform:scale(.985)}
-.new-order-button:disabled{opacity:.4;cursor:not-allowed}
+
+.new-order-button:active{
+  transform:scale(.985)
+}
+
+.new-order-button:disabled{
+  opacity:.4;
+  cursor:not-allowed
+}
+
 .new-order-hint{
   margin-top:7px;
   color:#6f7685;
@@ -284,51 +899,147 @@ h1{margin:27px 0 7px;font-size:clamp(30px,8vw,44px);line-height:1;letter-spacing
   text-align:center
 }
 
-.install-panel{border-color:rgba(55,219,124,.16)}
-.install-list{display:flex;flex-direction:column;gap:9px;margin-top:15px}
+.install-panel{
+  border-color:rgba(55,219,124,.16)
+}
+
+.install-list{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  margin-top:15px
+}
+
 .install-item{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;
-  border-radius:14px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07)
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:11px 12px;
+  border-radius:14px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.07)
 }
-.install-name{color:#fff;font-size:13px;font-weight:750}
+
+.install-name{
+  color:#fff;
+  font-size:13px;
+  font-weight:750
+}
+
 .install-button{
-  padding:9px 12px;border:0;border-radius:10px;background:linear-gradient(135deg,#fff,#e9e9ee);
-  color:#08090d;font-size:11px;font-weight:850;text-decoration:none
+  padding:9px 12px;
+  border:0;
+  border-radius:10px;
+  background:linear-gradient(135deg,#fff,#e9e9ee);
+  color:#08090d;
+  font-size:11px;
+  font-weight:850;
+  text-decoration:none
 }
+
 .installed-button{
-  width:100%;margin-top:14px;height:47px;border:0;border-radius:14px;
-  background:linear-gradient(135deg,#55e18b,#25b86c);color:#07110b;font-size:13px;font-weight:850
+  width:100%;
+  margin-top:14px;
+  height:47px;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#55e18b,#25b86c);
+  color:#07110b;
+  font-size:13px;
+  font-weight:850
 }
-.installed-button:disabled{opacity:.55}
+
+.installed-button:disabled{
+  opacity:.55
+}
 
 .activation-panel{
-  display:none;margin-top:14px;padding:17px;border-radius:19px;
+  display:none;
+  margin-top:14px;
+  padding:17px;
+  border-radius:19px;
   background:linear-gradient(135deg,rgba(55,219,124,.08),rgba(118,83,255,.08));
   border:1px solid rgba(55,219,124,.18)
 }
-.activation-panel.show{display:block}
-.activation-title{font-size:18px;font-weight:850}
-.activation-text{margin-top:7px;color:#858c9a;font-size:13px;line-height:1.5}
+
+.activation-panel.show{
+  display:block
+}
+
+.activation-title{
+  font-size:18px;
+  font-weight:850
+}
+
+.activation-text{
+  margin-top:7px;
+  color:#858c9a;
+  font-size:13px;
+  line-height:1.5
+}
+
 .whatsapp-button{
-  display:flex;width:100%;height:49px;margin-top:15px;align-items:center;justify-content:center;
-  border:0;border-radius:14px;background:linear-gradient(135deg,#55e18b,#25b86c);
-  color:#07110b;font-size:14px;font-weight:850;text-decoration:none
+  display:flex;
+  width:100%;
+  height:49px;
+  margin-top:15px;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#55e18b,#25b86c);
+  color:#07110b;
+  font-size:14px;
+  font-weight:850;
+  text-decoration:none
 }
 
 @media(min-width:650px){
-  .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))
+  }
+
   .payment-overlay,
-  .confirm-overlay{align-items:center}
+  .confirm-overlay{
+    align-items:center
+  }
 }
+
 @media(max-width:380px){
-  .container{padding-left:12px;padding-right:12px}
-  .app-card{min-height:155px;padding:12px}
-  .app-icon{width:46px;height:46px}
-  .app-name{font-size:13px}
+  .container{
+    padding-left:12px;
+    padding-right:12px
+  }
+
+  .app-card{
+    min-height:155px;
+    padding:12px
+  }
+
+  .app-icon{
+    width:46px;
+    height:46px
+  }
+
+  .app-name{
+    font-size:13px
+  }
+
   .payment-modal,
-  .confirm-modal{padding:16px}
-  .support-top{align-items:flex-start;flex-direction:column}
-  .support-button{width:100%;text-align:center}
+  .confirm-modal{
+    padding:16px
+  }
+
+  .support-top{
+    align-items:flex-start;
+    flex-direction:column
+  }
+
+  .support-button{
+    width:100%;
+    text-align:center
+  }
 }
 </style>
 </head>
@@ -431,7 +1142,7 @@ const supabaseClient=window.supabase.createClient(
   </div>
 
   <div class="status-text" id="statusText">
-    Ожидайте проверки оплаты.
+    Ожидайте проверки оплаты. После подтверждения оплаты приложения будут доступны для установки.
   </div>
 
   <div class="order-number-display" id="orderNumberDisplay"></div>
@@ -505,7 +1216,7 @@ const supabaseClient=window.supabase.createClient(
   </div>
 
   <div class="install-subtitle">
-    Установите приложения из вашего заказа.
+    После подтверждения оплаты приложения доступны для установки.
     Нажмите «Установить» рядом с каждым приложением.
   </div>
 
@@ -732,8 +1443,6 @@ const supabaseClient=window.supabase.createClient(
 </div>
 </div>
 
-<!-- ПОДТВЕРЖДЕНИЕ НОВОГО ЗАКАЗА -->
-
 <div id="confirmOverlay" class="confirm-overlay">
 
   <div class="confirm-modal">
@@ -897,6 +1606,7 @@ function getDiscount(count){
 }
 
 function calculatePrice(count){
+
   const original=count*PRICE;
   const discountPercent=getDiscount(count);
   const discountAmount=original*discountPercent/100;
@@ -914,6 +1624,7 @@ function money(value){
 }
 
 function initials(name){
+
   const words=name
     .replace(/[^а-яА-Яa-zA-Z0-9\s]/g,"")
     .trim()
@@ -982,6 +1693,7 @@ function render(){
   appList.innerHTML="";
 
   if(!filtered.length){
+
     empty.classList.add("show");
     return;
   }
@@ -1101,10 +1813,6 @@ function isValidPhone(phone){
   return digits.length>=10&&digits.length<=15;
 }
 
-/* =========================
-   ЛИМИТ НОВОГО ЗАКАЗА
-========================= */
-
 function getNewOrderAttempts(){
 
   try{
@@ -1187,10 +1895,6 @@ function updateNewOrderButtons(){
   });
 }
 
-/* =========================
-   СОСТОЯНИЕ УСТАНОВКИ
-========================= */
-
 function markAppsInstalled(order){
 
   try{
@@ -1222,10 +1926,6 @@ function isAppsInstalled(order){
     return false;
   }
 }
-
-/* =========================
-   БЛОКИРОВКА ЗАКАЗА
-========================= */
 
 function getOrderLock(){
 
@@ -1321,6 +2021,12 @@ function restoreOrderLock(){
 
     currentOrder=null;
 
+    if(statusTimer){
+
+      clearInterval(statusTimer);
+      statusTimer=null;
+    }
+
     return;
   }
 
@@ -1354,10 +2060,6 @@ function restoreOrderLock(){
 
   },Math.max(0,remaining));
 }
-
-/* =========================
-   ПОДТВЕРЖДЕНИЕ НОВОГО ЗАКАЗА
-========================= */
 
 function openNewOrderConfirmation(){
 
@@ -1425,17 +2127,9 @@ function startNewOrder(){
   selected.clear();
   isCreatingOrder=false;
 
-  localStorage.removeItem(
-    ORDER_LOCK_KEY
-  );
-
-  localStorage.removeItem(
-    CLIENT_ORDER_KEY
-  );
-
-  localStorage.removeItem(
-    INSTALLED_ORDER_KEY
-  );
+  localStorage.removeItem(ORDER_LOCK_KEY);
+  localStorage.removeItem(CLIENT_ORDER_KEY);
+  localStorage.removeItem(INSTALLED_ORDER_KEY);
 
   statusPanel.classList.remove("show");
   cancelledPanel.classList.remove("show");
@@ -1464,10 +2158,6 @@ function startNewOrder(){
     "Готово. Можно создать новый заказ."
   );
 }
-
-/* =========================
-   ОПЛАТА
-========================= */
 
 function openPaymentModal(){
 
@@ -1499,28 +2189,16 @@ function openPaymentModal(){
 
   selectedList.forEach(app=>{
 
-    const row=
-      document.createElement("div");
-
+    const row=document.createElement("div");
     row.className="selected-app";
 
-    const name=
-      document.createElement("span");
+    const name=document.createElement("span");
+    name.className="selected-app-name";
+    name.textContent=app.name;
 
-    name.className=
-      "selected-app-name";
-
-    name.textContent=
-      app.name;
-
-    const appPrice=
-      document.createElement("span");
-
-    appPrice.className=
-      "selected-app-price";
-
-    appPrice.textContent=
-      money(PRICE);
+    const appPrice=document.createElement("span");
+    appPrice.className="selected-app-price";
+    appPrice.textContent=money(PRICE);
 
     row.append(name,appPrice);
 
@@ -1542,10 +2220,6 @@ function closePaymentModal(){
   document.body.style.overflow="";
 }
 
-/* =========================
-   СТАТУС
-========================= */
-
 function humanStatus(status){
 
   switch(status){
@@ -1563,10 +2237,6 @@ function humanStatus(status){
       return"Ожидает проверки оплаты";
   }
 }
-
-/* =========================
-   WHATSAPP
-========================= */
 
 function buildWhatsAppMessage(type){
 
@@ -1678,8 +2348,7 @@ function updateWhatsAppLinks(){
       buildWhatsAppMessage("support")
     );
 
-  supportTopButton.href=
-    supportUrl;
+  supportTopButton.href=supportUrl;
 
   statusSupportButton.href=
     "https://wa.me/"+
@@ -1697,10 +2366,6 @@ function updateWhatsAppLinks(){
       buildWhatsAppMessage("activation")
     );
 }
-
-/* =========================
-   СОЗДАНИЕ ЗАКАЗА
-========================= */
 
 async function createOrder(){
 
@@ -1820,16 +2485,10 @@ async function createOrder(){
       return false;
     }
 
-    currentOrder=
-      orderData;
+    currentOrder=orderData;
 
-    saveOrderLock(
-      orderData
-    );
-
-    saveClientOrder(
-      orderData
-    );
+    saveOrderLock(orderData);
+    saveClientOrder(orderData);
 
     closePaymentModal();
 
@@ -1838,8 +2497,15 @@ async function createOrder(){
     render();
     updatePrice();
 
+    /*
+      ВАЖНО:
+      true = автоматически прокрутить
+      клиента к разделу ожидания
+    */
+
     showOrderStatus(
-      orderData
+      orderData,
+      true
     );
 
     startStatusChecking();
@@ -1875,23 +2541,24 @@ async function createOrder(){
   }
 }
 
-/* =========================
-   ПАНЕЛЬ ОЖИДАНИЯ
-========================= */
+/*
+========================================
+ПАНЕЛЬ ОЖИДАНИЯ
+========================================
+*/
 
-function showOrderStatus(order){
+function showOrderStatus(order,autoScroll=false){
 
   statusPanel.classList.add("show");
 
   installPanel.classList.remove("show");
-
   cancelledPanel.classList.remove("show");
 
   statusTitle.textContent=
     "⏳ Заказ принят";
 
   statusText.textContent=
-    "Ожидайте проверки оплаты. После подтверждения появятся приложения для установки.";
+    "Ожидайте проверки оплаты. После подтверждения оплаты приложения будут доступны для установки.";
 
   orderNumberDisplay.textContent=
     "Номер заказа: "+
@@ -1899,11 +2566,41 @@ function showOrderStatus(order){
 
   updateWhatsAppLinks();
   updateNewOrderButtons();
-}
 
-/* =========================
-   ПАНЕЛЬ УСТАНОВКИ
-========================= */
+  /*
+    Автоматически переводим клиента
+    прямо к разделу ожидания
+  */
+
+  if(autoScroll){
+
+    setTimeout(()=>{
+
+      statusPanel.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+      });
+
+      /*
+        Временно подсвечиваем блок,
+        чтобы клиент сразу увидел его
+      */
+
+      statusPanel.classList.remove("focused");
+
+      void statusPanel.offsetWidth;
+
+      statusPanel.classList.add("focused");
+
+      setTimeout(()=>{
+
+        statusPanel.classList.remove("focused");
+
+      },2300);
+
+    },120);
+  }
+}
 
 function renderInstallPanel(order){
 
@@ -1992,10 +2689,6 @@ function renderInstallPanel(order){
   updateNewOrderButtons();
 }
 
-/* =========================
-   ОТМЕНЁННЫЙ ЗАКАЗ
-========================= */
-
 function renderCancelled(order){
 
   statusPanel.classList.remove("show");
@@ -2011,10 +2704,6 @@ function renderCancelled(order){
   updateWhatsAppLinks();
   updateNewOrderButtons();
 }
-
-/* =========================
-   ПРОВЕРКА СТАТУСА
-========================= */
 
 async function checkOrderStatus(){
 
@@ -2053,6 +2742,7 @@ async function checkOrderStatus(){
 
     const updatedOrder={
       ...order,
+
       status:
         serverOrder.status,
 
@@ -2061,9 +2751,7 @@ async function checkOrderStatus(){
         order.apps
     };
 
-    saveClientOrder(
-      updatedOrder
-    );
+    saveClientOrder(updatedOrder);
 
     currentOrder=
       updatedOrder;
@@ -2133,10 +2821,6 @@ function startStatusChecking(){
     );
 }
 
-/* =========================
-   СОБЫТИЯ
-========================= */
-
 continueButton.addEventListener(
   "click",
   openPaymentModal
@@ -2150,10 +2834,12 @@ paymentClose.addEventListener(
 paymentOverlay.addEventListener(
   "click",
   event=>{
+
     if(
       event.target===
       paymentOverlay
     ){
+
       closePaymentModal();
     }
   }
@@ -2177,10 +2863,12 @@ confirmYes.addEventListener(
 confirmOverlay.addEventListener(
   "click",
   event=>{
+
     if(
       event.target===
       confirmOverlay
     ){
+
       closeNewOrderConfirmation();
     }
   }
@@ -2252,9 +2940,11 @@ document
         textarea.select();
 
         try{
+
           document.execCommand(
             "copy"
           );
+
         }catch(e){}
 
         textarea.remove();
@@ -2267,8 +2957,10 @@ document
         "Скопировано";
 
       setTimeout(()=>{
+
         button.textContent=
           old;
+
       },1500);
     }
   );
@@ -2277,6 +2969,7 @@ document
 search.addEventListener(
   "input",
   ()=>{
+
     query=search.value;
 
     clear.style.display=
@@ -2291,6 +2984,7 @@ search.addEventListener(
 clear.addEventListener(
   "click",
   ()=>{
+
     search.value="";
     query="";
 
@@ -2319,6 +3013,7 @@ categories.addEventListener(
         ".category"
       )
       .forEach(item=>{
+
         item.classList.remove(
           "active"
         );
@@ -2368,10 +3063,6 @@ installedButton.addEventListener(
   }
 );
 
-/* =========================
-   TELEGRAM
-========================= */
-
 function initTelegram(){
 
   if(
@@ -2388,12 +3079,14 @@ function initTelegram(){
       tg.expand();
 
       if(tg.setHeaderColor){
+
         tg.setHeaderColor(
           "#08090d"
         );
       }
 
       if(tg.setBackgroundColor){
+
         tg.setBackgroundColor(
           "#08090d"
         );
@@ -2405,10 +3098,6 @@ function initTelegram(){
     }
   }
 }
-
-/* =========================
-   ЗАПУСК
-========================= */
 
 restoreOrderLock();
 
