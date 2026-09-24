@@ -93,6 +93,11 @@
       margin-top: 14px;
     }
 
+    .order.new-order {
+      border-color: #6ee7a0;
+      box-shadow: 0 0 0 1px rgba(110, 231, 160, .15);
+    }
+
     .order-row {
       margin: 7px 0;
     }
@@ -117,6 +122,44 @@
       width: auto;
       margin-top: 0;
       margin-bottom: 15px;
+    }
+
+    .notification-button {
+      width: auto;
+      margin-top: 0;
+      margin-bottom: 15px;
+      background: #6ee7a0;
+      color: #07140c;
+      border: none;
+    }
+
+    .notification-button.enabled {
+      background: #27303b;
+      color: #fff;
+    }
+
+    .notification {
+      background: #18251e;
+      border: 1px solid #6ee7a0;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .notification.show {
+      display: block;
+    }
+
+    .notification-title {
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    .notification-text {
+      color: #c8d4cc;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     .actions {
@@ -186,6 +229,11 @@
       .actions {
         grid-template-columns: 1fr;
       }
+
+      .notification-button,
+      .refresh {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -249,6 +297,32 @@
 
 
     <div class="card">
+
+      <button
+        id="notificationButton"
+        class="notification-button"
+        type="button"
+      >
+        🔔 Включить уведомления
+      </button>
+
+      <div
+        id="notification"
+        class="notification"
+      >
+        <div
+          id="notificationTitle"
+          class="notification-title"
+        >
+          🛒 Новый заказ
+        </div>
+
+        <div
+          id="notificationText"
+          class="notification-text"
+        ></div>
+      </div>
+
 
       <button
         id="refreshButton"
@@ -333,6 +407,12 @@
 
   let allOrders = [];
 
+  let notificationInterval = null;
+
+  let notificationInitialized = false;
+
+  let knownOrderIds = new Set();
+
 
   const loginScreen =
     document.getElementById("loginScreen");
@@ -372,6 +452,18 @@
 
   const ordersCount =
     document.getElementById("ordersCount");
+
+  const notificationButton =
+    document.getElementById("notificationButton");
+
+  const notification =
+    document.getElementById("notification");
+
+  const notificationTitle =
+    document.getElementById("notificationTitle");
+
+  const notificationText =
+    document.getElementById("notificationText");
 
 
   // =========================
@@ -452,12 +544,313 @@
     "click",
     async () => {
 
+      stopNewOrderChecker();
+
       await supabaseClient.auth.signOut();
 
       showLogin();
 
     }
   );
+
+
+  // =========================
+  // УВЕДОМЛЕНИЯ
+  // =========================
+
+  notificationButton.addEventListener(
+    "click",
+    async () => {
+
+      if (
+        !("Notification" in window)
+      ) {
+
+        alert(
+          "Этот браузер не поддерживает уведомления."
+        );
+
+        return;
+      }
+
+
+      const permission =
+        await Notification.requestPermission();
+
+
+      if (
+        permission === "granted"
+      ) {
+
+        notificationButton.textContent =
+          "🔔 Уведомления включены";
+
+        notificationButton.classList.add(
+          "enabled"
+        );
+
+        showToastNotification(
+          "AppCore",
+          "Уведомления о новых заказах включены."
+        );
+
+      } else {
+
+        alert(
+          "Разрешение на уведомления не предоставлено."
+        );
+
+      }
+
+    }
+  );
+
+
+  function showToastNotification(
+    title,
+    message
+  ) {
+
+    if (
+      "Notification" in window &&
+      Notification.permission === "granted"
+    ) {
+
+      new Notification(
+        title,
+        {
+          body: message,
+          icon: "https://muradmegidaw-star.github.io/AppCore/favicon.ico"
+        }
+      );
+
+    }
+
+  }
+
+
+  function showNewOrderNotification(
+    order
+  ) {
+
+    const appsText =
+      Array.isArray(order.apps)
+        ? order.apps
+            .map(app => {
+
+              if (
+                typeof app === "string"
+              ) {
+                return app;
+              }
+
+              if (
+                app &&
+                app.name
+              ) {
+                return app.name;
+              }
+
+              return JSON.stringify(app);
+
+            })
+            .join(", ")
+
+        : String(
+            order.apps || ""
+          );
+
+
+    notificationTitle.textContent =
+      "🛒 Новый заказ " +
+      (order.order_number || "");
+
+
+    notificationText.innerHTML =
+      "<strong>Телефон:</strong> " +
+      escapeHtml(
+        order.client_phone || "—"
+      ) +
+      "<br>" +
+      "<strong>Приложения:</strong> " +
+      escapeHtml(appsText) +
+      "<br>" +
+      "<strong>Сумма:</strong> " +
+      Number(order.total || 0) +
+      " ₽";
+
+
+    notification.classList.add(
+      "show"
+    );
+
+
+    if (
+      "Notification" in window &&
+      Notification.permission === "granted"
+    ) {
+
+      new Notification(
+        "🛒 Новый заказ AppCore",
+        {
+          body:
+            (order.order_number || "Новый заказ") +
+            "\n" +
+            (order.client_phone || "") +
+            "\n" +
+            "Сумма: " +
+            Number(order.total || 0) +
+            " ₽"
+        }
+      );
+
+    }
+
+
+    setTimeout(
+      () => {
+        notification.classList.remove(
+          "show"
+        );
+      },
+      10000
+    );
+
+  }
+
+
+  // =========================
+  // ПРОВЕРКА НОВЫХ ЗАКАЗОВ
+  // =========================
+
+  function startNewOrderChecker() {
+
+    stopNewOrderChecker();
+
+
+    notificationInterval =
+      setInterval(
+        checkForNewOrders,
+        10000
+      );
+
+  }
+
+
+  function stopNewOrderChecker() {
+
+    if (
+      notificationInterval
+    ) {
+
+      clearInterval(
+        notificationInterval
+      );
+
+      notificationInterval = null;
+
+    }
+
+  }
+
+
+  async function checkForNewOrders() {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("orders")
+        .select("*")
+        .order("created_at", {
+          ascending: false
+        });
+
+
+    if (error) {
+      return;
+    }
+
+
+    const orders =
+      data || [];
+
+
+    if (
+      !notificationInitialized
+    ) {
+
+      orders.forEach(
+        order => {
+
+          if (order.id) {
+            knownOrderIds.add(
+              order.id
+            );
+          }
+
+        }
+      );
+
+
+      notificationInitialized =
+        true;
+
+      return;
+    }
+
+
+    const newOrders =
+      orders.filter(
+        order =>
+          order.id &&
+          !knownOrderIds.has(
+            order.id
+          )
+      );
+
+
+    orders.forEach(
+      order => {
+
+        if (order.id) {
+          knownOrderIds.add(
+            order.id
+          );
+        }
+
+      }
+    );
+
+
+    if (
+      newOrders.length === 0
+    ) {
+      return;
+    }
+
+
+    newOrders
+      .reverse()
+      .forEach(
+        order => {
+
+          showNewOrderNotification(
+            order
+          );
+
+        }
+      );
+
+
+    allOrders =
+      orders;
+
+
+    renderFilteredOrders();
+
+  }
 
 
   // =========================
@@ -479,7 +872,9 @@
       session.user
     ) {
 
-      showAdmin(session.user);
+      showAdmin(
+        session.user
+      );
 
     } else {
 
@@ -492,9 +887,15 @@
 
   function showLogin() {
 
-    loginScreen.classList.remove("hidden");
+    stopNewOrderChecker();
 
-    adminScreen.classList.add("hidden");
+    loginScreen.classList.remove(
+      "hidden"
+    );
+
+    adminScreen.classList.add(
+      "hidden"
+    );
 
     emailInput.value = "";
 
@@ -505,15 +906,27 @@
 
   function showAdmin(user) {
 
-    loginScreen.classList.add("hidden");
+    loginScreen.classList.add(
+      "hidden"
+    );
 
-    adminScreen.classList.remove("hidden");
+    adminScreen.classList.remove(
+      "hidden"
+    );
 
     userEmail.textContent =
       "Вы вошли как: " +
       user.email;
 
     loadOrders();
+
+    notificationInitialized =
+      false;
+
+    knownOrderIds =
+      new Set();
+
+    startNewOrderChecker();
 
   }
 
@@ -579,37 +992,39 @@
 
 
     const filtered =
-      allOrders.filter(order => {
+      allOrders.filter(
+        order => {
 
-        const orderNumber =
-          String(
-            order.order_number || ""
-          ).toLowerCase();
-
-
-        const phone =
-          String(
-            order.client_phone || ""
-          ).toLowerCase();
+          const orderNumber =
+            String(
+              order.order_number || ""
+            ).toLowerCase();
 
 
-        const matchesSearch =
-          !search ||
-          orderNumber.includes(search) ||
-          phone.includes(search);
+          const phone =
+            String(
+              order.client_phone || ""
+            ).toLowerCase();
 
 
-        const matchesStatus =
-          selectedStatus === "all" ||
-          order.status === selectedStatus;
+          const matchesSearch =
+            !search ||
+            orderNumber.includes(search) ||
+            phone.includes(search);
 
 
-        return (
-          matchesSearch &&
-          matchesStatus
-        );
+          const matchesStatus =
+            selectedStatus === "all" ||
+            order.status === selectedStatus;
 
-      });
+
+          return (
+            matchesSearch &&
+            matchesStatus
+          );
+
+        }
+      );
 
 
     ordersCount.textContent =
@@ -620,7 +1035,9 @@
     ordersContainer.innerHTML = "";
 
 
-    if (filtered.length === 0) {
+    if (
+      filtered.length === 0
+    ) {
 
       ordersContainer.innerHTML =
         '<div class="loading">' +
@@ -631,11 +1048,15 @@
     }
 
 
-    filtered.forEach(order => {
+    filtered.forEach(
+      order => {
 
-      renderOrder(order);
+        renderOrder(
+          order
+        );
 
-    });
+      }
+    );
 
   }
 
@@ -644,43 +1065,65 @@
   // ОТОБРАЖЕНИЕ ЗАКАЗА
   // =========================
 
-  function renderOrder(order) {
+  function renderOrder(
+    order
+  ) {
 
     const element =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
 
 
-    element.className = "order";
+    element.className =
+      "order";
 
 
-    if (order.status === "cancelled") {
-      element.classList.add("cancelled");
+    if (
+      order.status ===
+      "cancelled"
+    ) {
+
+      element.classList.add(
+        "cancelled"
+      );
+
     }
 
 
     const appsText =
       Array.isArray(order.apps)
+
         ? order.apps
-            .map(app => {
+            .map(
+              app => {
 
-              if (
-                typeof app === "string"
-              ) {
-                return app;
+                if (
+                  typeof app ===
+                  "string"
+                ) {
+
+                  return app;
+
+                }
+
+
+                if (
+                  app &&
+                  app.name
+                ) {
+
+                  return app.name;
+
+                }
+
+
+                return JSON.stringify(
+                  app
+                );
+
               }
-
-
-              if (
-                app &&
-                app.name
-              ) {
-                return app.name;
-              }
-
-
-              return JSON.stringify(app);
-
-            })
+            )
             .join(", ")
 
         : JSON.stringify(
@@ -692,7 +1135,9 @@
       order.created_at
         ? new Date(
             order.created_at
-          ).toLocaleString("ru-RU")
+          ).toLocaleString(
+            "ru-RU"
+          )
         : "—";
 
 
@@ -701,7 +1146,8 @@
       <div class="order-number">
         Заказ:
         ${escapeHtml(
-          order.order_number || "—"
+          order.order_number ||
+          "—"
         )}
       </div>
 
@@ -709,7 +1155,8 @@
       <div class="order-row">
         <strong>Телефон:</strong>
         ${escapeHtml(
-          order.client_phone || "—"
+          order.client_phone ||
+          "—"
         )}
       </div>
 
@@ -718,26 +1165,34 @@
         <strong>Приложения:</strong>
 
         <div class="apps">
-          ${escapeHtml(appsText)}
+          ${escapeHtml(
+            appsText
+          )}
         </div>
       </div>
 
 
       <div class="order-row">
         <strong>Сумма:</strong>
-        ${Number(order.total || 0)} ₽
+        ${Number(
+          order.total || 0
+        )} ₽
       </div>
 
 
       <div class="order-row">
         <strong>Скидка:</strong>
-        ${Number(order.discount || 0)} ₽
+        ${Number(
+          order.discount || 0
+        )} ₽
       </div>
 
 
       <div class="order-row">
         <strong>Дата:</strong>
-        ${escapeHtml(date)}
+        ${escapeHtml(
+          date
+        )}
       </div>
 
 
@@ -746,7 +1201,8 @@
         <option
           value="awaiting_review"
           ${
-            order.status === "awaiting_review"
+            order.status ===
+            "awaiting_review"
               ? "selected"
               : ""
           }
@@ -758,7 +1214,8 @@
         <option
           value="paid"
           ${
-            order.status === "paid"
+            order.status ===
+            "paid"
               ? "selected"
               : ""
           }
@@ -770,7 +1227,8 @@
         <option
           value="completed"
           ${
-            order.status === "completed"
+            order.status ===
+            "completed"
               ? "selected"
               : ""
           }
@@ -782,7 +1240,8 @@
         <option
           value="cancelled"
           ${
-            order.status === "cancelled"
+            order.status ===
+            "cancelled"
               ? "selected"
               : ""
           }
@@ -794,9 +1253,12 @@
 
 
       ${
-        order.status !== "paid" &&
-        order.status !== "completed" &&
-        order.status !== "cancelled"
+        order.status !==
+          "paid" &&
+        order.status !==
+          "completed" &&
+        order.status !==
+          "cancelled"
 
           ? `
 
@@ -818,7 +1280,8 @@
 
 
       ${
-        order.status === "paid"
+        order.status ===
+        "paid"
 
           ? `
 
@@ -840,8 +1303,10 @@
 
 
       ${
-        order.status !== "cancelled" &&
-        order.status !== "completed"
+        order.status !==
+          "cancelled" &&
+        order.status !==
+          "completed"
 
           ? `
 
@@ -882,7 +1347,8 @@
           order.status;
 
 
-        select.disabled = true;
+        select.disabled =
+          true;
 
 
         const {
@@ -891,12 +1357,17 @@
           await supabaseClient
             .from("orders")
             .update({
-              status: newStatus
+              status:
+                newStatus
             })
-            .eq("id", order.id);
+            .eq(
+              "id",
+              order.id
+            );
 
 
-        select.disabled = false;
+        select.disabled =
+          false;
 
 
         if (error) {
@@ -926,7 +1397,7 @@
 
 
     // =========================
-    // ОПЛАТА ПОДТВЕРЖДЕНА
+    // ОПЛАТА
     // =========================
 
     const paidButton =
@@ -954,7 +1425,9 @@
           }
 
 
-          paidButton.disabled = true;
+          paidButton.disabled =
+            true;
+
 
           paidButton.textContent =
             "Сохранение...";
@@ -966,14 +1439,20 @@
             await supabaseClient
               .from("orders")
               .update({
-                status: "paid"
+                status:
+                  "paid"
               })
-              .eq("id", order.id);
+              .eq(
+                "id",
+                order.id
+              );
 
 
           if (error) {
 
-            paidButton.disabled = false;
+            paidButton.disabled =
+              false;
+
 
             paidButton.textContent =
               "💳 Оплата подтверждена";
@@ -983,6 +1462,7 @@
               "Не удалось подтвердить оплату:\n" +
               error.message
             );
+
 
             return;
           }
@@ -1029,7 +1509,9 @@
           }
 
 
-          completeButton.disabled = true;
+          completeButton.disabled =
+            true;
+
 
           completeButton.textContent =
             "Сохранение...";
@@ -1041,14 +1523,20 @@
             await supabaseClient
               .from("orders")
               .update({
-                status: "completed"
+                status:
+                  "completed"
               })
-              .eq("id", order.id);
+              .eq(
+                "id",
+                order.id
+              );
 
 
           if (error) {
 
-            completeButton.disabled = false;
+            completeButton.disabled =
+              false;
+
 
             completeButton.textContent =
               "✅ Заказ выполнен";
@@ -1058,6 +1546,7 @@
               "Не удалось завершить заказ:\n" +
               error.message
             );
+
 
             return;
           }
@@ -1104,7 +1593,9 @@
           }
 
 
-          cancelButton.disabled = true;
+          cancelButton.disabled =
+            true;
+
 
           cancelButton.textContent =
             "Отмена...";
@@ -1116,14 +1607,20 @@
             await supabaseClient
               .from("orders")
               .update({
-                status: "cancelled"
+                status:
+                  "cancelled"
               })
-              .eq("id", order.id);
+              .eq(
+                "id",
+                order.id
+              );
 
 
           if (error) {
 
-            cancelButton.disabled = false;
+            cancelButton.disabled =
+              false;
+
 
             cancelButton.textContent =
               "Отменить заказ";
@@ -1133,6 +1630,7 @@
               "Не удалось отменить заказ:\n" +
               error.message
             );
+
 
             return;
           }
@@ -1191,14 +1689,33 @@
   // ЗАЩИТА HTML
   // =========================
 
-  function escapeHtml(value) {
+  function escapeHtml(
+    value
+  ) {
 
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
+    return String(
+      value ?? ""
+    )
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
 
   }
 
