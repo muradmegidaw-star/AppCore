@@ -870,20 +870,90 @@ h1 {
   opacity: .55;
 }
 
+/* =========================
+   INSTRUCTIONS
+========================= */
+
 .instructions-panel {
   display: none;
   margin-top: 13px;
-  padding: 14px;
-  border-radius: 14px;
-  background: rgba(118,83,255,.08);
-  border: 1px solid rgba(118,83,255,.16);
-  color: #b9bdc8;
-  font-size: 12px;
-  line-height: 1.5;
+  padding: 15px;
+  border-radius: 16px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(118,83,255,.10),
+      rgba(0,180,255,.05)
+    );
+  border: 1px solid rgba(118,83,255,.18);
 }
 
 .instructions-panel.show {
   display: block;
+}
+
+.instruction-progress {
+  color: #8d93a3;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.instruction-title {
+  margin-top: 6px;
+  font-size: 16px;
+  font-weight: 850;
+}
+
+.instruction-text {
+  margin-top: 9px;
+  color: #b9bdc8;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.instruction-text strong {
+  color: #fff;
+}
+
+.instruction-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.instruction-button {
+  flex: 1;
+  min-height: 43px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.instruction-button.primary {
+  background: linear-gradient(135deg,#ffffff,#e9e9ee);
+  color: #08090d;
+}
+
+.instruction-button:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+.whatsapp-button {
+  width: 100%;
+  min-height: 45px;
+  margin-top: 13px;
+  border: 0;
+  border-radius: 13px;
+  background: linear-gradient(135deg,#25d366,#16b957);
+  color: #06110a;
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
 }
 
 .cancelled-panel {
@@ -1045,6 +1115,7 @@ const supabaseClient =
   </header>
 
   <div id="statusPanel" class="status-panel">
+
     <div class="status-title" id="statusTitle">
       ⏳ Заказ принят
     </div>
@@ -1054,9 +1125,11 @@ const supabaseClient =
     </div>
 
     <div class="order-number-display" id="orderNumberDisplay"></div>
+
   </div>
 
   <div id="cancelledPanel" class="cancelled-panel">
+
     <div class="status-title">
       ❌ Заказ отменён
     </div>
@@ -1066,6 +1139,7 @@ const supabaseClient =
     </div>
 
     <div class="order-number-display" id="cancelledOrderNumber"></div>
+
   </div>
 
   <div id="installPanel" class="install-panel">
@@ -1086,15 +1160,60 @@ const supabaseClient =
       class="installed-button"
       type="button"
     >
-      ✅ Все приложения установлены
+      ✅ Я установил все приложения
     </button>
 
     <div
       id="instructionsPanel"
       class="instructions-panel"
     >
-      ✅ Отлично! Все приложения отмечены как установленные.
-      Инструкция по активации и настройке приложений появится здесь следующим этапом.
+
+      <div
+        id="instructionProgress"
+        class="instruction-progress"
+      >
+        Шаг 1 из 7
+      </div>
+
+      <div
+        id="instructionTitle"
+        class="instruction-title"
+      >
+        Настройки
+      </div>
+
+      <div
+        id="instructionText"
+        class="instruction-text"
+      ></div>
+
+      <button
+        id="instructionWhatsapp"
+        class="whatsapp-button"
+        type="button"
+        style="display:none;"
+      ></button>
+
+      <div class="instruction-actions">
+
+        <button
+          id="instructionBack"
+          class="instruction-button"
+          type="button"
+        >
+          ← Назад
+        </button>
+
+        <button
+          id="instructionNext"
+          class="instruction-button primary"
+          type="button"
+        >
+          Далее →
+        </button>
+
+      </div>
+
     </div>
 
   </div>
@@ -1340,6 +1459,8 @@ const PAYMENT_DETAILS = {
   card: "+79289480706",
   bank: "Т-Банк"
 };
+
+const WHATSAPP_NUMBER = "79289480706";
 
 const apps = [
 
@@ -1607,6 +1728,8 @@ let isCreatingOrder = false;
 let statusTimer = null;
 let lockTimer = null;
 
+let instructionStep = 1;
+
 const appList =
   document.getElementById("appList");
 
@@ -1685,6 +1808,24 @@ const installedButton =
 const instructionsPanel =
   document.getElementById("instructionsPanel");
 
+const instructionProgress =
+  document.getElementById("instructionProgress");
+
+const instructionTitle =
+  document.getElementById("instructionTitle");
+
+const instructionText =
+  document.getElementById("instructionText");
+
+const instructionWhatsapp =
+  document.getElementById("instructionWhatsapp");
+
+const instructionBack =
+  document.getElementById("instructionBack");
+
+const instructionNext =
+  document.getElementById("instructionNext");
+
 const cancelledPanel =
   document.getElementById("cancelledPanel");
 
@@ -1692,16 +1833,19 @@ const cancelledOrderNumber =
   document.getElementById("cancelledOrderNumber");
 
 function getDiscount(count) {
+
   if (count >= 5) return 30;
   if (count === 4) return 9;
   if (count === 3) return 6;
   if (count === 2) return 3;
+
   return 0;
 }
 
 function calculatePrice(count) {
 
-  const original = count * PRICE;
+  const original =
+    count * PRICE;
 
   const discountPercent =
     getDiscount(count);
@@ -1728,11 +1872,14 @@ function money(value) {
 
 function updatePrice() {
 
-  const count = selected.size;
+  const count =
+    selected.size;
 
   if (count === 0) {
 
-    pricePanel.classList.remove("visible");
+    pricePanel.classList.remove(
+      "visible"
+    );
 
     countEl.textContent = "0";
     originalEl.textContent = "0 ₽";
@@ -1740,6 +1887,7 @@ function updatePrice() {
     totalEl.textContent = "0 ₽";
 
     continueButton.disabled = true;
+
     continueButton.textContent =
       "Выберите приложение";
 
@@ -1749,9 +1897,12 @@ function updatePrice() {
   const price =
     calculatePrice(count);
 
-  pricePanel.classList.add("visible");
+  pricePanel.classList.add(
+    "visible"
+  );
 
-  countEl.textContent = count;
+  countEl.textContent =
+    count;
 
   originalEl.textContent =
     money(price.original);
@@ -1762,7 +1913,8 @@ function updatePrice() {
   totalEl.textContent =
     money(price.total);
 
-  continueButton.disabled = false;
+  continueButton.disabled =
+    false;
 
   continueButton.textContent =
     "Продолжить · " +
@@ -1773,11 +1925,15 @@ function initials(name) {
 
   const words =
     name
-      .replace(/[^а-яА-Яa-zA-Z0-9\s]/g, "")
+      .replace(
+        /[^а-яА-Яa-zA-Z0-9\s]/g,
+        ""
+      )
       .trim()
       .split(/\s+/);
 
   if (words.length >= 2) {
+
     return (
       words[0][0] +
       words[1][0]
@@ -1785,7 +1941,10 @@ function initials(name) {
   }
 
   return name
-    .replace(/[^а-яА-Яa-zA-Z0-9]/g, "")
+    .replace(
+      /[^а-яА-Яa-zA-Z0-9]/g,
+      ""
+    )
     .substring(0, 2)
     .toUpperCase();
 }
@@ -1804,8 +1963,12 @@ function render() {
 
       const searchOk =
         !searchText ||
-        app.name.toLowerCase().includes(searchText) ||
-        app.type.toLowerCase().includes(searchText);
+        app.name
+          .toLowerCase()
+          .includes(searchText) ||
+        app.type
+          .toLowerCase()
+          .includes(searchText);
 
       return categoryOk && searchOk;
     });
@@ -1813,7 +1976,9 @@ function render() {
   appList.innerHTML = "";
 
   if (filtered.length === 0) {
+
     empty.classList.add("show");
+
     return;
   }
 
@@ -1822,17 +1987,22 @@ function render() {
   const grid =
     document.createElement("div");
 
-  grid.className = "grid";
+  grid.className =
+    "grid";
 
   filtered.forEach(app => {
 
     const card =
       document.createElement("div");
 
-    card.className = "app-card";
+    card.className =
+      "app-card";
 
     if (selected.has(app.id)) {
-      card.classList.add("selected");
+
+      card.classList.add(
+        "selected"
+      );
     }
 
     card.style.setProperty(
@@ -1848,38 +2018,53 @@ function render() {
     const check =
       document.createElement("div");
 
-    check.className = "check";
-    check.textContent = "✓";
+    check.className =
+      "check";
+
+    check.textContent =
+      "✓";
 
     const icon =
       document.createElement("div");
 
-    icon.className = "app-icon";
+    icon.className =
+      "app-icon";
 
     const fallback =
       document.createElement("span");
 
-    fallback.className = "fallback";
+    fallback.className =
+      "fallback";
+
     fallback.textContent =
       initials(app.name);
 
-    icon.appendChild(fallback);
+    icon.appendChild(
+      fallback
+    );
 
     if (app.logo) {
 
       const img =
         document.createElement("img");
 
-      img.src = app.logo;
+      img.src =
+        app.logo;
+
       img.alt = "";
 
       img.onload = () => {
-        fallback.style.display = "none";
+
+        fallback.style.display =
+          "none";
       };
 
       img.onerror = () => {
+
         img.remove();
-        fallback.style.display = "block";
+
+        fallback.style.display =
+          "block";
       };
 
       icon.appendChild(img);
@@ -1888,38 +2073,52 @@ function render() {
     const name =
       document.createElement("div");
 
-    name.className = "app-name";
-    name.textContent = app.name;
+    name.className =
+      "app-name";
+
+    name.textContent =
+      app.name;
 
     const type =
       document.createElement("div");
 
-    type.className = "app-type";
-    type.textContent = app.type;
+    type.className =
+      "app-type";
+
+    type.textContent =
+      app.type;
 
     card.appendChild(check);
     card.appendChild(icon);
     card.appendChild(name);
     card.appendChild(type);
 
-    card.addEventListener("click", () => {
+    card.addEventListener(
+      "click",
+      () => {
 
-      if (currentOrder) {
-        showToast(
-          "Сначала завершите текущий заказ."
-        );
-        return;
+        if (currentOrder) {
+
+          showToast(
+            "Сначала завершите текущий заказ."
+          );
+
+          return;
+        }
+
+        if (selected.has(app.id)) {
+
+          selected.delete(app.id);
+
+        } else {
+
+          selected.add(app.id);
+        }
+
+        render();
+        updatePrice();
       }
-
-      if (selected.has(app.id)) {
-        selected.delete(app.id);
-      } else {
-        selected.add(app.id);
-      }
-
-      render();
-      updatePrice();
-    });
+    );
 
     grid.appendChild(card);
   });
@@ -1931,7 +2130,8 @@ search.addEventListener(
   "input",
   () => {
 
-    query = search.value;
+    query =
+      search.value;
 
     clear.style.display =
       query.length > 0
@@ -1949,7 +2149,8 @@ clear.addEventListener(
     search.value = "";
     query = "";
 
-    clear.style.display = "none";
+    clear.style.display =
+      "none";
 
     search.focus();
 
@@ -1962,17 +2163,26 @@ categories.addEventListener(
   event => {
 
     const button =
-      event.target.closest(".category");
+      event.target.closest(
+        ".category"
+      );
 
     if (!button) return;
 
     document
-      .querySelectorAll(".category")
+      .querySelectorAll(
+        ".category"
+      )
       .forEach(item => {
-        item.classList.remove("active");
+
+        item.classList.remove(
+          "active"
+        );
       });
 
-    button.classList.add("active");
+    button.classList.add(
+      "active"
+    );
 
     currentCategory =
       button.dataset.category;
@@ -1985,33 +2195,53 @@ let toastTimer;
 
 function showToast(message) {
 
-  toast.textContent = message;
+  toast.textContent =
+    message;
 
-  toast.classList.add("show");
+  toast.classList.add(
+    "show"
+  );
 
   clearTimeout(toastTimer);
 
   toastTimer =
-    setTimeout(() => {
-      toast.classList.remove("show");
-    }, 3000);
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      3000
+    );
 }
 
 function generateOrderNumber() {
 
-  const now = new Date();
+  const now =
+    new Date();
 
   const year =
-    String(now.getFullYear()).slice(-2);
+    String(
+      now.getFullYear()
+    ).slice(-2);
 
   const month =
-    String(now.getMonth() + 1).padStart(2, "0");
+    String(
+      now.getMonth() + 1
+    ).padStart(2, "0");
 
   const day =
-    String(now.getDate()).padStart(2, "0");
+    String(
+      now.getDate()
+    ).padStart(2, "0");
 
   const random =
-    Math.floor(1000 + Math.random() * 9000);
+    Math.floor(
+      1000 +
+      Math.random() * 9000
+    );
 
   return `AC-${year}${month}${day}-${random}`;
 }
@@ -2028,8 +2258,10 @@ function isValidPhone(phone) {
   const digits =
     phone.replace(/\D/g, "");
 
-  return digits.length >= 10 &&
-         digits.length <= 15;
+  return (
+    digits.length >= 10 &&
+    digits.length <= 15
+  );
 }
 
 /* =========================
@@ -2064,7 +2296,8 @@ function getOrderLock() {
     }
 
     if (
-      Date.now() - data.createdAt >=
+      Date.now() -
+      data.createdAt >=
       ORDER_LOCK_TIME
     ) {
 
@@ -2152,7 +2385,7 @@ function restoreOrderLock() {
     getOrderLock();
 
   if (!lock) {
-    currentOrder = null;
+
     return;
   }
 
@@ -2160,27 +2393,43 @@ function restoreOrderLock() {
     lock.order;
 
   if (lockTimer) {
-    clearTimeout(lockTimer);
+
+    clearTimeout(
+      lockTimer
+    );
   }
 
   const remaining =
     ORDER_LOCK_TIME -
-    (Date.now() - lock.createdAt);
+    (
+      Date.now() -
+      lock.createdAt
+    );
 
   lockTimer =
-    setTimeout(() => {
+    setTimeout(
+      () => {
 
-      localStorage.removeItem(
-        ORDER_LOCK_KEY
-      );
+        localStorage.removeItem(
+          ORDER_LOCK_KEY
+        );
 
-      currentOrder = null;
+        /*
+          currentOrder специально НЕ удаляем.
+          Заказ продолжает существовать,
+          а клиент продолжает получать его статус.
+        */
 
-      showToast(
-        "Можно создать новый заказ"
-      );
+        showToast(
+          "Ограничение на новый заказ снято"
+        );
 
-    }, Math.max(0, remaining));
+      },
+      Math.max(
+        0,
+        remaining
+      )
+    );
 }
 
 function openPaymentModal() {
@@ -2213,7 +2462,8 @@ function openPaymentModal() {
       selectedList.length
     );
 
-  selectedApps.innerHTML = "";
+  selectedApps.innerHTML =
+    "";
 
   selectedList.forEach(app => {
 
@@ -2250,25 +2500,34 @@ function openPaymentModal() {
   paymentTotal.textContent =
     money(price.total);
 
-  paymentOverlay.classList.add("show");
+  paymentOverlay.classList.add(
+    "show"
+  );
 
   document.body.style.overflow =
     "hidden";
 
-  setTimeout(() => {
+  setTimeout(
+    () => {
 
-    if (phoneInput) {
-      phoneInput.focus();
-    }
+      if (phoneInput) {
 
-  }, 250);
+        phoneInput.focus();
+      }
+
+    },
+    250
+  );
 }
 
 function closePaymentModal() {
 
-  paymentOverlay.classList.remove("show");
+  paymentOverlay.classList.remove(
+    "show"
+  );
 
-  document.body.style.overflow = "";
+  document.body.style.overflow =
+    "";
 }
 
 continueButton.addEventListener(
@@ -2285,7 +2544,11 @@ paymentOverlay.addEventListener(
   "click",
   event => {
 
-    if (event.target === paymentOverlay) {
+    if (
+      event.target ===
+      paymentOverlay
+    ) {
+
       closePaymentModal();
     }
 
@@ -2297,6 +2560,7 @@ document.addEventListener(
   event => {
 
     if (event.key === "Escape") {
+
       closePaymentModal();
     }
 
@@ -2304,7 +2568,9 @@ document.addEventListener(
 );
 
 document
-  .querySelectorAll(".copy-button")
+  .querySelectorAll(
+    ".copy-button"
+  )
   .forEach(button => {
 
     button.addEventListener(
@@ -2322,11 +2588,18 @@ document
         } catch (error) {
 
           const textarea =
-            document.createElement("textarea");
+            document.createElement(
+              "textarea"
+            );
 
-          textarea.value = value;
-          textarea.style.position = "fixed";
-          textarea.style.opacity = "0";
+          textarea.value =
+            value;
+
+          textarea.style.position =
+            "fixed";
+
+          textarea.style.opacity =
+            "0";
 
           document.body.appendChild(
             textarea
@@ -2335,7 +2608,11 @@ document
           textarea.select();
 
           try {
-            document.execCommand("copy");
+
+            document.execCommand(
+              "copy"
+            );
+
           } catch (e) {}
 
           textarea.remove();
@@ -2347,9 +2624,15 @@ document
         button.textContent =
           "Скопировано";
 
-        setTimeout(() => {
-          button.textContent = oldText;
-        }, 1500);
+        setTimeout(
+          () => {
+
+            button.textContent =
+              oldText;
+
+          },
+          1500
+        );
 
       }
     );
@@ -2382,7 +2665,9 @@ async function createOrder() {
     phoneInput.value;
 
   const phone =
-    normalizePhone(rawPhone);
+    normalizePhone(
+      rawPhone
+    );
 
   if (!isValidPhone(phone)) {
 
@@ -2426,36 +2711,46 @@ async function createOrder() {
       phone,
 
     app_ids:
-      selectedList.map(app =>
-        app.id
+      selectedList.map(
+        app => app.id
       ),
 
     apps:
-      selectedList.map(app => ({
-        id: app.id,
-        name: app.name,
-        type: app.type
-      })),
+      selectedList.map(
+        app => ({
+          id: app.id,
+          name: app.name,
+          type: app.type
+        })
+      ),
 
     original:
-      Math.round(price.original),
+      Math.round(
+        price.original
+      ),
 
     discount:
-      Math.round(price.discountAmount),
+      Math.round(
+        price.discountAmount
+      ),
 
     free_apps:
       0,
 
     total:
-      Math.round(price.total),
+      Math.round(
+        price.total
+      ),
 
     status:
       "awaiting_review"
   };
 
-  isCreatingOrder = true;
+  isCreatingOrder =
+    true;
 
-  paymentDone.disabled = true;
+  paymentDone.disabled =
+    true;
 
   paymentDone.textContent =
     "Сохраняем заказ…";
@@ -2465,7 +2760,9 @@ async function createOrder() {
     const { error } =
       await supabaseClient
         .from("orders")
-        .insert([orderData]);
+        .insert([
+          orderData
+        ]);
 
     if (error) {
 
@@ -2476,7 +2773,10 @@ async function createOrder() {
 
       showToast(
         "Ошибка Supabase: " +
-        (error.message || "неизвестная ошибка")
+        (
+          error.message ||
+          "неизвестная ошибка"
+        )
       );
 
       return false;
@@ -2485,8 +2785,13 @@ async function createOrder() {
     currentOrder =
       orderData;
 
-    saveOrderLock(orderData);
-    saveClientOrder(orderData);
+    saveOrderLock(
+      orderData
+    );
+
+    saveClientOrder(
+      orderData
+    );
 
     closePaymentModal();
 
@@ -2495,7 +2800,9 @@ async function createOrder() {
     render();
     updatePrice();
 
-    showOrderStatus(orderData);
+    showOrderStatus(
+      orderData
+    );
 
     startStatusChecking();
 
@@ -2522,9 +2829,11 @@ async function createOrder() {
 
   } finally {
 
-    isCreatingOrder = false;
+    isCreatingOrder =
+      false;
 
-    paymentDone.disabled = false;
+    paymentDone.disabled =
+      false;
 
     paymentDone.textContent =
       "Я оплатил";
@@ -2556,10 +2865,17 @@ paymentDone.addEventListener(
 
 function showOrderStatus(order) {
 
-  statusPanel.classList.add("show");
+  statusPanel.classList.add(
+    "show"
+  );
 
-  installPanel.classList.remove("show");
-  cancelledPanel.classList.remove("show");
+  installPanel.classList.remove(
+    "show"
+  );
+
+  cancelledPanel.classList.remove(
+    "show"
+  );
 
   statusTitle.textContent =
     "⏳ Заказ принят";
@@ -2574,73 +2890,98 @@ function showOrderStatus(order) {
 
 function renderInstallPanel(order) {
 
-  statusPanel.classList.remove("show");
-  cancelledPanel.classList.remove("show");
+  statusPanel.classList.remove(
+    "show"
+  );
 
-  installPanel.classList.add("show");
+  cancelledPanel.classList.remove(
+    "show"
+  );
 
-  installList.innerHTML = "";
+  installPanel.classList.add(
+    "show"
+  );
+
+  installList.innerHTML =
+    "";
 
   const orderedApps =
     Array.isArray(order.apps)
       ? order.apps
       : [];
 
-  orderedApps.forEach(orderApp => {
+  orderedApps.forEach(
+    orderApp => {
 
-    const app =
-      apps.find(item =>
-        item.id === orderApp.id
-      );
+      const app =
+        apps.find(
+          item =>
+            item.id ===
+            orderApp.id
+        );
 
-    if (!app) return;
+      if (!app) return;
 
-    const item =
-      document.createElement("div");
+      const item =
+        document.createElement(
+          "div"
+        );
 
-    item.className =
-      "install-item";
+      item.className =
+        "install-item";
 
-    const name =
-      document.createElement("div");
+      const name =
+        document.createElement(
+          "div"
+        );
 
-    name.className =
-      "install-name";
+      name.className =
+        "install-name";
 
-    name.textContent =
-      app.name;
+      name.textContent =
+        app.name;
 
-    const link =
-      document.createElement("a");
+      const link =
+        document.createElement(
+          "a"
+        );
 
-    link.className =
-      "install-button";
+      link.className =
+        "install-button";
 
-    link.href =
-      app.install;
+      link.href =
+        app.install;
 
-    link.target =
-      "_blank";
+      link.target =
+        "_blank";
 
-    link.rel =
-      "noopener noreferrer";
+      link.rel =
+        "noopener noreferrer";
 
-    link.textContent =
-      "Установить";
+      link.textContent =
+        "Установить";
 
-    item.appendChild(name);
-    item.appendChild(link);
+      item.appendChild(name);
+      item.appendChild(link);
 
-    installList.appendChild(item);
-  });
+      installList.appendChild(item);
+    }
+  );
 }
 
 function renderCancelled(order) {
 
-  statusPanel.classList.remove("show");
-  installPanel.classList.remove("show");
+  statusPanel.classList.remove(
+    "show"
+  );
 
-  cancelledPanel.classList.add("show");
+  installPanel.classList.remove(
+    "show"
+  );
+
+  cancelledPanel.classList.add(
+    "show"
+  );
 
   cancelledOrderNumber.textContent =
     "Заказ: " +
@@ -2678,7 +3019,11 @@ async function checkOrderStatus() {
       return;
     }
 
-    if (!data || !data.length) {
+    if (
+      !data ||
+      !data.length
+    ) {
+
       return;
     }
 
@@ -2687,10 +3032,13 @@ async function checkOrderStatus() {
 
     const updatedOrder = {
       ...order,
+
       status:
         serverOrder.status,
+
       apps:
-        serverOrder.apps || order.apps
+        serverOrder.apps ||
+        order.apps
     };
 
     saveClientOrder(
@@ -2723,6 +3071,14 @@ async function checkOrderStatus() {
         updatedOrder
       );
 
+      if (
+        instructionStep > 7
+      ) {
+
+        instructionStep =
+          7;
+      }
+
       return;
     }
 
@@ -2748,7 +3104,10 @@ async function checkOrderStatus() {
 function startStatusChecking() {
 
   if (statusTimer) {
-    clearInterval(statusTimer);
+
+    clearInterval(
+      statusTimer
+    );
   }
 
   checkOrderStatus();
@@ -2759,6 +3118,417 @@ function startStatusChecking() {
       7000
     );
 }
+
+/* =========================
+   WHATSAPP
+========================= */
+
+function getOrderAppsText(order) {
+
+  if (
+    !order ||
+    !Array.isArray(order.apps)
+  ) {
+
+    return "—";
+  }
+
+  return order.apps
+    .map(app => app.name)
+    .join(", ");
+}
+
+function getWhatsappUrl(message) {
+
+  return (
+    "https://wa.me/" +
+    WHATSAPP_NUMBER +
+    "?text=" +
+    encodeURIComponent(message)
+  );
+}
+
+function openWhatsapp(message) {
+
+  const url =
+    getWhatsappUrl(
+      message
+    );
+
+  window.open(
+    url,
+    "_blank",
+    "noopener,noreferrer"
+  );
+}
+
+function buildLoginMessage() {
+
+  const order =
+    currentOrder ||
+    getClientOrder();
+
+  if (!order) return "";
+
+  return [
+    "Здравствуйте!",
+    "",
+    "Мне нужны данные для входа.",
+    "",
+    "Номер заказа: " +
+      order.order_number,
+    "",
+    "Телефон клиента: " +
+      order.client_phone,
+    "",
+    "Приложения: " +
+      getOrderAppsText(order),
+    "",
+    "Сумма заказа: " +
+      money(order.total),
+    "",
+    "Статус: " +
+      getStatusText(order.status),
+    "",
+    "Отправьте, пожалуйста, данные для входа"
+  ].join("\n");
+}
+
+function buildCodeMessage() {
+
+  const order =
+    currentOrder ||
+    getClientOrder();
+
+  if (!order) return "";
+
+  return [
+    "код",
+    "",
+    "Номер заказа: " +
+      order.order_number,
+    "",
+    "Телефон клиента: " +
+      order.client_phone,
+    "",
+    "Приложения: " +
+      getOrderAppsText(order),
+    "",
+    "Сумма заказа: " +
+      money(order.total),
+    "",
+    "Статус: " +
+      getStatusText(order.status)
+  ].join("\n");
+}
+
+function getStatusText(status) {
+
+  if (
+    status ===
+    "paid"
+  ) {
+
+    return "Оплата подтверждена";
+  }
+
+  if (
+    status ===
+    "completed"
+  ) {
+
+    return "Заказ выполнен";
+  }
+
+  if (
+    status ===
+    "cancelled"
+  ) {
+
+    return "Заказ отменён";
+  }
+
+  return "Ожидает проверки оплаты";
+}
+
+/* =========================
+   ИНСТРУКЦИЯ
+========================= */
+
+const instructionSteps = [
+
+  {
+    title:
+      "Настройки",
+
+    text:
+      "Зайди в <strong>Настройки</strong> → нажми на своё имя в самом верху.",
+
+    whatsapp:
+      null
+  },
+
+  {
+    title:
+      "Контент и покупки",
+
+    text:
+      "Нажми <strong>«Контент и покупки»</strong> → выбери <strong>«Выйти»</strong> и подтверди.",
+
+    whatsapp:
+      null
+  },
+
+  {
+    title:
+      "Другой аккаунт",
+
+    text:
+      "Снова нажми <strong>«Контент и покупки»</strong> → выбери <strong>«Не твоё имя?»</strong>.",
+
+    whatsapp:
+      null
+  },
+
+  {
+    title:
+      "Данные для входа",
+
+    text:
+      "<strong>Логин:</strong> получен от нас<br><strong>Пароль:</strong> получен от нас<br><br>Для получения данных нажми кнопку ниже.",
+
+    whatsapp:
+      "login"
+  },
+
+  {
+    title:
+      "Код подтверждения",
+
+    text:
+      "После ввода данных появится поле для кода подтверждения. Нажми кнопку ниже, чтобы запросить код.<br><br><strong>Внимание:</strong> код действует 60 секунд. Если не успеете получить код, отправьте запрос повторно.",
+
+    whatsapp:
+      "code"
+  },
+
+  {
+    title:
+      "Проверка приложений",
+
+    text:
+      "Обязательно откройте <strong>каждое установленное приложение 2–3 раза</strong>. Если всё хорошо — идём дальше.",
+
+    whatsapp:
+      null
+  },
+
+  {
+    title:
+      "🔄 Возврат на основной аккаунт",
+
+    text:
+      "Повторите <strong>пункты 1–2</strong>, затем нажмите <strong>«Продолжить»</strong>, чтобы снова использовать свой основной аккаунт App Store.<br><br><strong>Установленные приложения останутся на телефоне.</strong>",
+
+    whatsapp:
+      null
+  }
+
+];
+
+function renderInstructionStep() {
+
+  const step =
+    instructionSteps[
+      instructionStep - 1
+    ];
+
+  if (!step) return;
+
+  instructionProgress.textContent =
+    "Шаг " +
+    instructionStep +
+    " из " +
+    instructionSteps.length;
+
+  instructionTitle.innerHTML =
+    step.title;
+
+  instructionText.innerHTML =
+    step.text;
+
+  instructionBack.disabled =
+    instructionStep === 1;
+
+  if (
+    instructionStep ===
+    instructionSteps.length
+  ) {
+
+    instructionNext.textContent =
+      "Готово ✓";
+
+  } else {
+
+    instructionNext.textContent =
+      "Далее →";
+  }
+
+  instructionWhatsapp.style.display =
+    "none";
+
+  instructionWhatsapp.textContent =
+    "";
+
+  if (
+    step.whatsapp ===
+    "login"
+  ) {
+
+    instructionWhatsapp.style.display =
+      "block";
+
+    instructionWhatsapp.textContent =
+      "💬 Получить данные для входа";
+
+  }
+
+  if (
+    step.whatsapp ===
+    "code"
+  ) {
+
+    instructionWhatsapp.style.display =
+      "block";
+
+    instructionWhatsapp.textContent =
+      "💬 Получить код подтверждения";
+  }
+}
+
+function openInstructions() {
+
+  instructionStep =
+    1;
+
+  instructionsPanel.classList.add(
+    "show"
+  );
+
+  renderInstructionStep();
+
+  setTimeout(
+    () => {
+
+      instructionsPanel.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    },
+    100
+  );
+}
+
+instructionBack.addEventListener(
+  "click",
+  () => {
+
+    if (
+      instructionStep <= 1
+    ) {
+
+      return;
+    }
+
+    instructionStep--;
+
+    renderInstructionStep();
+
+    instructionsPanel.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+);
+
+instructionNext.addEventListener(
+  "click",
+  () => {
+
+    if (
+      instructionStep >=
+      instructionSteps.length
+    ) {
+
+      showToast(
+        "Инструкция завершена"
+      );
+
+      return;
+    }
+
+    instructionStep++;
+
+    renderInstructionStep();
+
+    instructionsPanel.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+);
+
+instructionWhatsapp.addEventListener(
+  "click",
+  () => {
+
+    if (
+      instructionStep === 4
+    ) {
+
+      const message =
+        buildLoginMessage();
+
+      if (!message) {
+
+        showToast(
+          "Не найден текущий заказ"
+        );
+
+        return;
+      }
+
+      openWhatsapp(
+        message
+      );
+
+      return;
+    }
+
+    if (
+      instructionStep === 5
+    ) {
+
+      const message =
+        buildCodeMessage();
+
+      if (!message) {
+
+        showToast(
+          "Не найден текущий заказ"
+        );
+
+        return;
+      }
+
+      openWhatsapp(
+        message
+      );
+    }
+
+  }
+);
 
 /* =========================
    ВСЕ УСТАНОВЛЕНО
@@ -2774,9 +3544,7 @@ installedButton.addEventListener(
     installedButton.textContent =
       "✅ Приложения установлены";
 
-    instructionsPanel.classList.add(
-      "show"
-    );
+    openInstructions();
 
     showToast(
       "Готово! Переходим к инструкции."
@@ -2801,16 +3569,21 @@ function initTelegram() {
         window.Telegram.WebApp;
 
       tg.ready();
+
       tg.expand();
 
-      if (tg.setHeaderColor) {
+      if (
+        tg.setHeaderColor
+      ) {
 
         tg.setHeaderColor(
           "#08090d"
         );
       }
 
-      if (tg.setBackgroundColor) {
+      if (
+        tg.setBackgroundColor
+      ) {
 
         tg.setBackgroundColor(
           "#08090d"
