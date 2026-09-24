@@ -1,6 +1,6 @@
 /* =========================================================
    APPCORE — НОВЫЕ ЗАКАЗЫ / ЗВУК / УВЕДОМЛЕНИЯ
-   ВЕРСИЯ 2 — МАКСИМАЛЬНАЯ ЗАМЕТНОСТЬ
+   ИСПРАВЛЕННАЯ ВЕРСИЯ
    ========================================================= */
 
 
@@ -47,12 +47,9 @@ function createNotificationAudio(){
 
 function isNotificationSoundReady(){
 
-  const ctx =
-    notificationAudio;
-
   return !!(
-    ctx &&
-    ctx.state === "running" &&
+    notificationAudio &&
+    notificationAudio.state === "running" &&
     notificationAudioUnlocked
   );
 }
@@ -77,7 +74,6 @@ async function unlockNotificationSound(){
     return false;
   }
 
-
   try{
 
     if(ctx.state === "suspended"){
@@ -85,7 +81,6 @@ async function unlockNotificationSound(){
       await ctx.resume();
 
     }
-
 
     if(ctx.state === "running"){
 
@@ -96,7 +91,6 @@ async function unlockNotificationSound(){
 
       return true;
     }
-
 
     notificationAudioUnlocked =
       false;
@@ -123,7 +117,7 @@ async function unlockNotificationSound(){
 
 
 /* =========================================================
-   ТЕСТОВЫЙ ЗВУК
+   ЗВУК НОВОЙ ЗАЯВКИ
    ========================================================= */
 
 async function playNewOrderSound(){
@@ -135,7 +129,6 @@ async function playNewOrderSound(){
     return false;
   }
 
-
   try{
 
     if(ctx.state === "suspended"){
@@ -143,7 +136,6 @@ async function playNewOrderSound(){
       await ctx.resume();
 
     }
-
 
     if(ctx.state !== "running"){
 
@@ -156,79 +148,73 @@ async function playNewOrderSound(){
     }
 
 
-    const playTone =
-      (
+    const playTone = (
+      frequency,
+      start,
+      duration,
+      volume
+    )=>{
+
+      const oscillator =
+        ctx.createOscillator();
+
+      const gain =
+        ctx.createGain();
+
+
+      oscillator.type =
+        "sine";
+
+
+      oscillator.frequency.setValueAtTime(
         frequency,
-        start,
-        duration,
-        volume
-      )=>{
-
-        const oscillator =
-          ctx.createOscillator();
-
-        const gain =
-          ctx.createGain();
+        start
+      );
 
 
-        oscillator.type =
-          "sine";
+      gain.gain.setValueAtTime(
+        0.0001,
+        start
+      );
 
 
-        oscillator.frequency.setValueAtTime(
-          frequency,
-          start
-        );
+      gain.gain.exponentialRampToValueAtTime(
+        volume,
+        start + 0.02
+      );
 
 
-        gain.gain.setValueAtTime(
-          0.0001,
-          start
-        );
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        start + duration
+      );
 
 
-        gain.gain.exponentialRampToValueAtTime(
-          volume,
-          start + 0.02
-        );
+      oscillator.connect(
+        gain
+      );
+
+      gain.connect(
+        ctx.destination
+      );
 
 
-        gain.gain.exponentialRampToValueAtTime(
-          0.0001,
-          start + duration
-        );
+      oscillator.start(
+        start
+      );
 
+      oscillator.stop(
+        start + duration + 0.03
+      );
 
-        oscillator.connect(
-          gain
-        );
-
-
-        gain.connect(
-          ctx.destination
-        );
-
-
-        oscillator.start(
-          start
-        );
-
-
-        oscillator.stop(
-          start + duration + 0.03
-        );
-
-      };
+    };
 
 
     const start =
       ctx.currentTime + 0.05;
 
 
-    /*
-      ГРОМКИЙ СИГНАЛ
-      3 серии
-    */
+    /* СИГНАЛ 1 */
 
     playTone(
       880,
@@ -245,6 +231,8 @@ async function playNewOrderSound(){
     );
 
 
+    /* СИГНАЛ 2 */
+
     playTone(
       880,
       start + 0.75,
@@ -259,6 +247,8 @@ async function playNewOrderSound(){
       0.50
     );
 
+
+    /* СИГНАЛ 3 */
 
     playTone(
       880,
@@ -300,7 +290,7 @@ async function playNewOrderSound(){
 
 
 /* =========================================================
-   СОСТОЯНИЕ КНОПКИ
+   КНОПКА УВЕДОМЛЕНИЙ
    ========================================================= */
 
 function updateSoundButton(){
@@ -333,7 +323,7 @@ function updateSoundButton(){
   ){
 
     notificationButton.textContent =
-      "🔊 НАЖМИТЕ: ВКЛЮЧИТЬ ЗВУК";
+      "🔊 ВКЛЮЧИТЬ ЗВУК";
 
     notificationButton.classList.add(
       "btn-yellow"
@@ -345,232 +335,6 @@ function updateSoundButton(){
 
   notificationButton.textContent =
     "🔔 ВКЛЮЧИТЬ УВЕДОМЛЕНИЯ";
-}
-
-
-/* =========================================================
-   ПОЛОСА СОСТОЯНИЯ ЗВУКА
-   ========================================================= */
-
-function showSoundSetupBanner(){
-
-  if(
-    document.getElementById(
-      "appcoreSoundSetup"
-    )
-  ){
-    return;
-  }
-
-
-  if(
-    !("Notification" in window)
-  ){
-    return;
-  }
-
-
-  if(
-    Notification.permission !==
-    "granted"
-  ){
-    return;
-  }
-
-
-  if(
-    isNotificationSoundReady()
-  ){
-    return;
-  }
-
-
-  const banner =
-    document.createElement(
-      "div"
-    );
-
-
-  banner.id =
-    "appcoreSoundSetup";
-
-
-  banner.innerHTML = `
-
-    <div class="appcore-sound-setup-inner">
-
-      <div class="appcore-sound-icon">
-        🔊
-      </div>
-
-      <div class="appcore-sound-text">
-
-        <strong>
-          ВАЖНО: ВКЛЮЧИТЕ ЗВУК ЗАКАЗОВ
-        </strong>
-
-        <span>
-          Нажмите кнопку «Уведомления» один раз,
-          чтобы браузер разрешил звук новых заявок.
-        </span>
-
-      </div>
-
-      <button
-        type="button"
-        id="appcoreSoundSetupButton"
-      >
-        🔊 ВКЛЮЧИТЬ ЗВУК
-      </button>
-
-    </div>
-
-  `;
-
-
-  document.body.appendChild(
-    banner
-  );
-
-
-  const button =
-    document.getElementById(
-      "appcoreSoundSetupButton"
-    );
-
-
-  if(button){
-
-    button.onclick =
-      async function(event){
-
-        event.preventDefault();
-
-        event.stopPropagation();
-
-
-        const enabled =
-          await unlockNotificationSound();
-
-
-        if(enabled){
-
-          await playNewOrderSound();
-
-
-          banner.remove();
-
-
-          showToast(
-            "🔊 Звук новых заказов включён"
-          );
-
-        }else{
-
-          showToast(
-            "⚠️ Браузер пока блокирует звук. Нажмите ещё раз."
-          );
-
-        }
-
-      };
-
-  }
-}
-
-
-/* =========================================================
-   ВКЛЮЧЕНИЕ УВЕДОМЛЕНИЙ
-   ========================================================= */
-
-async function enableNotifications(){
-
-  if(
-    !("Notification" in window)
-  ){
-
-    showToast(
-      "Этот браузер не поддерживает уведомления"
-    );
-
-    return;
-  }
-
-
-  try{
-
-    const permission =
-      await Notification.requestPermission();
-
-
-    if(
-      permission !==
-      "granted"
-    ){
-
-      notificationsEnabled =
-        false;
-
-      updateSoundButton();
-
-      showToast(
-        "⚠️ Разрешение на уведомления не получено"
-      );
-
-      return;
-    }
-
-
-    notificationsEnabled =
-      true;
-
-
-    /*
-      ВАЖНО:
-      requestPermission() выполняется
-      непосредственно после клика.
-      После него сразу пытаемся
-      разблокировать AudioContext.
-    */
-
-    const soundEnabled =
-      await unlockNotificationSound();
-
-
-    updateSoundButton();
-
-
-    if(soundEnabled){
-
-      await playNewOrderSound();
-
-
-      showToast(
-        "🔊 Уведомления и звук включены"
-      );
-
-      return;
-    }
-
-
-    showSoundSetupBanner();
-
-
-    showToast(
-      "🔔 Уведомления включены. Нажмите «ВКЛЮЧИТЬ ЗВУК»."
-    );
-
-  }catch(error){
-
-    console.log(
-      "Notification permission error:",
-      error
-    );
-
-    showToast(
-      "Не удалось включить уведомления"
-    );
-  }
 }
 
 
@@ -605,7 +369,7 @@ function escapeHtml(value){
 
 
 /* =========================================================
-   УДАЛЕНИЕ БАННЕРА ЗАКАЗА
+   УДАЛЕНИЕ БАННЕРА
    ========================================================= */
 
 function removeNewOrderAlert(){
@@ -615,11 +379,9 @@ function removeNewOrderAlert(){
       "appcoreNewOrderAlert"
     );
 
-
   if(alert){
     alert.remove();
   }
-
 
   clearTimeout(
     notificationAlertTimer
@@ -628,7 +390,7 @@ function removeNewOrderAlert(){
 
 
 /* =========================================================
-   БАННЕР НОВОГО ЗАКАЗА
+   БАННЕР НОВОЙ ЗАЯВКИ
    ========================================================= */
 
 function showNewOrderAlert(newOrders){
@@ -659,35 +421,27 @@ function showNewOrderAlert(newOrders){
       .map(order=>{
 
         return `
-
           <div class="appcore-order-alert-item">
 
             <div class="appcore-order-alert-number">
-
               ${escapeHtml(
                 order.order_number ||
                 "Новая заявка"
               )}
-
             </div>
 
             <div class="appcore-order-alert-info">
-
               📞 ${escapeHtml(
                 order.client_phone ||
                 "—"
               )}
-
             </div>
 
             <div class="appcore-order-alert-total">
-
               💰 ${money(order.total)}
-
             </div>
 
           </div>
-
         `;
 
       })
@@ -707,9 +461,7 @@ function showNewOrderAlert(newOrders){
       </div>
 
       <div class="appcore-alert-orders">
-
         ${ordersText}
-
       </div>
 
       <div class="appcore-alert-buttons">
@@ -757,9 +509,7 @@ function showNewOrderAlert(newOrders){
 
         event.stopPropagation();
 
-
         removeNewOrderAlert();
-
 
         currentTab =
           "active";
@@ -833,6 +583,89 @@ function showNewOrderAlert(newOrders){
 
 
 /* =========================================================
+   УВЕДОМЛЕНИЯ
+   ========================================================= */
+
+async function enableNotifications(){
+
+  if(
+    !("Notification" in window)
+  ){
+
+    showToast(
+      "Этот браузер не поддерживает уведомления"
+    );
+
+    return;
+  }
+
+
+  try{
+
+    const permission =
+      await Notification.requestPermission();
+
+
+    if(
+      permission !==
+      "granted"
+    ){
+
+      notificationsEnabled =
+        false;
+
+      updateSoundButton();
+
+      showToast(
+        "⚠️ Разрешение на уведомления не получено"
+      );
+
+      return;
+    }
+
+
+    notificationsEnabled =
+      true;
+
+
+    const soundEnabled =
+      await unlockNotificationSound();
+
+
+    updateSoundButton();
+
+
+    if(soundEnabled){
+
+      await playNewOrderSound();
+
+      showToast(
+        "🔊 Уведомления и звук включены"
+      );
+
+    }else{
+
+      showToast(
+        "🔔 Уведомления включены. Теперь нажмите кнопку ещё раз для звука."
+      );
+
+    }
+
+  }catch(error){
+
+    console.log(
+      "Notification permission error:",
+      error
+    );
+
+    showToast(
+      "Не удалось включить уведомления"
+    );
+  }
+}
+
+
+/* =========================================================
    НОВАЯ ЗАЯВКА
    ========================================================= */
 
@@ -845,10 +678,6 @@ async function notifyNewOrders(newOrders){
     return;
   }
 
-
-  /*
-    СРАЗУ показываем заказ
-  */
 
   currentTab =
     "active";
@@ -883,17 +712,13 @@ async function notifyNewOrders(newOrders){
   render();
 
 
-  /*
-    Сначала визуальный сигнал
-  */
-
   showNewOrderAlert(
     newOrders
   );
 
 
   /*
-    Потом звук
+    ЗВУК
   */
 
   if(
@@ -902,21 +727,11 @@ async function notifyNewOrders(newOrders){
 
     await playNewOrderSound();
 
-  }else{
-
-    /*
-      Если звук заблокирован —
-      показываем пользователю,
-      что его надо разблокировать.
-    */
-
-    showSoundSetupBanner();
-
   }
 
 
   /*
-    Браузерное уведомление
+    БРАУЗЕРНОЕ УВЕДОМЛЕНИЕ
   */
 
   if(
@@ -959,21 +774,16 @@ async function notifyNewOrders(newOrders){
 
               window.focus();
 
-
               currentTab =
                 "active";
 
-
               render();
 
-
               removeNewOrderAlert();
-
 
               notification.close();
 
             };
-
 
         }catch(error){
 
@@ -1010,14 +820,12 @@ notificationButton.addEventListener(
 
 
     /*
-      ЕСЛИ УВЕДОМЛЕНИЯ УЖЕ РАЗРЕШЕНЫ —
-      КЛИК СРАЗУ РАЗБЛОКИРУЕТ ЗВУК.
+      УВЕДОМЛЕНИЯ УЖЕ РАЗРЕШЕНЫ
     */
 
     if(
       "Notification" in window &&
-      Notification.permission ===
-      "granted"
+      Notification.permission === "granted"
     ){
 
       notificationsEnabled =
@@ -1032,29 +840,14 @@ notificationButton.addEventListener(
 
         await playNewOrderSound();
 
-
-        const setup =
-          document.getElementById(
-            "appcoreSoundSetup"
-          );
-
-
-        if(setup){
-          setup.remove();
-        }
-
-
         showToast(
           "🔊 ЗВУК НОВЫХ ЗАКАЗОВ ВКЛЮЧЕН"
         );
 
       }else{
 
-        showSoundSetupBanner();
-
-
         showToast(
-          "⚠️ Нажмите «ВКЛЮЧИТЬ ЗВУК»"
+          "⚠️ Браузер блокирует звук. Нажмите кнопку ещё раз."
         );
 
       }
@@ -1067,7 +860,7 @@ notificationButton.addEventListener(
 
 
     /*
-      ЕСЛИ РАЗРЕШЕНИЯ ЕЩЁ НЕТ
+      РАЗРЕШЕНИЯ ЕЩЁ НЕТ
     */
 
     await enableNotifications();
@@ -1077,7 +870,7 @@ notificationButton.addEventListener(
 
 
 /* =========================================================
-   ИНИЦИАЛИЗАЦИЯ
+   АВТОМАТИЧЕСКАЯ ИНИЦИАЛИЗАЦИЯ
    ========================================================= */
 
 async function initializeNotificationSystem(){
@@ -1092,13 +885,8 @@ async function initializeNotificationSystem(){
   }
 
 
-  /*
-    Разрешение уже было дано раньше.
-  */
-
   if(
-    Notification.permission ===
-    "granted"
+    Notification.permission === "granted"
   ){
 
     notificationsEnabled =
@@ -1106,42 +894,23 @@ async function initializeNotificationSystem(){
 
 
     /*
-      Пробуем восстановить AudioContext.
-      Если браузер не разрешил —
-      НЕ ломаем панель.
+      После обновления страницы
+      браузер может оставить AudioContext
+      заблокированным.
     */
 
     const enabled =
       await unlockNotificationSound();
 
 
-    if(enabled){
-
-      updateSoundButton();
-
-    }else{
+    if(!enabled){
 
       notificationAudioUnlocked =
         false;
 
       updateSoundButton();
 
-      /*
-        Показываем заметный запрос
-        на разблокировку звука.
-      */
-
-      setTimeout(
-        function(){
-
-          showSoundSetupBanner();
-
-        },
-        500
-      );
-
     }
-
 
     return;
   }
@@ -1149,7 +918,6 @@ async function initializeNotificationSystem(){
 
   notificationsEnabled =
     false;
-
 
   updateSoundButton();
 }
@@ -1181,147 +949,6 @@ async function initializeNotificationSystem(){
 
 
   style.textContent = `
-
-    /* =====================================================
-       ЗАПРОС НА ВКЛЮЧЕНИЕ ЗВУКА
-       ===================================================== */
-
-    #appcoreSoundSetup{
-
-      position:fixed;
-
-      top:20px;
-
-      left:50%;
-
-      transform:
-        translateX(-50%);
-
-      width:min(
-        760px,
-        calc(100vw - 24px)
-      );
-
-      z-index:1000000;
-
-      pointer-events:none;
-
-      font-family:inherit;
-    }
-
-
-    .appcore-sound-setup-inner{
-
-      pointer-events:auto;
-
-      display:flex;
-
-      align-items:center;
-
-      gap:16px;
-
-      padding:18px 20px;
-
-      border:
-        2px solid
-        #ffc857;
-
-      border-radius:16px;
-
-      background:#151a24;
-
-      box-shadow:
-        0 0 0 5px
-        rgba(255,200,87,.12),
-
-        0 20px 70px
-        rgba(0,0,0,.60);
-
-      animation:
-        appcoreSoundPulse
-        1.3s
-        infinite;
-    }
-
-
-    .appcore-sound-icon{
-
-      font-size:38px;
-
-      flex:0 0 auto;
-    }
-
-
-    .appcore-sound-text{
-
-      flex:1;
-
-      min-width:0;
-    }
-
-
-    .appcore-sound-text strong{
-
-      display:block;
-
-      color:#ffc857;
-
-      font-size:17px;
-
-      font-weight:900;
-    }
-
-
-    .appcore-sound-text span{
-
-      display:block;
-
-      margin-top:4px;
-
-      color:#fff;
-
-      font-size:13px;
-
-      opacity:.78;
-    }
-
-
-    #appcoreSoundSetupButton{
-
-      flex:0 0 auto;
-
-      min-height:46px;
-
-      padding:
-        0 18px;
-
-      border:0;
-
-      border-radius:10px;
-
-      background:#ffc857;
-
-      color:#111;
-
-      font-family:inherit;
-
-      font-size:14px;
-
-      font-weight:900;
-
-      cursor:pointer;
-    }
-
-
-    #appcoreSoundSetupButton:hover{
-
-      filter:brightness(1.08);
-    }
-
-
-    /* =====================================================
-       НОВЫЙ ЗАКАЗ
-       ===================================================== */
 
     #appcoreNewOrderAlert{
 
@@ -1505,6 +1132,19 @@ async function initializeNotificationSystem(){
     }
 
 
+    .appcore-alert-open:hover{
+
+      filter:brightness(1.08);
+    }
+
+
+    .appcore-alert-close:hover{
+
+      background:
+        rgba(255,255,255,.06);
+    }
+
+
     @keyframes appcoreAlertPulse{
 
       0%,100%{
@@ -1529,56 +1169,7 @@ async function initializeNotificationSystem(){
     }
 
 
-    @keyframes appcoreSoundPulse{
-
-      0%,100%{
-
-        box-shadow:
-          0 0 0 5px
-          rgba(255,200,87,.12),
-
-          0 20px 70px
-          rgba(0,0,0,.60);
-      }
-
-      50%{
-
-        box-shadow:
-          0 0 0 9px
-          rgba(255,200,87,.22),
-
-          0 20px 80px
-          rgba(0,0,0,.65);
-      }
-    }
-
-
     @media(max-width:600px){
-
-      #appcoreSoundSetup{
-
-        top:10px;
-
-        width:
-          calc(100vw - 20px);
-      }
-
-
-      .appcore-sound-setup-inner{
-
-        flex-direction:column;
-
-        text-align:center;
-
-        padding:16px;
-      }
-
-
-      #appcoreSoundSetupButton{
-
-        width:100%;
-      }
-
 
       #appcoreNewOrderAlert{
 
