@@ -1470,6 +1470,12 @@ let knownOrderIds = new Set();
 let notificationsEnabled = false;
 let currentTab = "active";
 
+/* =========================
+   REALTIME
+========================= */
+
+let ordersRealtimeChannel = null;
+
 const loginScreen =
   document.getElementById("loginScreen");
 
@@ -2684,6 +2690,73 @@ async function loadOrders(){
 }
 
 /* =========================
+   REALTIME
+========================= */
+
+async function startOrdersRealtime(){
+
+  if(ordersRealtimeChannel){
+
+    await supabaseClient
+      .removeChannel(
+        ordersRealtimeChannel
+      );
+
+    ordersRealtimeChannel = null;
+  }
+
+  ordersRealtimeChannel =
+    supabaseClient
+      .channel("admin-orders")
+      .on(
+        "postgres_changes",
+        {
+          event:"*",
+          schema:"public",
+          table:"orders"
+        },
+        async(payload)=>{
+
+          console.log(
+            "Order change:",
+            payload
+          );
+
+          await loadOrders();
+
+        }
+      )
+      .subscribe(
+        status=>{
+
+          console.log(
+            "Orders realtime:",
+            status
+          );
+
+        }
+      );
+}
+
+async function stopOrdersRealtime(){
+
+  if(!ordersRealtimeChannel){
+    return;
+  }
+
+  await supabaseClient
+    .removeChannel(
+      ordersRealtimeChannel
+    );
+
+  ordersRealtimeChannel = null;
+
+  console.log(
+    "Orders realtime stopped"
+  );
+}
+
+/* =========================
    STATISTICS
 ========================= */
 
@@ -2907,12 +2980,14 @@ async function login(){
     return;
   }
 
-  showDashboard();
+  await showDashboard();
 }
 
 logoutButton.addEventListener(
   "click",
   async()=>{
+
+    await stopOrdersRealtime();
 
     await supabaseClient
       .auth
@@ -2928,6 +3003,8 @@ logoutButton.addEventListener(
 
     selectedIds.clear();
 
+    knownOrderIds.clear();
+
   }
 );
 
@@ -2935,7 +3012,7 @@ logoutButton.addEventListener(
    SHOW DASHBOARD
 ========================= */
 
-function showDashboard(){
+async function showDashboard(){
 
   loginScreen.style.display =
     "none";
@@ -2943,32 +3020,10 @@ function showDashboard(){
   dashboard.style.display =
     "block";
 
-  loadOrders();
+  await loadOrders();
+
+  await startOrdersRealtime();
 }
-
-/* =========================
-   AUTO UPDATE
-========================= */
-
-setInterval(
-  async()=>{
-
-    const {
-      data:{
-        session
-      }
-    } =
-      await supabaseClient
-        .auth
-        .getSession();
-
-    if(session){
-      await loadOrders();
-    }
-
-  },
-  10000
-);
 
 /* =========================
    INIT
@@ -2987,7 +3042,7 @@ async function init(){
 
   if(session){
 
-    showDashboard();
+    await showDashboard();
 
   }else{
 
