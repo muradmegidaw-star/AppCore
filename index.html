@@ -739,10 +739,11 @@ h1{
   margin-top:13px;
   padding:12px;
   border-radius:14px;
-  background:rgba(255,193,7,.07);
-  border:1px solid rgba(255,193,7,.14);
-  color:#b9bdc8;
-  font-size:12px;
+  background:#ffd400;
+  border:1px solid #ffd400;
+  color:#fff;
+  font-size:17px;
+  font-weight:600;
   line-height:1.45
 }
 
@@ -1410,9 +1411,7 @@ const supabaseClient=window.supabase.createClient(
 </div>
 
 <div class="payment-note">
-  ⚠️ После перевода сохраните чек об оплате.
-  Не закрывайте страницу, пока не убедитесь,
-  что перевод выполнен.
+  ⚠️ После перевода нажмите «Я оплатил». После этого будет выполнена проверка оплаты.
 </div>
 
 <button id="paymentDone" class="payment-done" type="button">
@@ -1740,8 +1739,8 @@ function render(){
       }
 
       selected.has(app.id)
-        ? selected.delete(app.id)
-        : selected.add(app.id);
+        ?selected.delete(app.id)
+        :selected.add(app.id);
 
       render();
       updatePrice();
