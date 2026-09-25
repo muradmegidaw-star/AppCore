@@ -804,8 +804,6 @@ h1{
   word-break:break-word
 }
 
-/* НОВОЕ: визуальный акцент после "Я оплатил" */
-
 .status-panel.focused{
   animation:statusFocus 2.2s ease;
   border-color:rgba(118,83,255,.75);
@@ -890,13 +888,6 @@ h1{
 .new-order-button:disabled{
   opacity:.4;
   cursor:not-allowed
-}
-
-.new-order-hint{
-  margin-top:7px;
-  color:#6f7685;
-  font-size:11px;
-  text-align:center
 }
 
 .install-panel{
@@ -1177,10 +1168,6 @@ const supabaseClient=window.supabase.createClient(
     🔄 Новый заказ
   </button>
 
-  <div class="new-order-hint">
-    Не более 2 раз за 10 минут
-  </div>
-
 </div>
 
 <div id="cancelledPanel" class="cancelled-panel">
@@ -1202,10 +1189,6 @@ const supabaseClient=window.supabase.createClient(
   >
     🔄 Новый заказ
   </button>
-
-  <div class="new-order-hint">
-    Не более 2 раз за 10 минут
-  </div>
 
 </div>
 
@@ -1260,10 +1243,6 @@ const supabaseClient=window.supabase.createClient(
   >
     🔄 Новый заказ
   </button>
-
-  <div class="new-order-hint">
-    Не более 2 раз за 10 минут
-  </div>
 
 </div>
 
@@ -1505,10 +1484,6 @@ const PRICE=500;
 const ORDER_LOCK_KEY="appcore_order_lock";
 const CLIENT_ORDER_KEY="appcore_client_order";
 const INSTALLED_ORDER_KEY="appcore_installed_order";
-
-const NEW_ORDER_LIMIT_KEY="appcore_new_order_attempts";
-const NEW_ORDER_LIMIT=2;
-const NEW_ORDER_WINDOW=10*60*1000;
 
 const ORDER_LOCK_TIME=5*60*1000;
 
@@ -1813,88 +1788,6 @@ function isValidPhone(phone){
   return digits.length>=10&&digits.length<=15;
 }
 
-function getNewOrderAttempts(){
-
-  try{
-
-    const raw=localStorage.getItem(NEW_ORDER_LIMIT_KEY);
-
-    if(!raw)return[];
-
-    const arr=JSON.parse(raw);
-
-    if(!Array.isArray(arr))return[];
-
-    const now=Date.now();
-
-    const fresh=arr.filter(ts=>{
-      return Number.isFinite(ts)&&now-ts<NEW_ORDER_WINDOW;
-    });
-
-    localStorage.setItem(
-      NEW_ORDER_LIMIT_KEY,
-      JSON.stringify(fresh)
-    );
-
-    return fresh;
-
-  }catch(error){
-
-    return[];
-  }
-}
-
-function canStartNewOrder(){
-  return getNewOrderAttempts().length<NEW_ORDER_LIMIT;
-}
-
-function registerNewOrderAttempt(){
-
-  const fresh=getNewOrderAttempts();
-
-  if(fresh.length>=NEW_ORDER_LIMIT){
-    return false;
-  }
-
-  fresh.push(Date.now());
-
-  localStorage.setItem(
-    NEW_ORDER_LIMIT_KEY,
-    JSON.stringify(fresh)
-  );
-
-  return true;
-}
-
-function getNewOrderRemaining(){
-
-  return Math.max(
-    0,
-    NEW_ORDER_LIMIT-getNewOrderAttempts().length
-  );
-}
-
-function updateNewOrderButtons(){
-
-  const remaining=getNewOrderRemaining();
-
-  const label=remaining>0
-    ?`🔄 Новый заказ (осталось ${remaining})`
-    :"🔄 Новый заказ недоступен";
-
-  [
-    newOrderStatusButton,
-    newOrderInstallButton,
-    newOrderCancelledButton
-  ].forEach(button=>{
-
-    if(!button)return;
-
-    button.textContent=label;
-    button.disabled=remaining<=0;
-  });
-}
-
 function markAppsInstalled(order){
 
   try{
@@ -2056,23 +1949,10 @@ function restoreOrderLock(){
       "5 минут прошли — можно создать новый заказ."
     );
 
-    updateNewOrderButtons();
-
   },Math.max(0,remaining));
 }
 
 function openNewOrderConfirmation(){
-
-  updateNewOrderButtons();
-
-  if(!canStartNewOrder()){
-
-    showToast(
-      "Новый заказ можно создать не более 2 раз за 10 минут."
-    );
-
-    return;
-  }
 
   confirmOverlay.classList.add("show");
 
@@ -2087,32 +1967,6 @@ function closeNewOrderConfirmation(){
 }
 
 function startNewOrder(){
-
-  if(!canStartNewOrder()){
-
-    closeNewOrderConfirmation();
-
-    showToast(
-      "Новый заказ можно создать не более 2 раз за 10 минут."
-    );
-
-    updateNewOrderButtons();
-
-    return;
-  }
-
-  if(!registerNewOrderAttempt()){
-
-    closeNewOrderConfirmation();
-
-    showToast(
-      "Новый заказ можно создать не более 2 раз за 10 минут."
-    );
-
-    updateNewOrderButtons();
-
-    return;
-  }
 
   if(statusTimer){
 
@@ -2145,7 +1999,6 @@ function startNewOrder(){
   render();
   updatePrice();
   updateWhatsAppLinks();
-  updateNewOrderButtons();
 
   closeNewOrderConfirmation();
 
@@ -2476,11 +2329,23 @@ async function createOrder(){
 
       console.error(error);
 
-      showToast(
-        "Ошибка Supabase: "+
-        (error.message||
-        "неизвестная ошибка")
-      );
+      const message=
+        error.message||"";
+
+      if(message.includes("RATE_LIMIT:")){
+
+        showToast(
+          "Лимит заказов достигнут. Попробуйте снова через 10 минут."
+        );
+
+      }else{
+
+        showToast(
+          "Ошибка Supabase: "+
+          (message||
+          "неизвестная ошибка")
+        );
+      }
 
       return false;
     }
@@ -2496,12 +2361,6 @@ async function createOrder(){
 
     render();
     updatePrice();
-
-    /*
-      ВАЖНО:
-      true = автоматически прокрутить
-      клиента к разделу ожидания
-    */
 
     showOrderStatus(
       orderData,
@@ -2541,12 +2400,6 @@ async function createOrder(){
   }
 }
 
-/*
-========================================
-ПАНЕЛЬ ОЖИДАНИЯ
-========================================
-*/
-
 function showOrderStatus(order,autoScroll=false){
 
   statusPanel.classList.add("show");
@@ -2565,12 +2418,6 @@ function showOrderStatus(order,autoScroll=false){
     order.order_number;
 
   updateWhatsAppLinks();
-  updateNewOrderButtons();
-
-  /*
-    Автоматически переводим клиента
-    прямо к разделу ожидания
-  */
 
   if(autoScroll){
 
@@ -2580,11 +2427,6 @@ function showOrderStatus(order,autoScroll=false){
         behavior:"smooth",
         block:"center"
       });
-
-      /*
-        Временно подсвечиваем блок,
-        чтобы клиент сразу увидел его
-      */
 
       statusPanel.classList.remove("focused");
 
@@ -2686,7 +2528,6 @@ function renderInstallPanel(order){
   }
 
   updateWhatsAppLinks();
-  updateNewOrderButtons();
 }
 
 function renderCancelled(order){
@@ -2702,7 +2543,6 @@ function renderCancelled(order){
     order.order_number;
 
   updateWhatsAppLinks();
-  updateNewOrderButtons();
 }
 
 async function checkOrderStatus(){
@@ -3111,8 +2951,6 @@ render();
 updatePrice();
 
 updateWhatsAppLinks();
-
-updateNewOrderButtons();
 
 initTelegram();
 
