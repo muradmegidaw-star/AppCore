@@ -959,16 +959,22 @@ h1{
   display:block
 }
 
-.activation-title{
-  font-size:18px;
-  font-weight:850
-}
-
 .activation-text{
   margin-top:7px;
   color:#858c9a;
   font-size:13px;
   line-height:1.5
+}
+
+.activation-note{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:rgba(255,193,7,.035);
+  border:1px solid rgba(255,193,7,.08);
+  color:#777e8c;
+  font-size:11px;
+  line-height:1.45
 }
 
 .whatsapp-button{
@@ -1095,10 +1101,10 @@ const supabaseClient=window.supabase.createClient(
 
   <div class="discount-text">
     1 приложение — без скидки ·
-    2 — <span class="discount-highlight">3%</span> ·
-    3 — <span class="discount-highlight">6%</span> ·
-    4 — <span class="discount-highlight">9%</span> ·
-    5+ — <span class="discount-highlight">30%</span>
+    2 — <span class="discount-highlight">5%</span> ·
+    3 — <span class="discount-highlight">10%</span> ·
+    4 — <span class="discount-highlight">15%</span> ·
+    5+ — <span class="discount-highlight">20%</span>
   </div>
 </div>
 
@@ -1211,18 +1217,19 @@ const supabaseClient=window.supabase.createClient(
     class="installed-button"
     type="button"
   >
-    ✅ Все приложения установлены
+    👉 Я установил все приложения → продолжить
   </button>
+
+  <div class="activation-note">
+    ⚠️ Приложения пока не работают.<br>
+    После установки нажмите кнопку выше, чтобы перейти к активации.
+  </div>
 
   <div id="activationPanel" class="activation-panel">
 
-    <div class="activation-title">
-      ✅ Всё готово!
-    </div>
-
     <div class="activation-text">
-      Приложения установлены.<br>
-      Для активации приложений напишите мне в WhatsApp.
+      ✅ Приложения установлены.<br>
+      Нажмите кнопку ниже, чтобы получить инструкцию по активации.
     </div>
 
     <a
@@ -1232,7 +1239,7 @@ const supabaseClient=window.supabase.createClient(
       target="_blank"
       rel="noopener noreferrer"
     >
-      💬 Написать мне в WhatsApp
+      💬 Получить инструкцию в WhatsApp
     </a>
 
   </div>
@@ -1572,10 +1579,10 @@ const confirmCancel=$("confirmCancel");
 const confirmYes=$("confirmYes");
 
 function getDiscount(count){
-  if(count>=5)return 30;
-  if(count===4)return 9;
-  if(count===3)return 6;
-  if(count===2)return 3;
+  if(count>=5)return 20;
+  if(count===4)return 15;
+  if(count===3)return 10;
+  if(count===2)return 5;
   return 0;
 }
 
@@ -2523,7 +2530,7 @@ function renderInstallPanel(order){
     installedButton.disabled=false;
 
     installedButton.textContent=
-      "✅ Все приложения установлены";
+      "👉 Я установил все приложения → продолжить";
   }
 
   updateWhatsAppLinks();
