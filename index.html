@@ -1368,6 +1368,7 @@ const supabaseClient=window.supabase.createClient(
     <button
       class="copy-button"
       data-copy="Мурат Межидов М"
+      type="button"
     >
       Копировать
     </button>
@@ -1378,7 +1379,7 @@ const supabaseClient=window.supabase.createClient(
 <div class="requisite">
 
   <div class="requisite-label">
-    Карта
+    Телефон / СБП
   </div>
 
   <div class="requisite-value-row">
@@ -1389,6 +1390,7 @@ const supabaseClient=window.supabase.createClient(
     <button
       class="copy-button"
       data-copy="+79289480706"
+      type="button"
     >
       Копировать
     </button>
@@ -1410,6 +1412,7 @@ const supabaseClient=window.supabase.createClient(
     <button
       class="copy-button"
       data-copy="Т-Банк"
+      type="button"
     >
       Копировать
     </button>
@@ -1489,9 +1492,14 @@ const PRICE=500;
 
 const ORDER_LOCK_KEY="appcore_order_lock";
 const CLIENT_ORDER_KEY="appcore_client_order";
+const CLIENT_ORDER_TIME_KEY="appcore_client_order_time";
 const INSTALLED_ORDER_KEY="appcore_installed_order";
 
-const ORDER_LOCK_TIME=5*60*1000;
+/*
+ * Один клиент может оформить новый заказ
+ * только через 12 часов после создания предыдущего.
+ */
+const ORDER_LOCK_TIME=12*60*60*1000;
 
 const WHATSAPP_NUMBER="79289480706";
 
@@ -1794,6 +1802,77 @@ function isValidPhone(phone){
   return digits.length>=10&&digits.length<=15;
 }
 
+/*
+ * Проверяем, что сохранённый заказ действительно
+ * соответствует структуре нашего приложения.
+ */
+function isValidSavedOrder(order){
+
+  if(!order||typeof order!=="object"){
+    return false;
+  }
+
+  if(
+    typeof order.order_number!=="string"||
+    !order.order_number.trim()
+  ){
+    return false;
+  }
+
+  if(
+    typeof order.client_phone!=="string"||
+    !isValidPhone(order.client_phone)
+  ){
+    return false;
+  }
+
+  if(
+    !Array.isArray(order.apps)||
+    order.apps.length<1||
+    order.apps.length>apps.length
+  ){
+    return false;
+  }
+
+  const ids=order.apps.map(app=>app&&app.id);
+
+  if(
+    ids.some(id=>typeof id!=="string")||
+    new Set(ids).size!==ids.length
+  ){
+    return false;
+  }
+
+  if(
+    ids.some(id=>!apps.some(app=>app.id===id))
+  ){
+    return false;
+  }
+
+  if(
+    !Array.isArray(order.app_ids)||
+    order.app_ids.length!==order.apps.length
+  ){
+    return false;
+  }
+
+  if(
+    order.app_ids.some(id=>!ids.includes(id))
+  ){
+    return false;
+  }
+
+  if(
+    typeof order.total!=="number"||
+    !Number.isFinite(order.total)||
+    order.total<0
+  ){
+    return false;
+  }
+
+  return true;
+}
+
 function markAppsInstalled(order){
 
   try{
@@ -1841,8 +1920,10 @@ function getOrderLock(){
 
     if(
       !data||
-      !data.createdAt||
-      !data.order
+      typeof data.createdAt!=="number"||
+      !Number.isFinite(data.createdAt)||
+      !data.order||
+      !isValidSavedOrder(data.order)
     ){
 
       localStorage.removeItem(
@@ -1852,9 +1933,11 @@ function getOrderLock(){
       return null;
     }
 
+    const age=Date.now()-data.createdAt;
+
     if(
-      Date.now()-data.createdAt>=
-      ORDER_LOCK_TIME
+      age<0||
+      age>=ORDER_LOCK_TIME
     ){
 
       localStorage.removeItem(
@@ -1868,7 +1951,16 @@ function getOrderLock(){
 
   }catch(error){
 
-    console.log(error);
+    console.log(
+      "Order lock restore error:",
+      error
+    );
+
+    try{
+      localStorage.removeItem(
+        ORDER_LOCK_KEY
+      );
+    }catch(e){}
 
     return null;
   }
@@ -1876,21 +1968,54 @@ function getOrderLock(){
 
 function saveOrderLock(order){
 
-  localStorage.setItem(
-    ORDER_LOCK_KEY,
-    JSON.stringify({
-      createdAt:Date.now(),
-      order
-    })
-  );
+  try{
+
+    localStorage.setItem(
+      ORDER_LOCK_KEY,
+      JSON.stringify({
+        createdAt:Date.now(),
+        order
+      })
+    );
+
+    return true;
+
+  }catch(error){
+
+    console.log(
+      "Order lock save error:",
+      error
+    );
+
+    return false;
+  }
 }
 
-function saveClientOrder(order){
+function saveClientOrder(order,createdAt=Date.now()){
 
-  localStorage.setItem(
-    CLIENT_ORDER_KEY,
-    JSON.stringify(order)
-  );
+  try{
+
+    localStorage.setItem(
+      CLIENT_ORDER_KEY,
+      JSON.stringify(order)
+    );
+
+    localStorage.setItem(
+      CLIENT_ORDER_TIME_KEY,
+      String(createdAt)
+    );
+
+    return true;
+
+  }catch(error){
+
+    console.log(
+      "Client order save error:",
+      error
+    );
+
+    return false;
+  }
 }
 
 function getClientOrder(){
@@ -1902,9 +2027,15 @@ function getClientOrder(){
         CLIENT_ORDER_KEY
       );
 
-    return saved
-      ?JSON.parse(saved)
-      :null;
+    if(!saved)return null;
+
+    const order=JSON.parse(saved);
+
+    if(!isValidSavedOrder(order)){
+      return null;
+    }
+
+    return order;
 
   }catch(error){
 
@@ -1912,9 +2043,171 @@ function getClientOrder(){
   }
 }
 
+/*
+ * Дополнительное восстановление через CLIENT_ORDER_KEY.
+ * Используется только если запись ещё находится
+ * внутри 12-часового периода.
+ */
+function getClientOrderFallback(){
+
+  try{
+
+    const saved=
+      localStorage.getItem(
+        CLIENT_ORDER_KEY
+      );
+
+    const savedTime=
+      localStorage.getItem(
+        CLIENT_ORDER_TIME_KEY
+      );
+
+    if(!saved||!savedTime){
+      return null;
+    }
+
+    const createdAt=
+      Number(savedTime);
+
+    if(
+      !Number.isFinite(createdAt)||
+      createdAt<=0
+    ){
+      return null;
+    }
+
+    const age=Date.now()-createdAt;
+
+    if(
+      age<0||
+      age>=ORDER_LOCK_TIME
+    ){
+      localStorage.removeItem(
+        CLIENT_ORDER_KEY
+      );
+
+      localStorage.removeItem(
+        CLIENT_ORDER_TIME_KEY
+      );
+
+      return null;
+    }
+
+    const order=JSON.parse(saved);
+
+    if(!isValidSavedOrder(order)){
+      return null;
+    }
+
+    return{
+      createdAt,
+      order
+    };
+
+  }catch(error){
+
+    console.log(
+      "Client order fallback error:",
+      error
+    );
+
+    return null;
+  }
+}
+
+function clearOrderStorage(){
+
+  try{
+    localStorage.removeItem(
+      ORDER_LOCK_KEY
+    );
+
+    localStorage.removeItem(
+      CLIENT_ORDER_KEY
+    );
+
+    localStorage.removeItem(
+      CLIENT_ORDER_TIME_KEY
+    );
+
+    localStorage.removeItem(
+      INSTALLED_ORDER_KEY
+    );
+
+  }catch(error){
+
+    console.log(
+      "Storage clear error:",
+      error
+    );
+  }
+}
+
+function resetExpiredOrder(){
+
+  if(statusTimer){
+
+    clearInterval(statusTimer);
+    statusTimer=null;
+  }
+
+  clearTimeout(lockTimer);
+  lockTimer=null;
+
+  currentOrder=null;
+  selected.clear();
+
+  statusPanel.classList.remove("show");
+  cancelledPanel.classList.remove("show");
+  installPanel.classList.remove("show");
+  activationPanel.classList.remove("show");
+
+  try{
+    localStorage.removeItem(
+      ORDER_LOCK_KEY
+    );
+
+    localStorage.removeItem(
+      CLIENT_ORDER_KEY
+    );
+
+    localStorage.removeItem(
+      CLIENT_ORDER_TIME_KEY
+    );
+
+    localStorage.removeItem(
+      INSTALLED_ORDER_KEY
+    );
+  }catch(error){}
+
+  render();
+  updatePrice();
+  updateWhatsAppLinks();
+
+  showToast(
+    "12 часов прошли — можно создать новый заказ."
+  );
+}
+
 function restoreOrderLock(){
 
-  const lock=getOrderLock();
+  let lock=getOrderLock();
+
+  /*
+   * Если основная запись отсутствует,
+   * пробуем восстановить заказ из резервной записи.
+   */
+  if(!lock){
+
+    lock=getClientOrderFallback();
+
+    if(lock){
+
+      saveOrderLock(
+        lock.order
+      );
+    }
+  }
 
   if(!lock){
 
@@ -1929,33 +2222,33 @@ function restoreOrderLock(){
     return;
   }
 
+  if(!isValidSavedOrder(lock.order)){
+
+    resetExpiredOrder();
+    return;
+  }
+
   currentOrder=lock.order;
 
   clearTimeout(lockTimer);
 
+  const elapsed=
+    Date.now()-lock.createdAt;
+
   const remaining=
-    ORDER_LOCK_TIME-
-    (Date.now()-lock.createdAt);
+    ORDER_LOCK_TIME-elapsed;
+
+  if(remaining<=0){
+
+    resetExpiredOrder();
+    return;
+  }
 
   lockTimer=setTimeout(()=>{
 
-    localStorage.removeItem(
-      ORDER_LOCK_KEY
-    );
+    resetExpiredOrder();
 
-    if(statusTimer){
-
-      clearInterval(statusTimer);
-      statusTimer=null;
-    }
-
-    currentOrder=null;
-
-    showToast(
-      "5 минут прошли — можно создать новый заказ."
-    );
-
-  },Math.max(0,remaining));
+  },remaining);
 }
 
 function openNewOrderConfirmation(){
@@ -1987,9 +2280,7 @@ function startNewOrder(){
   selected.clear();
   isCreatingOrder=false;
 
-  localStorage.removeItem(ORDER_LOCK_KEY);
-  localStorage.removeItem(CLIENT_ORDER_KEY);
-  localStorage.removeItem(INSTALLED_ORDER_KEY);
+  clearOrderStorage();
 
   statusPanel.classList.remove("show");
   cancelledPanel.classList.remove("show");
@@ -2018,6 +2309,44 @@ function startNewOrder(){
   );
 }
 
+/*
+ * Возвращает только безопасный список выбранных приложений.
+ */
+function getSafeSelectedApps(){
+
+  const count=Number(selected.size);
+
+  if(
+    !Number.isInteger(count)||
+    count<1||
+    count>apps.length
+  ){
+    return null;
+  }
+
+  const selectedList=
+    apps.filter(app=>selected.has(app.id));
+
+  if(
+    selectedList.length!==count||
+    selectedList.length<1||
+    selectedList.length>apps.length
+  ){
+    return null;
+  }
+
+  const ids=
+    selectedList.map(app=>app.id);
+
+  if(
+    new Set(ids).size!==ids.length
+  ){
+    return null;
+  }
+
+  return selectedList;
+}
+
 function openPaymentModal(){
 
   if(currentOrder){
@@ -2029,17 +2358,21 @@ function openPaymentModal(){
     return;
   }
 
-  if(!selected.size){
+  const selectedList=
+    getSafeSelectedApps();
+
+  if(!selectedList){
+
+    selected.clear();
+    render();
+    updatePrice();
 
     showToast(
-      "Сначала выберите приложение"
+      "Некорректное количество приложений"
     );
 
     return;
   }
-
-  const selectedList=
-    apps.filter(app=>selected.has(app.id));
 
   const price=
     calculatePrice(selectedList.length);
@@ -2264,17 +2597,36 @@ async function createOrder(){
     return false;
   }
 
-  if(!selected.size){
+  const selectedList=
+    getSafeSelectedApps();
+
+  if(!selectedList){
 
     showToast(
-      "Сначала выберите приложение"
+      "Некорректное количество приложений"
     );
+
+    selected.clear();
+    render();
+    updatePrice();
 
     return false;
   }
 
-  const selectedList=
-    apps.filter(app=>selected.has(app.id));
+  /*
+   * Дополнительная проверка перед отправкой.
+   */
+  if(
+    selectedList.length<1||
+    selectedList.length>apps.length
+  ){
+
+    showToast(
+      "Некорректное количество приложений"
+    );
+
+    return false;
+  }
 
   const price=
     calculatePrice(
@@ -2317,6 +2669,20 @@ async function createOrder(){
       "awaiting_review"
   };
 
+  /*
+   * Финальная проверка перед INSERT.
+   */
+  if(
+    !isValidSavedOrder(orderData)
+  ){
+
+    showToast(
+      "Не удалось проверить данные заказа"
+    );
+
+    return false;
+  }
+
   isCreatingOrder=true;
 
   paymentDone.disabled=true;
@@ -2356,10 +2722,15 @@ async function createOrder(){
       return false;
     }
 
+    const createdAt=Date.now();
+
     currentOrder=orderData;
 
     saveOrderLock(orderData);
-    saveClientOrder(orderData);
+    saveClientOrder(
+      orderData,
+      createdAt
+    );
 
     closePaymentModal();
 
@@ -2495,6 +2866,11 @@ function renderInstallPanel(order){
     link.className=
       "install-button";
 
+    /*
+     * Установочная ссылка берётся только
+     * из локального списка apps.
+     * Сами ссылки не изменяются.
+     */
     link.href=
       app.install;
 
@@ -2555,7 +2931,18 @@ async function checkOrderStatus(){
 
   const order=currentOrder;
 
-  if(!order)return;
+  if(!order){
+    return;
+  }
+
+  if(!isValidSavedOrder(order)){
+
+    console.error(
+      "Invalid current order"
+    );
+
+    return;
+  }
 
   try{
 
@@ -2586,6 +2973,13 @@ async function checkOrderStatus(){
     const serverOrder=
       data[0];
 
+    if(
+      !serverOrder||
+      typeof serverOrder.status!=="string"
+    ){
+      return;
+    }
+
     const updatedOrder={
       ...order,
 
@@ -2593,14 +2987,90 @@ async function checkOrderStatus(){
         serverOrder.status,
 
       apps:
-        serverOrder.apps||
-        order.apps
+        Array.isArray(serverOrder.apps)&&
+        serverOrder.apps.length
+          ?serverOrder.apps
+          :order.apps
     };
 
-    saveClientOrder(updatedOrder);
+    if(!isValidSavedOrder(updatedOrder)){
+
+      console.error(
+        "Invalid server order data"
+      );
+
+      return;
+    }
+
+    /*
+     * Сохраняем обновлённый заказ,
+     * но НЕ обновляем время 12-часового lock.
+     */
+    let createdAt=Date.now();
+
+    try{
+
+      const lock=
+        JSON.parse(
+          localStorage.getItem(
+            ORDER_LOCK_KEY
+          )||"null"
+        );
+
+      if(
+        lock&&
+        typeof lock.createdAt==="number"
+      ){
+        createdAt=lock.createdAt;
+      }else{
+
+        const savedTime=
+          Number(
+            localStorage.getItem(
+              CLIENT_ORDER_TIME_KEY
+            )
+          );
+
+        if(
+          Number.isFinite(savedTime)&&
+          savedTime>0
+        ){
+          createdAt=savedTime;
+        }
+      }
+
+    }catch(error){}
+
+    saveClientOrder(
+      updatedOrder,
+      createdAt
+    );
 
     currentOrder=
       updatedOrder;
+
+    /*
+     * Обновляем lock с прежним временем создания,
+     * чтобы проверка 12 часов не начиналась заново
+     * после каждого обновления статуса.
+     */
+    try{
+
+      localStorage.setItem(
+        ORDER_LOCK_KEY,
+        JSON.stringify({
+          createdAt,
+          order:updatedOrder
+        })
+      );
+
+    }catch(error){
+
+      console.log(
+        "Order lock update error:",
+        error
+      );
+    }
 
     updateWhatsAppLinks();
 
@@ -2650,6 +3120,10 @@ async function checkOrderStatus(){
 }
 
 function startStatusChecking(){
+
+  if(!currentOrder){
+    return;
+  }
 
   if(statusTimer){
 
@@ -2945,6 +3419,12 @@ function initTelegram(){
   }
 }
 
+/*
+ * Восстанавливаем заказ ДО render().
+ * Если заказ ещё находится в 12-часовом периоде,
+ * после перезагрузки автоматически запускается
+ * проверка статуса.
+ */
 restoreOrderLock();
 
 if(currentOrder){
